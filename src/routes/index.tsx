@@ -130,32 +130,11 @@ function LandingPage() {
 }
 
 /* ---------- Nav ---------- */
+import { SiteHeader } from "@/components/site-header";
 function Nav() {
-  return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-border/60 bg-background/80 px-6 py-5 backdrop-blur-md md:px-10">
-      <a href="#top" className="font-serif text-xl font-bold tracking-tight md:text-2xl">
-        NOVA <span className="italic font-normal">NANCY</span>
-      </a>
-      <div className="hidden gap-10 text-[11px] font-medium uppercase tracking-[0.25em] md:flex">
-        <a href="#collections" className="transition-colors hover:text-accent">Collections</a>
-        <a href="#services" className="transition-colors hover:text-accent">Tailoring</a>
-        <a href="#about" className="transition-colors hover:text-accent">Atelier</a>
-        <a href="#contact" className="transition-colors hover:text-accent">Contact</a>
-      </div>
-      <div className="flex items-center gap-3 md:gap-5">
-        <button className="hidden text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:text-accent sm:inline">
-          Sign in
-        </button>
-        <a
-          href="#contact"
-          className="bg-primary px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground transition-colors duration-300 hover:bg-accent md:px-6 md:py-3.5"
-        >
-          Book Fitting
-        </a>
-      </div>
-    </nav>
-  );
+  return <SiteHeader />;
 }
+
 
 /* ---------- Hero ---------- */
 function Hero() {
