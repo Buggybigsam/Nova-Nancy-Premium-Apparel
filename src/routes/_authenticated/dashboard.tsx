@@ -181,7 +181,7 @@ function AdminOverview() {
   return (
     <DashboardShell title="Atelier Command">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <StatCard label="Members" value={stats.users} icon={Users as any} />
+        <StatCard label="Members" value={stats.users} />
         <StatCard label="Total Orders" value={stats.orders} />
         <StatCard label="Designers" value={stats.designers} />
       </div>
