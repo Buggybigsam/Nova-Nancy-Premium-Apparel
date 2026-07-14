@@ -9,11 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as DesignersRouteImport } from './routes/designers'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as DesignersIdRouteImport } from './routes/designers.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
@@ -26,6 +28,11 @@ import { Route as AuthenticatedOrdersIdRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin.services'
 
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
@@ -48,6 +55,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductHandleRoute = ProductHandleRouteImport.update({
+  id: '/product/$handle',
+  path: '/product/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignersIdRoute = DesignersIdRouteImport.update({
@@ -113,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/designers': typeof DesignersRouteWithChildren
   '/services': typeof ServicesRoute
+  '/shop': typeof ShopRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -120,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
+  '/product/$handle': typeof ProductHandleRoute
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
@@ -130,6 +144,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/designers': typeof DesignersRouteWithChildren
   '/services': typeof ServicesRoute
+  '/shop': typeof ShopRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -137,6 +152,7 @@ export interface FileRoutesByTo {
   '/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
+  '/product/$handle': typeof ProductHandleRoute
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
@@ -149,6 +165,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/designers': typeof DesignersRouteWithChildren
   '/services': typeof ServicesRoute
+  '/shop': typeof ShopRoute
   '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -156,6 +173,7 @@ export interface FileRoutesById {
   '/_authenticated/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
+  '/product/$handle': typeof ProductHandleRoute
   '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/orders/$id': typeof AuthenticatedOrdersIdRoute
@@ -168,6 +186,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/designers'
     | '/services'
+    | '/shop'
     | '/appointments'
     | '/atelier'
     | '/dashboard'
@@ -175,6 +194,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/profile'
     | '/designers/$id'
+    | '/product/$handle'
     | '/admin/services'
     | '/admin/users'
     | '/orders/$id'
@@ -185,6 +205,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/designers'
     | '/services'
+    | '/shop'
     | '/appointments'
     | '/atelier'
     | '/dashboard'
@@ -192,6 +213,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/profile'
     | '/designers/$id'
+    | '/product/$handle'
     | '/admin/services'
     | '/admin/users'
     | '/orders/$id'
@@ -203,6 +225,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/designers'
     | '/services'
+    | '/shop'
     | '/_authenticated/appointments'
     | '/_authenticated/atelier'
     | '/_authenticated/dashboard'
@@ -210,6 +233,7 @@ export interface FileRouteTypes {
     | '/_authenticated/orders'
     | '/_authenticated/profile'
     | '/designers/$id'
+    | '/product/$handle'
     | '/_authenticated/admin/services'
     | '/_authenticated/admin/users'
     | '/_authenticated/orders/$id'
@@ -222,10 +246,19 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DesignersRoute: typeof DesignersRouteWithChildren
   ServicesRoute: typeof ServicesRoute
+  ShopRoute: typeof ShopRoute
+  ProductHandleRoute: typeof ProductHandleRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
@@ -259,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/$handle': {
+      id: '/product/$handle'
+      path: '/product/$handle'
+      fullPath: '/product/$handle'
+      preLoaderRoute: typeof ProductHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/designers/$id': {
@@ -397,6 +437,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DesignersRoute: DesignersRouteWithChildren,
   ServicesRoute: ServicesRoute,
+  ShopRoute: ShopRoute,
+  ProductHandleRoute: ProductHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
