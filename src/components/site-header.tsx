@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserRound } from "lucide-react";
+import { CartDrawer } from "@/components/shop/cart-drawer";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
@@ -24,9 +25,11 @@ export function SiteHeader() {
         <Link to="/" className="transition-colors hover:text-accent">Home</Link>
         <Link to="/designers" className="transition-colors hover:text-accent">Designers</Link>
         <Link to="/services" className="transition-colors hover:text-accent">Services</Link>
+        <Link to="/shop" className="transition-colors hover:text-accent">Shop</Link>
         <Link to="/" hash="contact" className="transition-colors hover:text-accent">Contact</Link>
       </div>
       <div className="flex items-center gap-3 md:gap-5">
+        <CartDrawer />
         {loading ? (
           <div className="h-9 w-24 animate-pulse bg-muted" />
         ) : user ? (
