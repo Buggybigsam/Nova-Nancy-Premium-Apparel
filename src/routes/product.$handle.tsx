@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PRODUCT_BY_HANDLE_QUERY, storefrontApiRequest } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cart-store";
 import { formatPrice } from "@/components/shop/product-card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Minus, Plus, Lock, Truck, Receipt, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/product/$handle")({
