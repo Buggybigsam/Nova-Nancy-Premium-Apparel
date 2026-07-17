@@ -38,6 +38,7 @@ function ProductPage() {
 
   const addItem = useCartStore((s) => s.addItem);
   const isLoadingCart = useCartStore((s) => s.isLoading);
+  const [quantity, setQuantity] = useState(1);
 
   const handleAdd = async () => {
     if (!data || !selectedVariant) return;
@@ -46,7 +47,7 @@ function ProductPage() {
       variantId: selectedVariant.id,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price,
-      quantity: 1,
+      quantity,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
     toast.success(`${data.title} added to bag`, { position: "top-center" });
