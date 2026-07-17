@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PRODUCT_BY_HANDLE_QUERY, storefrontApiRequest } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cart-store";
 import { formatPrice } from "@/components/shop/product-card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Minus, Plus, Lock, Truck, Receipt, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/product/$handle")({
@@ -38,6 +38,7 @@ function ProductPage() {
 
   const addItem = useCartStore((s) => s.addItem);
   const isLoadingCart = useCartStore((s) => s.isLoading);
+  const [quantity, setQuantity] = useState(1);
 
   const handleAdd = async () => {
     if (!data || !selectedVariant) return;
@@ -46,7 +47,7 @@ function ProductPage() {
       variantId: selectedVariant.id,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price,
-      quantity: 1,
+      quantity,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
     toast.success(`${data.title} added to bag`, { position: "top-center" });
@@ -79,6 +80,9 @@ function ProductPage() {
 
   const image = data.images?.edges?.[0]?.node;
   const price = selectedVariant?.price || data.priceRange.minVariantPrice;
+  const unit = Number(price.amount);
+  const subtotal = unit * quantity;
+  const currency = price.currencyCode;
 
   return (
     <div className="min-h-screen bg-background">
@@ -90,7 +94,10 @@ function ProductPage() {
         <div className="flex flex-col justify-center">
           <span className="eyebrow">Nova Nancy</span>
           <h1 className="mt-3 font-serif text-4xl md:text-5xl">{data.title}</h1>
-          <p className="mt-4 text-lg">{formatPrice(price.amount, price.currencyCode)}</p>
+          <p className="mt-4 text-lg">
+            {formatPrice(price.amount, currency)}{" "}
+            <span className="text-xs uppercase tracking-widest text-muted-foreground">({currency})</span>
+          </p>
           {data.description && <p className="mt-6 text-sm leading-relaxed text-muted-foreground">{data.description}</p>}
 
           {variants.length > 1 && (
@@ -115,20 +122,89 @@ function ProductPage() {
             </div>
           )}
 
+          <div className="mt-8">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Quantity</p>
+            <div className="mt-3 inline-flex items-center border border-border">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="px-3 py-2 hover:bg-muted disabled:opacity-40"
+                disabled={quantity <= 1}
+                aria-label="Decrease quantity"
+              >
+                <Minus className="h-3 w-3" />
+              </button>
+              <span className="w-10 text-center text-sm">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => q + 1)}
+                className="px-3 py-2 hover:bg-muted"
+                aria-label="Increase quantity"
+              >
+                <Plus className="h-3 w-3" />
+              </button>
+            </div>
+          </div>
+
+          {/* Order summary — confirms totals before checkout */}
+          <div className="mt-8 rounded-md border border-border/60 bg-secondary/10 p-5">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Order summary</p>
+            <dl className="mt-4 space-y-2 text-sm">
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">
+                  {formatPrice(unit, currency)} × {quantity}
+                </dt>
+                <dd>{formatPrice(subtotal, currency)}</dd>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <dt className="flex items-center gap-2">
+                  <Receipt className="h-3.5 w-3.5" /> Taxes
+                </dt>
+                <dd className="text-xs">Calculated at checkout</dd>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <dt className="flex items-center gap-2">
+                  <Truck className="h-3.5 w-3.5" /> Shipping
+                </dt>
+                <dd className="text-xs">Calculated at checkout</dd>
+              </div>
+              <div className="mt-3 flex items-baseline justify-between border-t border-border/60 pt-3">
+                <dt className="text-sm font-medium uppercase tracking-widest">Subtotal</dt>
+                <dd className="font-serif text-lg">
+                  {formatPrice(subtotal, currency)}{" "}
+                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{currency}</span>
+                </dd>
+              </div>
+            </dl>
+            <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+              Final total including taxes and shipping is confirmed on the secure Shopify checkout, based on your
+              delivery address.
+            </p>
+          </div>
+
           <Button
             onClick={handleAdd}
             disabled={isLoadingCart || !selectedVariant?.availableForSale}
             size="lg"
-            className="mt-8"
+            className="mt-6"
           >
             {isLoadingCart ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : selectedVariant?.availableForSale ? (
-              "Add to Bag"
+              `Add to Bag · ${formatPrice(subtotal, currency)}`
             ) : (
               "Sold Out"
             )}
           </Button>
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <Lock className="h-3 w-3" /> Secure Shopify checkout
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="h-3 w-3" /> Cards, Apple Pay, Google Pay, Shop Pay
+            </span>
+          </div>
         </div>
       </section>
     </div>
