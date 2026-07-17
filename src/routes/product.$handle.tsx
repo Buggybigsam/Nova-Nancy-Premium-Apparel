@@ -205,6 +205,29 @@ function ProductPage() {
               <ShieldCheck className="h-3 w-3" /> Cards, Apple Pay, Google Pay, Shop Pay
             </span>
           </div>
+
+          {/* Payment method details — what's covered and when charged */}
+          <div className="mt-4 rounded-md border border-border/60 bg-secondary/10 p-4 text-[11px] leading-relaxed text-muted-foreground">
+            <p className="font-medium text-foreground">Payment details</p>
+            <ul className="mt-2 space-y-1.5">
+              <li>
+                <span className="text-foreground">What's covered:</span> Major credit and debit cards, Apple Pay,
+                Google Pay, Shop Pay, and PayPal (where enabled by the store).
+              </li>
+              <li>
+                <span className="text-foreground">When you're charged:</span> Your payment method is only charged after
+                you review and confirm your order on the secure Shopify checkout page.
+              </li>
+              <li>
+                <span className="text-foreground">Taxes & shipping:</span> Final taxes and shipping costs are calculated
+                based on your delivery address and shown before you pay.
+              </li>
+              <li>
+                <span className="text-foreground">Security:</span> Your card details are encrypted and processed by
+                Shopify; we never store your full payment information.
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
     </div>
