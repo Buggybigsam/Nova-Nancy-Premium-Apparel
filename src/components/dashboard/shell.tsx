@@ -26,6 +26,7 @@ const NAV: NavItem[] = [
   { to: "/designers", label: "Find a Designer", icon: Sparkles, roles: ["customer"] },
   { to: "/atelier", label: "My Atelier", icon: Palette, roles: ["designer"] },
   { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
+  { to: "/admin/orders", label: "Shop Orders", icon: ShoppingBag, roles: ["admin"] },
   { to: "/admin/services", label: "Services", icon: ClipboardList, roles: ["admin"] },
   { to: "/profile", label: "Profile", icon: UserRound },
 ];
