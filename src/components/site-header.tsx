@@ -26,7 +26,9 @@ export function SiteHeader() {
         <Link to="/designers" className="transition-colors hover:text-accent">Designers</Link>
         <Link to="/services" className="transition-colors hover:text-accent">Services</Link>
         <Link to="/shop" className="transition-colors hover:text-accent">Shop</Link>
+        <Link to="/order-status" className="transition-colors hover:text-accent">Track Order</Link>
         <Link to="/" hash="contact" className="transition-colors hover:text-accent">Contact</Link>
+
       </div>
       <div className="flex items-center gap-3 md:gap-5">
         <CartDrawer />
