@@ -4,7 +4,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site-header";
 import { lookupOrder, type OrderLookupResult } from "@/lib/order-lookup.functions";
-import { CheckCircle2, Circle, Package, Truck, CreditCard, MapPin, ExternalLink } from "lucide-react";
+import { CheckCircle2, Circle, Package, Truck, CreditCard, MapPin, ExternalLink, Download } from "lucide-react";
 import { toast } from "sonner";
 
 const searchSchema = z.object({
@@ -64,6 +64,118 @@ function Pill({ label, tone }: { label: string; tone: string }) {
       {label.replace(/_/g, " ")}
     </span>
   );
+}
+
+function downloadInvoice(order: OrderLookupResult) {
+  const fmt = (a: string) => {
+    const n = Number(a);
+    try {
+      return new Intl.NumberFormat(undefined, { style: "currency", currency: order.currencyCode }).format(n);
+    } catch {
+      return `${order.currencyCode} ${n.toFixed(2)}`;
+    }
+  };
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+  const addr = order.shippingAddress;
+  const addrHtml = addr
+    ? [addr.name, addr.address1, addr.address2, [addr.city, addr.province, addr.zip].filter(Boolean).join(", "), addr.country]
+        .filter(Boolean)
+        .map((l) => esc(String(l)))
+        .join("<br/>")
+    : "—";
+  const rows = order.lineItems
+    .map(
+      (li) => `
+      <tr>
+        <td>${esc(li.title)}${li.variantTitle && li.variantTitle !== "Default Title" ? `<div class="muted">${esc(li.variantTitle)}</div>` : ""}</td>
+        <td class="num">${li.quantity}</td>
+        <td class="num">${fmt(li.price)}</td>
+        <td class="num">${fmt(String(Number(li.price) * li.quantity))}</td>
+      </tr>`,
+    )
+    .join("");
+
+  const html = `<!doctype html>
+<html><head><meta charset="utf-8"/><title>Invoice ${esc(order.name)} — Nova Nancy</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Georgia, 'Times New Roman', serif; color: #111; margin: 0; padding: 48px; background: #fff; }
+  .brand { font-size: 28px; letter-spacing: 4px; text-transform: uppercase; }
+  .muted { color: #666; font-size: 12px; }
+  .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  h1 { font-size: 20px; margin: 32px 0 8px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #e5e5e5; }
+  th { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #666; }
+  .num { text-align: right; white-space: nowrap; }
+  .totals { margin-top: 16px; margin-left: auto; width: 320px; font-size: 14px; }
+  .totals div { display: flex; justify-content: space-between; padding: 6px 0; }
+  .totals .grand { border-top: 1px solid #111; margin-top: 8px; padding-top: 12px; font-size: 18px; font-weight: bold; }
+  .box { border: 1px solid #e5e5e5; padding: 16px; font-size: 13px; line-height: 1.5; }
+  .footer { margin-top: 48px; text-align: center; color: #888; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+  @media print { body { padding: 24px; } .noprint { display: none; } }
+</style></head>
+<body>
+  <div class="row">
+    <div>
+      <div class="brand">Nova Nancy</div>
+      <div class="muted">Fashion Design &amp; Custom Tailoring</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:22px">Invoice</div>
+      <div class="muted">Order ${esc(order.name)}</div>
+      <div class="muted">${esc(new Date(order.createdAt).toLocaleDateString())}</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:32px">
+    <div class="box" style="flex:1">
+      <div class="muted">Billed to</div>
+      <div style="margin-top:6px">${order.email ? esc(order.email) : "—"}</div>
+    </div>
+    <div class="box" style="flex:1">
+      <div class="muted">Ship to</div>
+      <div style="margin-top:6px">${addrHtml}</div>
+    </div>
+    <div class="box" style="flex:1">
+      <div class="muted">Status</div>
+      <div style="margin-top:6px">Payment: ${esc(order.financialStatus ?? "—")}<br/>Fulfillment: ${esc(order.fulfillmentStatus ?? "—")}</div>
+    </div>
+  </div>
+
+  <h1>Items</h1>
+  <table>
+    <thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Unit</th><th class="num">Amount</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+
+  <div class="totals">
+    <div><span>Subtotal</span><span>${fmt(order.subtotalPrice)}</span></div>
+    <div><span>Shipping</span><span>${fmt(order.totalShipping)}</span></div>
+    <div><span>Tax</span><span>${fmt(order.totalTax)}</span></div>
+    <div class="grand"><span>Total</span><span>${fmt(order.totalPrice)}</span></div>
+  </div>
+
+  <div class="footer">Thank you for choosing Nova Nancy</div>
+  <script>window.addEventListener('load', () => { setTimeout(() => window.print(), 300); });</script>
+</body></html>`;
+
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `invoice-${order.name.replace(/[^a-z0-9]/gi, "_")}.html`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  const w = window.open("", "_blank");
+  if (w) {
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  }
 }
 
 function OrderStatusPage() {
@@ -198,16 +310,25 @@ function OrderDetails({ order }: { order: OrderLookupResult }) {
           </div>
         </div>
 
-        {order.statusUrl && (
-          <a
-            href={order.statusUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent hover:underline"
+        <div className="mt-6 flex flex-wrap items-center gap-4">
+          {order.statusUrl && (
+            <a
+              href={order.statusUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent hover:underline"
+            >
+              View official status page <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={() => downloadInvoice(order)}
+            className="inline-flex items-center gap-2 border border-primary bg-primary px-4 py-2 text-[11px] uppercase tracking-[0.25em] text-primary-foreground transition-colors hover:bg-accent"
           >
-            View official status page <ExternalLink className="h-3.5 w-3.5" />
-          </a>
-        )}
+            <Download className="h-3.5 w-3.5" /> Download invoice
+          </button>
+        </div>
       </div>
 
       <div className="border border-border bg-background p-6 md:p-8">
