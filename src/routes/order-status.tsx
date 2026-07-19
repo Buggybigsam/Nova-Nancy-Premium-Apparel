@@ -198,16 +198,25 @@ function OrderDetails({ order }: { order: OrderLookupResult }) {
           </div>
         </div>
 
-        {order.statusUrl && (
-          <a
-            href={order.statusUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent hover:underline"
+        <div className="mt-6 flex flex-wrap items-center gap-4">
+          {order.statusUrl && (
+            <a
+              href={order.statusUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-accent hover:underline"
+            >
+              View official status page <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={() => downloadInvoice(order)}
+            className="inline-flex items-center gap-2 border border-primary bg-primary px-4 py-2 text-[11px] uppercase tracking-[0.25em] text-primary-foreground transition-colors hover:bg-accent"
           >
-            View official status page <ExternalLink className="h-3.5 w-3.5" />
-          </a>
-        )}
+            <Download className="h-3.5 w-3.5" /> Download invoice
+          </button>
+        </div>
       </div>
 
       <div className="border border-border bg-background p-6 md:p-8">
