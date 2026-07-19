@@ -4,7 +4,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site-header";
 import { lookupOrder, type OrderLookupResult } from "@/lib/order-lookup.functions";
-import { CheckCircle2, Circle, Package, Truck, CreditCard, MapPin, ExternalLink } from "lucide-react";
+import { CheckCircle2, Circle, Package, Truck, CreditCard, MapPin, ExternalLink, Download } from "lucide-react";
 import { toast } from "sonner";
 
 const searchSchema = z.object({
