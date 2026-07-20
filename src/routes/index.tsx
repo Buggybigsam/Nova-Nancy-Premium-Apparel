@@ -743,6 +743,15 @@ function Footer() {
                 <Icon className="h-4 w-4" />
               </a>
             ))}
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat on WhatsApp"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition-colors hover:border-[#25D366] hover:text-[#25D366]"
+            >
+              <MessageCircle className="h-4 w-4" />
+            </a>
           </div>
         </div>
         <div>
