@@ -614,7 +614,7 @@ function Contact() {
                 <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
                   Atelier
                 </div>
-                <div className="mt-1">42 Atelier Avenue, Level 4 · Lagos, NG</div>
+                <div className="mt-1">Kasoa, Walantu Street, Ghana</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -632,7 +632,7 @@ function Contact() {
                 <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
                   Private line
                 </div>
-                <div className="mt-1">+234 (0) 1 700 4200</div>
+                <div className="mt-1">+233 (0) 55 050 1177</div>
               </div>
             </div>
           </div>
@@ -641,7 +641,7 @@ function Contact() {
         <div className="overflow-hidden border border-border bg-beige">
           <iframe
             title="Nova Nancy Atelier location"
-            src="https://www.google.com/maps?q=Lagos&output=embed"
+            src="https://www.google.com/maps?q=Kasoa,Walantu+Street,Ghana&output=embed"
             className="h-full min-h-[400px] w-full grayscale"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
