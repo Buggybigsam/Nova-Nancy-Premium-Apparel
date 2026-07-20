@@ -91,7 +91,7 @@ function AuthPage() {
               </p>
             </div>
             <div className="text-[11px] uppercase tracking-[0.3em] text-cream/50">
-              Established 2015 · Lagos · Milan
+              Established 2015 · Kasoa · Milan
             </div>
           </div>
         </div>
