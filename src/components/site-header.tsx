@@ -8,8 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserRound } from "lucide-react";
+import { UserRound, MessageCircle } from "lucide-react";
 import { CartDrawer } from "@/components/shop/cart-drawer";
+import { WHATSAPP_URL } from "@/components/whatsapp-button";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
