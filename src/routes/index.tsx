@@ -14,7 +14,9 @@ import {
   Gem,
   Star,
   Quote,
+  MessageCircle,
 } from "lucide-react";
+import { WhatsAppButton, WHATSAPP_URL } from "@/components/whatsapp-button";
 
 import heroCouture from "@/assets/hero-couture.jpg";
 import fabricSamples from "@/assets/fabric-samples.jpg";
