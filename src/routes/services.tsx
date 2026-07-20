@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site-header";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -45,6 +46,7 @@ function ServicesPage() {
           </div>
         ))}
       </section>
+      <WhatsAppButton variant="fab" />
     </div>
   );
 }

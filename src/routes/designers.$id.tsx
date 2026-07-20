@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { Star } from "lucide-react";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 
 export const Route = createFileRoute("/designers/$id")({
   head: () => ({ meta: [{ title: "Designer — Nova Nancy" }] }),
@@ -34,9 +35,10 @@ function DesignerDetail() {
           <div className="mt-6 flex flex-wrap gap-2">
             {d.specialties?.map((s: string) => <span key={s} className="border border-border px-3 py-1 text-[11px] uppercase tracking-[0.2em]">{s}</span>)}
           </div>
-          <div className="mt-8 flex gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/orders/new" className="bg-primary px-6 py-3 text-[11px] uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent">Commission a piece</Link>
             <Link to="/appointments" className="border border-input px-6 py-3 text-[11px] uppercase tracking-[0.25em] hover:bg-secondary">Book fitting</Link>
+            <WhatsAppButton variant="outline" label="Chat on WhatsApp" className="rounded-none" />
           </div>
         </div>
       </section>

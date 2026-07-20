@@ -8,8 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserRound } from "lucide-react";
+import { UserRound, MessageCircle } from "lucide-react";
 import { CartDrawer } from "@/components/shop/cart-drawer";
+import { WHATSAPP_URL } from "@/components/whatsapp-button";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
@@ -31,6 +32,15 @@ export function SiteHeader() {
 
       </div>
       <div className="flex items-center gap-3 md:gap-5">
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chat on WhatsApp"
+          className="flex h-9 w-9 items-center justify-center text-foreground transition-colors hover:text-[#25D366]"
+        >
+          <MessageCircle className="h-5 w-5" />
+        </a>
         <CartDrawer />
         {loading ? (
           <div className="h-9 w-24 animate-pulse bg-muted" />
