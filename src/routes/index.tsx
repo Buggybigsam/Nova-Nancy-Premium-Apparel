@@ -637,6 +637,32 @@ function Contact() {
                 <div className="mt-1">+233 (0) 55 050 1177</div>
               </div>
             </div>
+            <div className="flex items-start gap-4">
+              <MessageCircle className="mt-1 h-5 w-5 text-[#25D366]" />
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                  WhatsApp
+                </div>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block text-foreground underline decoration-[#25D366] underline-offset-4 transition-colors hover:text-[#25D366]"
+                >
+                  Message the designer
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <WhatsAppButton variant="inline" label="Chat on WhatsApp" />
+            <a
+              href="tel:+233550501177"
+              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
+            >
+              Call now
+            </a>
           </div>
         </div>
 
