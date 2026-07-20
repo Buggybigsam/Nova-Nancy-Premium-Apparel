@@ -127,7 +127,7 @@ function LandingPage() {
       <Contact />
       <Newsletter />
       <Footer />
-      <WhatsAppButton variant="fab" aria-label="Chat with Nova Nancy on WhatsApp" />
+      <WhatsAppButton variant="fab" />
     </div>
   );
 }
