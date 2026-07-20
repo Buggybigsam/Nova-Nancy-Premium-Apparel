@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { Star } from "lucide-react";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 
 export const Route = createFileRoute("/designers/$id")({
   head: () => ({ meta: [{ title: "Designer — Nova Nancy" }] }),
