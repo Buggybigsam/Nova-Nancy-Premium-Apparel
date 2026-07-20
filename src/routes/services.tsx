@@ -46,6 +46,7 @@ function ServicesPage() {
           </div>
         ))}
       </section>
+      <WhatsAppButton variant="fab" />
     </div>
   );
 }
