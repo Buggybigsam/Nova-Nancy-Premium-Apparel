@@ -786,28 +786,14 @@ function Footer() {
             Nova <span className="italic font-normal">Nancy</span>
           </div>
           <p className="max-w-sm text-sm leading-relaxed">
-            Architects of individual style. We believe every garment should tell a story,
-            meticulously woven into every stitch.
+            The private atelier of Mau — one designer, one client at a time. Every garment cut,
+            fitted, and finished by hand.
           </p>
-          <div className="mt-8 flex gap-4">
-            {[Instagram, Facebook, Twitter].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition-colors hover:border-accent hover:text-accent"
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat on WhatsApp"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition-colors hover:border-[#25D366] hover:text-[#25D366]"
-            >
-              <MessageCircle className="h-4 w-4" />
-            </a>
+          <div className="mt-8">
+            <SocialLinks variant="dark" includeWhatsApp />
+          </div>
+          <div className="mt-4 text-[10px] uppercase tracking-[0.25em]">
+            IG @mau_real91 · Snap mau.real
           </div>
         </div>
         <div>
