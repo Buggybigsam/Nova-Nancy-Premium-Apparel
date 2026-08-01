@@ -78,7 +78,7 @@ function CustomerOverview({ userId }: { userId: string }) {
         <div className="border border-border bg-background p-6">
           <div className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-accent" /><h3 className="font-serif text-xl">Style Concierge</h3></div>
           <p className="mt-2 text-sm text-muted-foreground">Explore designers curated for your vision.</p>
-          <Link to="/designers" className="mt-4 inline-block text-[11px] uppercase tracking-[0.25em] text-accent hover:underline">Browse designers →</Link>
+          <Link to="/designers" className="mt-4 inline-block text-[11px] uppercase tracking-[0.25em] text-accent hover:underline">Meet the designer →</Link>
         </div>
         <div className="border border-border bg-background p-6">
           <div className="flex items-center gap-2"><Calendar className="h-4 w-4 text-accent" /><h3 className="font-serif text-xl">Next Fitting</h3></div>

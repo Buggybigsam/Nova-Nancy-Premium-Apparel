@@ -11,6 +11,7 @@ import {
 import { UserRound, MessageCircle } from "lucide-react";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { WHATSAPP_URL } from "@/components/whatsapp-button";
+import { SocialLinks } from "@/components/social-links";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
@@ -24,7 +25,7 @@ export function SiteHeader() {
       </Link>
       <div className="hidden gap-10 text-[11px] font-medium uppercase tracking-[0.25em] md:flex">
         <Link to="/" className="transition-colors hover:text-accent">Home</Link>
-        <Link to="/designers" className="transition-colors hover:text-accent">Designers</Link>
+        <Link to="/designers" className="transition-colors hover:text-accent">The Designer</Link>
         <Link to="/services" className="transition-colors hover:text-accent">Services</Link>
         <Link to="/shop" className="transition-colors hover:text-accent">Shop</Link>
         <Link to="/order-status" className="transition-colors hover:text-accent">Track Order</Link>
@@ -32,6 +33,7 @@ export function SiteHeader() {
 
       </div>
       <div className="flex items-center gap-3 md:gap-5">
+        <SocialLinks variant="row" className="hidden sm:flex gap-1" />
         <a
           href={WHATSAPP_URL}
           target="_blank"

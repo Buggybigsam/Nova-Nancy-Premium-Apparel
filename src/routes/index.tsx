@@ -3,8 +3,6 @@ import { useState } from "react";
 import {
   ArrowUpRight,
   Instagram,
-  Facebook,
-  Twitter,
   Mail,
   Phone,
   MapPin,
@@ -17,6 +15,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { WhatsAppButton, WHATSAPP_URL } from "@/components/whatsapp-button";
+import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
 
 import heroCouture from "@/assets/hero-couture.jpg";
 import fabricSamples from "@/assets/fabric-samples.jpg";
@@ -437,7 +436,7 @@ function About() {
         <div className="md:col-span-5">
           <img
             src={founder}
-            alt="Nancy, founder of Nova Nancy Atelier"
+            alt="Mau, the designer behind Nova Nancy Atelier"
             loading="lazy"
             width={900}
             height={1100}
@@ -445,17 +444,23 @@ function About() {
           />
         </div>
         <div className="md:col-span-6 md:col-start-7">
-          <span className="eyebrow mb-4 block">About Nova Nancy</span>
+          <span className="eyebrow mb-4 block">Meet the Designer</span>
           <h2 className="mb-8 font-serif text-4xl leading-tight md:text-5xl">
-            Twenty years of couture, distilled into every seam.
+            One designer. <span className="italic">Every stitch, personally.</span>
           </h2>
           <p className="mb-6 text-muted-foreground md:text-lg">
-            Nova Nancy was founded on a quiet belief: a garment should belong to one person, and
-            no one else. Our atelier pairs decades of hand-tailoring with modern tools —
-            digital measurement archives, an AI style concierge, and live order tracking —
-            so precision never comes at the cost of intimacy.
+            Nova Nancy is the private atelier of <span className="text-foreground">Mau</span> — a
+            single designer who takes each commission from first sketch to final fitting. No
+            production line, no hand-offs: you speak to the person cutting your cloth.
           </p>
+          <p className="mb-8 text-muted-foreground md:text-lg">
+            Follow the studio day to day — fittings, fabric runs, and behind-the-scenes cuts — on
+            Instagram <span className="text-foreground">@mau_real91</span> and Snapchat{" "}
+            <span className="text-foreground">mau.real</span>.
+          </p>
+          <SocialLinks variant="circle" includeWhatsApp />
           <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
+
             <div>
               <div className="font-serif text-3xl md:text-4xl">120+</div>
               <div className="mt-2 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
@@ -463,9 +468,9 @@ function About() {
               </div>
             </div>
             <div>
-              <div className="font-serif text-3xl md:text-4xl">18</div>
+              <div className="font-serif text-3xl md:text-4xl">1</div>
               <div className="mt-2 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                Master tailors
+                Designer, start to finish
               </div>
             </div>
             <div>
@@ -654,10 +659,58 @@ function Contact() {
                 </a>
               </div>
             </div>
+            <div className="flex items-start gap-4">
+              <Instagram className="mt-1 h-5 w-5 text-accent" />
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                  Instagram
+                </div>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
+                >
+                  @mau_real91
+                </a>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <SnapchatIcon className="mt-1 h-5 w-5 text-accent" />
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                  Snapchat
+                </div>
+                <a
+                  href={SNAPCHAT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
+                >
+                  mau.real
+                </a>
+              </div>
+            </div>
           </div>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <WhatsAppButton variant="inline" label="Chat on WhatsApp" />
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
+            >
+              Instagram
+            </a>
+            <a
+              href={SNAPCHAT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
+            >
+              Snapchat
+            </a>
             <a
               href="tel:+233550501177"
               className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
@@ -731,28 +784,14 @@ function Footer() {
             Nova <span className="italic font-normal">Nancy</span>
           </div>
           <p className="max-w-sm text-sm leading-relaxed">
-            Architects of individual style. We believe every garment should tell a story,
-            meticulously woven into every stitch.
+            The private atelier of Mau — one designer, one client at a time. Every garment cut,
+            fitted, and finished by hand.
           </p>
-          <div className="mt-8 flex gap-4">
-            {[Instagram, Facebook, Twitter].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition-colors hover:border-accent hover:text-accent"
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat on WhatsApp"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition-colors hover:border-[#25D366] hover:text-[#25D366]"
-            >
-              <MessageCircle className="h-4 w-4" />
-            </a>
+          <div className="mt-8">
+            <SocialLinks variant="dark" includeWhatsApp />
+          </div>
+          <div className="mt-4 text-[10px] uppercase tracking-[0.25em]">
+            IG @mau_real91 · Snap mau.real
           </div>
         </div>
         <div>
