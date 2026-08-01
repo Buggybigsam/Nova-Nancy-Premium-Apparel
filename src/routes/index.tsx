@@ -437,7 +437,7 @@ function About() {
         <div className="md:col-span-5">
           <img
             src={founder}
-            alt="Nancy, founder of Nova Nancy Atelier"
+            alt="Mau, the designer behind Nova Nancy Atelier"
             loading="lazy"
             width={900}
             height={1100}
@@ -445,17 +445,23 @@ function About() {
           />
         </div>
         <div className="md:col-span-6 md:col-start-7">
-          <span className="eyebrow mb-4 block">About Nova Nancy</span>
+          <span className="eyebrow mb-4 block">Meet the Designer</span>
           <h2 className="mb-8 font-serif text-4xl leading-tight md:text-5xl">
-            Twenty years of couture, distilled into every seam.
+            One designer. <span className="italic">Every stitch, personally.</span>
           </h2>
           <p className="mb-6 text-muted-foreground md:text-lg">
-            Nova Nancy was founded on a quiet belief: a garment should belong to one person, and
-            no one else. Our atelier pairs decades of hand-tailoring with modern tools —
-            digital measurement archives, an AI style concierge, and live order tracking —
-            so precision never comes at the cost of intimacy.
+            Nova Nancy is the private atelier of <span className="text-foreground">Mau</span> — a
+            single designer who takes each commission from first sketch to final fitting. No
+            production line, no hand-offs: you speak to the person cutting your cloth.
           </p>
+          <p className="mb-8 text-muted-foreground md:text-lg">
+            Follow the studio day to day — fittings, fabric runs, and behind-the-scenes cuts — on
+            Instagram <span className="text-foreground">@mau_real91</span> and Snapchat{" "}
+            <span className="text-foreground">mau.real</span>.
+          </p>
+          <SocialLinks variant="circle" includeWhatsApp />
           <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
+
             <div>
               <div className="font-serif text-3xl md:text-4xl">120+</div>
               <div className="mt-2 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
