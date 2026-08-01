@@ -1,68 +1,157 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { Instagram, Star } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { Star } from "lucide-react";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
+import founder from "@/assets/founder.jpg";
+import collection1 from "@/assets/collection-1.jpg";
+import collection2 from "@/assets/collection-2.jpg";
+import collection3 from "@/assets/collection-3.jpg";
+import collection4 from "@/assets/collection-4.jpg";
+import designSketch from "@/assets/design-sketch.jpg";
+import fabricSamples from "@/assets/fabric-samples.jpg";
 
 export const Route = createFileRoute("/designers")({
   head: () => ({
     meta: [
-      { title: "Our Designers — Nova Nancy Atelier" },
-      { name: "description", content: "Meet the couture designers and tailors of Nova Nancy — Milan-trained masters ready to craft your bespoke wardrobe." },
-      { property: "og:title", content: "Nova Nancy Designers" },
-      { property: "og:description", content: "Discover our roster of couture designers and book a consultation." },
+      { title: "Mau — The Designer Behind Nova Nancy" },
+      {
+        name: "description",
+        content:
+          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear — follow @mau_real91 on Instagram.",
+      },
+      { property: "og:type", content: "profile" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Mau — The Designer Behind Nova Nancy" },
+      {
+        property: "og:description",
+        content: "One designer, every stitch. Bespoke couture from Kasoa, Ghana.",
+      },
     ],
   }),
-  component: DesignersPage,
+  component: DesignerPage,
 });
 
-function DesignersPage() {
-  const [designers, setDesigners] = useState<any[]>([]);
-  useEffect(() => {
-    supabase.from("designers").select("*, profiles(full_name, avatar_url, bio)").eq("is_approved", true).then(({ data }) => setDesigners(data ?? []));
-  }, []);
+const specialties = ["Bespoke Bridal", "Corporate Tailoring", "Traditional Wear", "Evening Couture"];
+const portfolio = [collection2, collection1, collection3, collection4, designSketch, fabricSamples];
 
+function DesignerPage() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <section className="border-b border-border bg-beige py-20">
-        <div className="container mx-auto px-6 md:px-10">
-          <span className="eyebrow">Our Designers</span>
-          <h1 className="mt-4 max-w-3xl font-serif text-5xl leading-tight md:text-6xl">
-            Ateliers with a<br /><span className="italic">unique signature.</span>
-          </h1>
+
+      <section className="border-b border-border bg-beige">
+        <div className="container mx-auto grid grid-cols-1 items-center gap-12 px-6 py-16 md:grid-cols-2 md:px-10 md:py-24">
+          <div className="order-2 md:order-1">
+            <span className="eyebrow">The Designer</span>
+            <h1 className="mt-4 font-serif text-5xl leading-[1.05] md:text-6xl">
+              Mau<span className="text-accent">.</span>
+              <br />
+              <span className="italic font-normal">One pair of hands.</span>
+            </h1>
+            <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+              <Star className="h-4 w-4 fill-accent text-accent" />
+              Kasoa, Walantu Street · Ghana
+            </div>
+            <p className="mt-6 max-w-md text-muted-foreground md:text-lg">
+              Nova Nancy is not a house of many names. Every commission — from the first sketch to
+              the last hand-finished hem — is drawn, cut, and fitted by Mau. That is the whole
+              promise: your garment is never passed along.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {specialties.map((s) => (
+                <span key={s} className="border border-border px-3 py-1 text-[11px] uppercase tracking-[0.2em]">
+                  {s}
+                </span>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                to="/orders/new"
+                className="bg-primary px-6 py-3 text-[11px] uppercase tracking-[0.25em] text-primary-foreground transition-colors hover:bg-accent"
+              >
+                Commission a piece
+              </Link>
+              <Link
+                to="/appointments"
+                className="border border-input px-6 py-3 text-[11px] uppercase tracking-[0.25em] transition-colors hover:bg-secondary"
+              >
+                Book fitting
+              </Link>
+              <WhatsAppButton variant="outline" label="WhatsApp" />
+            </div>
+            <div className="mt-8 border-t border-border pt-6">
+              <div className="mb-3 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                Reach Mau directly
+              </div>
+              <div className="flex flex-wrap items-center gap-4">
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
+                >
+                  <Instagram className="h-4 w-4 text-accent" /> @mau_real91
+                </a>
+                <a
+                  href={SNAPCHAT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
+                >
+                  <SnapchatIcon className="h-4 w-4 text-accent" /> mau.real
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="order-1 md:order-2">
+            <img
+              src={founder}
+              alt="Mau, designer and founder of Nova Nancy Atelier"
+              className="aspect-[4/5] w-full object-cover ring-1 ring-foreground/5"
+            />
+          </div>
         </div>
       </section>
-      <section className="container mx-auto px-6 py-16 md:px-10">
-        {designers.length === 0 ? (
-          <div className="border border-dashed border-border bg-beige/40 p-16 text-center">
-            <h3 className="font-serif text-2xl">Directory opens soon</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Our designer roster will appear here once ateliers are approved.</p>
+
+      <section className="container mx-auto px-6 py-16 md:px-10 md:py-24">
+        <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <span className="eyebrow">Selected Work</span>
+            <h2 className="mt-3 font-serif text-4xl md:text-5xl">
+              Pieces from the <span className="italic">atelier</span>.
+            </h2>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {designers.map((d) => (
-              <Link key={d.id} to="/designers/$id" params={{ id: d.id }} className="group border border-border bg-background transition-colors hover:border-accent">
-                <div className="aspect-[4/5] overflow-hidden bg-beige">
-                  {d.portfolio_images?.[0] ? (
-                    <img src={d.portfolio_images[0]} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" alt={d.profiles?.full_name} />
-                  ) : d.profiles?.avatar_url ? (
-                    <img src={d.profiles.avatar_url} className="h-full w-full object-cover" alt="" />
-                  ) : <div className="h-full w-full bg-gradient-to-br from-beige to-gold-soft" />}
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-serif text-2xl">{d.profiles?.full_name}</h3>
-                    <div className="flex items-center gap-1 text-xs"><Star className="h-3.5 w-3.5 fill-accent text-accent" />{d.rating}</div>
-                  </div>
-                  <div className="mt-1 text-[11px] uppercase tracking-[0.25em] text-accent">{d.headline}</div>
-                  <div className="mt-3 text-sm text-muted-foreground">{d.specialties?.join(" · ")}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+          <SocialLinks variant="circle" includeWhatsApp />
+        </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+          {portfolio.map((src, i) => (
+            <div key={i} className="aspect-[4/5] overflow-hidden bg-beige">
+              <img
+                src={src}
+                loading="lazy"
+                alt="Bespoke garment by Mau"
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              />
+            </div>
+          ))}
+        </div>
       </section>
+
+      <section className="border-t border-border bg-beige px-6 py-16 text-center md:px-10">
+        <h2 className="font-serif text-3xl md:text-4xl">
+          Start a conversation with <span className="italic">Mau</span>.
+        </h2>
+        <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
+          Send a reference, a sketch, or just an idea — DMs on Instagram and Snapchat are answered
+          personally.
+        </p>
+        <div className="mt-8 flex justify-center">
+          <SocialLinks variant="circle" includeWhatsApp />
+        </div>
+      </section>
+
+      <WhatsAppButton variant="fab" />
     </div>
   );
 }
