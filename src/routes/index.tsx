@@ -469,9 +469,9 @@ function About() {
               </div>
             </div>
             <div>
-              <div className="font-serif text-3xl md:text-4xl">18</div>
+              <div className="font-serif text-3xl md:text-4xl">1</div>
               <div className="mt-2 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                Master tailors
+                Designer, start to finish
               </div>
             </div>
             <div>
