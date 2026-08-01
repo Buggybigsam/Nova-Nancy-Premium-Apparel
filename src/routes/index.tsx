@@ -3,8 +3,6 @@ import { useState } from "react";
 import {
   ArrowUpRight,
   Instagram,
-  Facebook,
-  Twitter,
   Mail,
   Phone,
   MapPin,
