@@ -32,6 +32,7 @@ export function SiteHeader() {
 
       </div>
       <div className="flex items-center gap-3 md:gap-5">
+        <SocialLinks variant="row" className="hidden sm:flex gap-1" />
         <a
           href={WHATSAPP_URL}
           target="_blank"
