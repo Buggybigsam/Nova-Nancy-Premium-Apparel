@@ -17,6 +17,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { WhatsAppButton, WHATSAPP_URL } from "@/components/whatsapp-button";
+import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
 
 import heroCouture from "@/assets/hero-couture.jpg";
 import fabricSamples from "@/assets/fabric-samples.jpg";
