@@ -11,6 +11,7 @@ import {
 import { UserRound, MessageCircle } from "lucide-react";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { WHATSAPP_URL } from "@/components/whatsapp-button";
+import { SocialLinks } from "@/components/social-links";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
