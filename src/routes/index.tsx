@@ -661,10 +661,58 @@ function Contact() {
                 </a>
               </div>
             </div>
+            <div className="flex items-start gap-4">
+              <Instagram className="mt-1 h-5 w-5 text-accent" />
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                  Instagram
+                </div>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
+                >
+                  @mau_real91
+                </a>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <SnapchatIcon className="mt-1 h-5 w-5 text-accent" />
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                  Snapchat
+                </div>
+                <a
+                  href={SNAPCHAT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
+                >
+                  mau.real
+                </a>
+              </div>
+            </div>
           </div>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <WhatsAppButton variant="inline" label="Chat on WhatsApp" />
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
+            >
+              Instagram
+            </a>
+            <a
+              href={SNAPCHAT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
+            >
+              Snapchat
+            </a>
             <a
               href="tel:+233550501177"
               className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
