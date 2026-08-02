@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SocialLinks } from "@/components/social-links";
-import { getPortfolioPiece, portfolioPieces } from "@/data/portfolio";
+import { getPortfolioPiece, portfolioPieces, type PortfolioPiece } from "@/data/portfolio";
 
 export const Route = createFileRoute("/portfolio/$slug")({
   loader: ({ params }) => {
@@ -51,7 +51,7 @@ function PieceNotFound() {
 }
 
 function PortfolioDetail() {
-  const { piece } = Route.useLoaderData();
+  const { piece } = Route.useLoaderData() as { piece: PortfolioPiece };
   const others = portfolioPieces.filter((p) => p.slug !== piece.slug).slice(0, 3);
 
   return (

@@ -16,7 +16,9 @@ import { Route as DesignersRouteImport } from './routes/designers'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
+import { Route as PortfolioSlugRouteImport } from './routes/portfolio.$slug'
 import { Route as DesignersIdRouteImport } from './routes/designers.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
@@ -64,9 +66,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
+  id: '/portfolio/',
+  path: '/portfolio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductHandleRoute = ProductHandleRouteImport.update({
   id: '/product/$handle',
   path: '/product/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioSlugRoute = PortfolioSlugRouteImport.update({
+  id: '/portfolio/$slug',
+  path: '/portfolio/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignersIdRoute = DesignersIdRouteImport.update({
@@ -147,7 +159,9 @@ export interface FileRoutesByFullPath {
   '/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/portfolio/': typeof PortfolioIndexRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -168,7 +182,9 @@ export interface FileRoutesByTo {
   '/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/portfolio': typeof PortfolioIndexRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -191,7 +207,9 @@ export interface FileRoutesById {
   '/_authenticated/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/portfolio/': typeof PortfolioIndexRoute
   '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -214,7 +232,9 @@ export interface FileRouteTypes {
     | '/orders'
     | '/profile'
     | '/designers/$id'
+    | '/portfolio/$slug'
     | '/product/$handle'
+    | '/portfolio/'
     | '/admin/orders'
     | '/admin/services'
     | '/admin/users'
@@ -235,7 +255,9 @@ export interface FileRouteTypes {
     | '/orders'
     | '/profile'
     | '/designers/$id'
+    | '/portfolio/$slug'
     | '/product/$handle'
+    | '/portfolio'
     | '/admin/orders'
     | '/admin/services'
     | '/admin/users'
@@ -257,7 +279,9 @@ export interface FileRouteTypes {
     | '/_authenticated/orders'
     | '/_authenticated/profile'
     | '/designers/$id'
+    | '/portfolio/$slug'
     | '/product/$handle'
+    | '/portfolio/'
     | '/_authenticated/admin/orders'
     | '/_authenticated/admin/services'
     | '/_authenticated/admin/users'
@@ -273,7 +297,9 @@ export interface RootRouteChildren {
   OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
   ShopRoute: typeof ShopRoute
+  PortfolioSlugRoute: typeof PortfolioSlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
+  PortfolioIndexRoute: typeof PortfolioIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -327,11 +353,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portfolio/': {
+      id: '/portfolio/'
+      path: '/portfolio'
+      fullPath: '/portfolio/'
+      preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$handle': {
       id: '/product/$handle'
       path: '/product/$handle'
       fullPath: '/product/$handle'
       preLoaderRoute: typeof ProductHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio/$slug': {
+      id: '/portfolio/$slug'
+      path: '/portfolio/$slug'
+      fullPath: '/portfolio/$slug'
+      preLoaderRoute: typeof PortfolioSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/designers/$id': {
@@ -481,7 +521,9 @@ const rootRouteChildren: RootRouteChildren = {
   OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
   ShopRoute: ShopRoute,
+  PortfolioSlugRoute: PortfolioSlugRoute,
   ProductHandleRoute: ProductHandleRoute,
+  PortfolioIndexRoute: PortfolioIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
