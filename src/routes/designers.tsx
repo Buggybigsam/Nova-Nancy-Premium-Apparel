@@ -29,7 +29,7 @@ export const Route = createFileRoute("/designers")({
 });
 
 const specialties = ["Bespoke Bridal", "Corporate Tailoring", "Traditional Wear", "Evening Couture"];
-const portfolio = [collection2, collection1, collection3, collection4, designSketch, fabricSamples];
+
 
 function DesignerPage() {
   return (
