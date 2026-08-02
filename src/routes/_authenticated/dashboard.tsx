@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Dashboard | Nova Nancy" }] }),
   component: DashboardPage,
 });
 

@@ -24,7 +24,9 @@ import collection1 from "@/assets/collection-1.jpg";
 import collection2 from "@/assets/collection-2.jpg";
 import collection3 from "@/assets/collection-3.jpg";
 import collection4 from "@/assets/collection-4.jpg";
-import founder from "@/assets/founder.jpg";
+import { Reveal } from "@/components/reveal";
+import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
+const founder = founderAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -60,7 +62,7 @@ const services = [
   {
     icon: Gem,
     title: "Couture Bridal",
-    desc: "One-of-a-kind bridal masterpieces designed around your story, silhouette, and season.",
+    desc: "One of a kind bridal masterpieces designed around your story, silhouette, and season.",
   },
   {
     icon: Sparkles,
@@ -115,16 +117,16 @@ function LandingPage() {
       <Nav />
       <Hero />
       <Marquee />
-      <Collections />
-      <Services />
-      <OrderTracker />
-      <AIConcierge />
-      <About />
-      <WhyUs />
-      <Testimonials />
-      <Gallery />
-      <Contact />
-      <Newsletter />
+      <Reveal><Collections /></Reveal>
+      <Reveal><Services /></Reveal>
+      <Reveal><OrderTracker /></Reveal>
+      <Reveal><AIConcierge /></Reveal>
+      <Reveal><About /></Reveal>
+      <Reveal><WhyUs /></Reveal>
+      <Reveal><Testimonials /></Reveal>
+      <Reveal><Gallery /></Reveal>
+      <Reveal><Contact /></Reveal>
+      <Reveal><Newsletter /></Reveal>
       <Footer />
       <WhatsAppButton variant="fab" />
     </div>
@@ -287,7 +289,7 @@ function Services() {
             </h2>
           </div>
           <p className="text-muted-foreground md:col-span-6 md:col-start-7 md:text-lg">
-            From the first mood board to the final fitting, every step is guided by hand — and
+            From the first mood board to the final fitting, every step is guided by hand, and
             supported by a private client dashboard so you can track your creation stitch by
             stitch.
           </p>
@@ -449,12 +451,12 @@ function About() {
             One designer. <span className="italic">Every stitch, personally.</span>
           </h2>
           <p className="mb-6 text-muted-foreground md:text-lg">
-            Nova Nancy is the private atelier of <span className="text-foreground">Mau</span> — a
+            Nova Nancy is the private atelier of <span className="text-foreground">Mau</span>, a
             single designer who takes each commission from first sketch to final fitting. No
-            production line, no hand-offs: you speak to the person cutting your cloth.
+            production line, no handovers: you speak to the person cutting your cloth.
           </p>
           <p className="mb-8 text-muted-foreground md:text-lg">
-            Follow the studio day to day — fittings, fabric runs, and behind-the-scenes cuts — on
+            Follow the studio day to day, fittings, fabric runs, and behind the scenes cuts, on
             Instagram <span className="text-foreground">mau_real91</span> and Snapchat{" "}
             <span className="text-foreground">mau.real91</span>.
           </p>
@@ -489,10 +491,10 @@ function About() {
 /* ---------- Why Us ---------- */
 function WhyUs() {
   const points = [
-    { n: "01", title: "Hand-cut by master tailors", desc: "Every panel drafted from your measurements — no digital pattern reused." },
+    { n: "01", title: "Hand cut by master tailors", desc: "Every panel drafted from your measurements, no digital pattern reused." },
     { n: "02", title: "Fabric sourced ethically", desc: "Silk from Como, wool from Yorkshire, cotton from Egypt. Traceable to the mill." },
-    { n: "03", title: "Live progress transparency", desc: "Ten production stages, notifications at every hand-off, photos on demand." },
-    { n: "04", title: "Lifetime alteration promise", desc: "Bodies change. Your garments should too — free alterations, always." },
+    { n: "03", title: "Live progress transparency", desc: "Ten production stages, notifications at every handover, photos on demand." },
+    { n: "04", title: "Lifetime alteration promise", desc: "Bodies change. Your garments should too, free alterations, always." },
   ];
   return (
     <section className="bg-beige px-6 py-24 md:px-10 md:py-32">
@@ -612,7 +614,7 @@ function Contact() {
             Come for a <span className="italic">fitting</span>.
           </h2>
           <p className="mb-10 max-w-md text-muted-foreground">
-            Private appointments, weekdays 10:00–19:00. Virtual consultations available for
+            Private appointments, weekdays 10:00 to 19:00. Virtual consultations available for
             clients outside the city.
           </p>
           <div className="space-y-6">
@@ -784,7 +786,7 @@ function Footer() {
             Nova <span className="italic font-normal">Nancy</span>
           </div>
           <p className="max-w-sm text-sm leading-relaxed">
-            The private atelier of Mau — one designer, one client at a time. Every garment cut,
+            The private atelier of Mau, one designer, one client at a time. Every garment cut,
             fitted, and finished by hand.
           </p>
           <div className="mt-8">

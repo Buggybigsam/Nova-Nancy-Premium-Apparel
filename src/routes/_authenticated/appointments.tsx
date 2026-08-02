@@ -7,7 +7,7 @@ import { Calendar as CalIcon } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/appointments")({
-  head: () => ({ meta: [{ title: "Appointments — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Appointments | Nova Nancy" }] }),
   component: AppointmentsPage,
 });
 

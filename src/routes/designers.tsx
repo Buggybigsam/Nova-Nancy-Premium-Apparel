@@ -3,22 +3,24 @@ import { Instagram, Star } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
-import founder from "@/assets/founder.jpg";
+import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
+const founder = founderAsset.url;
 import { portfolioPieces } from "@/data/portfolio";
+import { Reveal, Float } from "@/components/reveal";
 
 
 export const Route = createFileRoute("/designers")({
   head: () => ({
     meta: [
-      { title: "Mau — The Designer Behind Nova Nancy" },
+      { title: "Mau | The Designer Behind Nova Nancy" },
       {
         name: "description",
         content:
-          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear — follow mau_real91 on Instagram.",
+          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear, follow mau_real91 on Instagram.",
       },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "Mau — The Designer Behind Nova Nancy" },
+      { property: "og:title", content: "Mau | The Designer Behind Nova Nancy" },
       {
         property: "og:description",
         content: "One designer, every stitch. Bespoke couture from Kasoa, Ghana.",
@@ -50,8 +52,8 @@ function DesignerPage() {
               Kasoa, Walantu Street · Ghana
             </div>
             <p className="mt-6 max-w-md text-muted-foreground md:text-lg">
-              Nova Nancy is not a house of many names. Every commission — from the first sketch to
-              the last hand-finished hem — is drawn, cut, and fitted by Mau. That is the whole
+              Nova Nancy is not a house of many names. Every commission, from the first sketch to
+              the last hand finished hem, is drawn, cut, and fitted by Mau. That is the whole
               promise: your garment is never passed along.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
@@ -100,13 +102,13 @@ function DesignerPage() {
               </div>
             </div>
           </div>
-          <div className="order-1 md:order-2">
+          <Float className="order-1 md:order-2">
             <img
               src={founder}
               alt="Mau, designer and founder of Nova Nancy Atelier"
               className="aspect-[4/5] w-full object-cover ring-1 ring-foreground/5"
             />
-          </div>
+          </Float>
         </div>
       </section>
 
@@ -121,9 +123,9 @@ function DesignerPage() {
           <SocialLinks variant="circle" includeWhatsApp />
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {portfolioPieces.map((piece) => (
+          {portfolioPieces.map((piece, i) => (
+            <Reveal key={piece.slug} delay={i * 0.05}>
             <Link
-              key={piece.slug}
               to="/portfolio/$slug"
               params={{ slug: piece.slug }}
               className="group block"
@@ -134,7 +136,7 @@ function DesignerPage() {
                   loading="lazy"
                   width={1024}
                   height={1280}
-                  alt={`${piece.title} — ${piece.summary}`}
+                  alt={`${piece.title}: ${piece.summary}`}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
@@ -143,6 +145,7 @@ function DesignerPage() {
                 <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
               </div>
             </Link>
+            </Reveal>
           ))}
         </div>
         <div className="mt-10 text-center">
@@ -161,7 +164,7 @@ function DesignerPage() {
           Start a conversation with <span className="italic">Mau</span>.
         </h2>
         <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-          Send a reference, a sketch, or just an idea — DMs on Instagram and Snapchat are answered
+          Send a reference, a sketch, or just an idea, DMs on Instagram and Snapchat are answered
           personally.
         </p>
         <div className="mt-8 flex justify-center">

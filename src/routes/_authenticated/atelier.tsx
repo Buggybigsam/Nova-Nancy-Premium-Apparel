@@ -6,7 +6,7 @@ import { DashboardShell } from "@/components/dashboard/shell";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/atelier")({
-  head: () => ({ meta: [{ title: "My Atelier — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "My Atelier | Nova Nancy" }] }),
   component: AtelierPage,
 });
 

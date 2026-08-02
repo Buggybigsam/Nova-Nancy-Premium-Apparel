@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/services")({
-  head: () => ({ meta: [{ title: "Admin · Services — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Admin · Services | Nova Nancy" }] }),
   component: AdminServices,
 });
 

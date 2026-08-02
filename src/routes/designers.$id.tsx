@@ -6,7 +6,7 @@ import { Star } from "lucide-react";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
 export const Route = createFileRoute("/designers/$id")({
-  head: () => ({ meta: [{ title: "Designer — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Designer | Nova Nancy" }] }),
   component: DesignerDetail,
 });
 

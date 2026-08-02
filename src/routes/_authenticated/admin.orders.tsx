@@ -7,7 +7,7 @@ import { listShopifyOrders, type AdminOrder } from "@/lib/shopify-admin.function
 import { RefreshCw, Search } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/orders")({
-  head: () => ({ meta: [{ title: "Admin · Orders — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Admin · Orders | Nova Nancy" }] }),
   component: AdminOrders,
 });
 
@@ -32,7 +32,7 @@ const FUL_OPTS = [
 ];
 
 function StatusPill({ label, tone }: { label: string | null; tone: "green" | "amber" | "red" | "gray" }) {
-  if (!label) return <span className="text-xs text-muted-foreground">—</span>;
+  if (!label) return <span className="text-xs text-muted-foreground">N/A</span>;
   const cls = {
     green: "bg-emerald-100 text-emerald-800",
     amber: "bg-amber-100 text-amber-800",
@@ -178,7 +178,7 @@ function AdminOrders() {
                     {new Date(o.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
                   </td>
                   <td className="px-4 py-3">
-                    <div>{o.customerName ?? "—"}</div>
+                    <div>{o.customerName ?? "N/A"}</div>
                     {o.customerEmail && <div className="text-xs text-muted-foreground">{o.customerEmail}</div>}
                   </td>
                   <td className="px-4 py-3"><StatusPill label={o.displayFinancialStatus} tone={financialTone(o.displayFinancialStatus)} /></td>

@@ -5,7 +5,7 @@ import { DashboardShell } from "@/components/dashboard/shell";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
-  head: () => ({ meta: [{ title: "Admin · Users — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Admin · Users | Nova Nancy" }] }),
   component: AdminUsers,
 });
 
@@ -46,7 +46,7 @@ function AdminUsers() {
             {profiles.map((p) => (
               <tr key={p.id} className="border-b border-border/60 last:border-0">
                 <td className="p-4">
-                  <div className="font-medium">{p.full_name ?? "—"}</div>
+                  <div className="font-medium">{p.full_name ?? "N/A"}</div>
                   <div className="text-xs text-muted-foreground">{p.id.slice(0, 8)}</div>
                 </td>
                 <td className="p-4">
