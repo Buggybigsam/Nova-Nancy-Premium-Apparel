@@ -4,12 +4,8 @@ import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
 import founder from "@/assets/founder.jpg";
-import collection1 from "@/assets/collection-1.jpg";
-import collection2 from "@/assets/collection-2.jpg";
-import collection3 from "@/assets/collection-3.jpg";
-import collection4 from "@/assets/collection-4.jpg";
-import designSketch from "@/assets/design-sketch.jpg";
-import fabricSamples from "@/assets/fabric-samples.jpg";
+import { portfolioPieces } from "@/data/portfolio";
+
 
 export const Route = createFileRoute("/designers")({
   head: () => ({
