@@ -24,6 +24,7 @@ import collection1 from "@/assets/collection-1.jpg";
 import collection2 from "@/assets/collection-2.jpg";
 import collection3 from "@/assets/collection-3.jpg";
 import collection4 from "@/assets/collection-4.jpg";
+import { Reveal } from "@/components/reveal";
 import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
 const founder = founderAsset.url;
 
@@ -116,16 +117,16 @@ function LandingPage() {
       <Nav />
       <Hero />
       <Marquee />
-      <Collections />
-      <Services />
-      <OrderTracker />
-      <AIConcierge />
-      <About />
-      <WhyUs />
-      <Testimonials />
-      <Gallery />
-      <Contact />
-      <Newsletter />
+      <Reveal><Collections /></Reveal>
+      <Reveal><Services /></Reveal>
+      <Reveal><OrderTracker /></Reveal>
+      <Reveal><AIConcierge /></Reveal>
+      <Reveal><About /></Reveal>
+      <Reveal><WhyUs /></Reveal>
+      <Reveal><Testimonials /></Reveal>
+      <Reveal><Gallery /></Reveal>
+      <Reveal><Contact /></Reveal>
+      <Reveal><Newsletter /></Reveal>
       <Footer />
       <WhatsAppButton variant="fab" />
     </div>
