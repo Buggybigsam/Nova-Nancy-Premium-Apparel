@@ -34,7 +34,7 @@ export function SocialLinks({ variant = "circle", className = "", includeWhatsAp
   const shell = shells[variant];
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label={`Instagram @${INSTAGRAM_HANDLE}`} className={shell}>
+      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${INSTAGRAM_HANDLE}`} className={shell}>
         <Instagram className="h-4 w-4" />
       </a>
       <a href={SNAPCHAT_URL} target="_blank" rel="noopener noreferrer" aria-label={`Snapchat ${SNAPCHAT_HANDLE}`} className={shell}>
