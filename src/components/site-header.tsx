@@ -26,7 +26,9 @@ export function SiteHeader() {
       <div className="hidden gap-10 text-[11px] font-medium uppercase tracking-[0.25em] md:flex">
         <Link to="/" className="transition-colors hover:text-accent">Home</Link>
         <Link to="/designers" className="transition-colors hover:text-accent">The Designer</Link>
+        <Link to="/portfolio" className="transition-colors hover:text-accent">Portfolio</Link>
         <Link to="/services" className="transition-colors hover:text-accent">Services</Link>
+
         <Link to="/shop" className="transition-colors hover:text-accent">Shop</Link>
         <Link to="/order-status" className="transition-colors hover:text-accent">Track Order</Link>
         <Link to="/" hash="contact" className="transition-colors hover:text-accent">Contact</Link>

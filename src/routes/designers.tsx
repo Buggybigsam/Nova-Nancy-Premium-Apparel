@@ -125,17 +125,39 @@ function DesignerPage() {
           <SocialLinks variant="circle" includeWhatsApp />
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {portfolio.map((src, i) => (
-            <div key={i} className="aspect-[4/5] overflow-hidden bg-beige">
-              <img
-                src={src}
-                loading="lazy"
-                alt="Bespoke garment by Mau"
-                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-            </div>
+          {portfolioPieces.map((piece) => (
+            <Link
+              key={piece.slug}
+              to="/portfolio/$slug"
+              params={{ slug: piece.slug }}
+              className="group block"
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-beige">
+                <img
+                  src={piece.image}
+                  loading="lazy"
+                  width={1024}
+                  height={1280}
+                  alt={`${piece.title} — ${piece.summary}`}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div className="mt-3">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-accent">{piece.category}</div>
+                <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
+              </div>
+            </Link>
           ))}
         </div>
+        <div className="mt-10 text-center">
+          <Link
+            to="/portfolio"
+            className="inline-block border border-input px-6 py-3 text-[11px] uppercase tracking-[0.25em] transition-colors hover:bg-secondary"
+          >
+            View full portfolio
+          </Link>
+        </div>
+
       </section>
 
       <section className="border-t border-border bg-beige px-6 py-16 text-center md:px-10">
