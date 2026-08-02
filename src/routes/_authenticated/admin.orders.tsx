@@ -32,7 +32,7 @@ const FUL_OPTS = [
 ];
 
 function StatusPill({ label, tone }: { label: string | null; tone: "green" | "amber" | "red" | "gray" }) {
-  if (!label) return <span className="text-xs text-muted-foreground">—</span>;
+  if (!label) return <span className="text-xs text-muted-foreground">N/A</span>;
   const cls = {
     green: "bg-emerald-100 text-emerald-800",
     amber: "bg-amber-100 text-amber-800",
