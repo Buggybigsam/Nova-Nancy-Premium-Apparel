@@ -4,12 +4,8 @@ import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
 import founder from "@/assets/founder.jpg";
-import collection1 from "@/assets/collection-1.jpg";
-import collection2 from "@/assets/collection-2.jpg";
-import collection3 from "@/assets/collection-3.jpg";
-import collection4 from "@/assets/collection-4.jpg";
-import designSketch from "@/assets/design-sketch.jpg";
-import fabricSamples from "@/assets/fabric-samples.jpg";
+import { portfolioPieces } from "@/data/portfolio";
+
 
 export const Route = createFileRoute("/designers")({
   head: () => ({
@@ -18,7 +14,7 @@ export const Route = createFileRoute("/designers")({
       {
         name: "description",
         content:
-          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear — follow @mau_real91 on Instagram.",
+          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear — follow mau_real91 on Instagram.",
       },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -33,7 +29,7 @@ export const Route = createFileRoute("/designers")({
 });
 
 const specialties = ["Bespoke Bridal", "Corporate Tailoring", "Traditional Wear", "Evening Couture"];
-const portfolio = [collection2, collection1, collection3, collection4, designSketch, fabricSamples];
+
 
 function DesignerPage() {
   return (
@@ -91,7 +87,7 @@ function DesignerPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
                 >
-                  <Instagram className="h-4 w-4 text-accent" /> @mau_real91
+                  <Instagram className="h-4 w-4 text-accent" /> mau_real91
                 </a>
                 <a
                   href={SNAPCHAT_URL}
@@ -99,7 +95,7 @@ function DesignerPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
                 >
-                  <SnapchatIcon className="h-4 w-4 text-accent" /> mau.real
+                  <SnapchatIcon className="h-4 w-4 text-accent" /> mau.real91
                 </a>
               </div>
             </div>
@@ -125,17 +121,39 @@ function DesignerPage() {
           <SocialLinks variant="circle" includeWhatsApp />
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {portfolio.map((src, i) => (
-            <div key={i} className="aspect-[4/5] overflow-hidden bg-beige">
-              <img
-                src={src}
-                loading="lazy"
-                alt="Bespoke garment by Mau"
-                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-            </div>
+          {portfolioPieces.map((piece) => (
+            <Link
+              key={piece.slug}
+              to="/portfolio/$slug"
+              params={{ slug: piece.slug }}
+              className="group block"
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-beige">
+                <img
+                  src={piece.image}
+                  loading="lazy"
+                  width={1024}
+                  height={1280}
+                  alt={`${piece.title} — ${piece.summary}`}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div className="mt-3">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-accent">{piece.category}</div>
+                <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
+              </div>
+            </Link>
           ))}
         </div>
+        <div className="mt-10 text-center">
+          <Link
+            to="/portfolio"
+            className="inline-block border border-input px-6 py-3 text-[11px] uppercase tracking-[0.25em] transition-colors hover:bg-secondary"
+          >
+            View full portfolio
+          </Link>
+        </div>
+
       </section>
 
       <section className="border-t border-border bg-beige px-6 py-16 text-center md:px-10">

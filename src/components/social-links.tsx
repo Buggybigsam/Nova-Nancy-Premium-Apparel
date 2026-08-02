@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 import { WHATSAPP_URL } from "@/components/whatsapp-button";
 
 export const INSTAGRAM_HANDLE = "mau_real91";
-export const SNAPCHAT_HANDLE = "mau.real";
+export const SNAPCHAT_HANDLE = "mau.real91";
 export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
 export const SNAPCHAT_URL = `https://snapchat.com/add/${SNAPCHAT_HANDLE}`;
 
@@ -34,7 +34,7 @@ export function SocialLinks({ variant = "circle", className = "", includeWhatsAp
   const shell = shells[variant];
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label={`Instagram @${INSTAGRAM_HANDLE}`} className={shell}>
+      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${INSTAGRAM_HANDLE}`} className={shell}>
         <Instagram className="h-4 w-4" />
       </a>
       <a href={SNAPCHAT_URL} target="_blank" rel="noopener noreferrer" aria-label={`Snapchat ${SNAPCHAT_HANDLE}`} className={shell}>
