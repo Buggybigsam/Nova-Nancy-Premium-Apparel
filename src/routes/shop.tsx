@@ -8,10 +8,10 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/shop")({
   head: () => ({
     meta: [
-      { title: "Shop — Nova Nancy Atelier" },
-      { name: "description", content: "Shop ready-to-wear and signature pieces from Nova Nancy's couture atelier." },
-      { property: "og:title", content: "Shop — Nova Nancy Atelier" },
-      { property: "og:description", content: "Ready-to-wear and signature pieces from Nova Nancy." },
+      { title: "Shop | Nova Nancy Atelier" },
+      { name: "description", content: "Shop ready to wear and signature pieces from Nova Nancy's couture atelier." },
+      { property: "og:title", content: "Shop | Nova Nancy Atelier" },
+      { property: "og:description", content: "Ready to wear and signature pieces from Nova Nancy." },
     ],
   }),
   component: ShopPage,
@@ -36,7 +36,7 @@ function ShopPage() {
           <span className="eyebrow">The Boutique</span>
           <h1 className="mt-4 font-serif text-4xl md:text-6xl">Shop the Atelier</h1>
           <p className="mt-4 text-sm text-muted-foreground md:text-base">
-            Signature ready-to-wear pieces, crafted in-house. Every order supports our couture atelier.
+            Signature ready to wear pieces, crafted in house. Every order supports our couture atelier.
           </p>
         </div>
 
@@ -48,8 +48,8 @@ function ShopPage() {
           <div className="border border-dashed border-border py-24 text-center">
             <p className="font-serif text-2xl">No pieces yet</p>
             <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-              Your Shopify catalogue is empty. Tell the assistant what you'd like to sell — product name, description,
-              price — and it will be added to your store.
+              Your Shopify catalogue is empty. Tell the assistant what you'd like to sell, product name, description,
+              price, and it will be added to your store.
             </p>
           </div>
         ) : (

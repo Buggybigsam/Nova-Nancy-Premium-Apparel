@@ -86,14 +86,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nova Nancy — Bespoke Couture & Custom Tailoring Atelier" },
+      { title: "Nova Nancy | Bespoke Couture & Custom Tailoring Atelier" },
       {
         name: "description",
         content:
           "Nova Nancy is a couture atelier for bespoke tailoring, bridal, and corporate wear. Book a fitting, upload a design, and track every stitch.",
       },
       { name: "author", content: "Nova Nancy Atelier" },
-      { property: "og:title", content: "Nova Nancy — Bespoke Couture Atelier" },
+      { property: "og:title", content: "Nova Nancy | Bespoke Couture Atelier" },
       {
         property: "og:description",
         content:

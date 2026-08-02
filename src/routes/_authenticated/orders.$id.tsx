@@ -6,7 +6,7 @@ import { DashboardShell, StatusPill, ProgressBar } from "@/components/dashboard/
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/orders/$id")({
-  head: () => ({ meta: [{ title: "Order — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Order | Nova Nancy" }] }),
   component: OrderDetail,
 });
 

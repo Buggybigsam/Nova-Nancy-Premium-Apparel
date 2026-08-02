@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 
-// Nova Nancy private line — international format without spaces, leading +, or the (0) trunk prefix.
+// Nova Nancy private line, international format without spaces, leading +, or the (0) trunk prefix.
 const WHATSAPP_NUMBER = "233550501177";
 const WHATSAPP_MESSAGE = encodeURIComponent(
   "Hello Nova Nancy, I would like to speak with a designer about a custom garment."

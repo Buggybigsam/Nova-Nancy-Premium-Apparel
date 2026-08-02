@@ -7,18 +7,18 @@ import { portfolioPieces } from "@/data/portfolio";
 export const Route = createFileRoute("/portfolio/")({
   head: () => ({
     meta: [
-      { title: "Portfolio — Ankara Couture by Mau | Nova Nancy" },
+      { title: "Portfolio | Ankara Couture by Mau | Nova Nancy" },
       {
         name: "description",
         content:
-          "Browse Nova Nancy's Ankara portfolio for Ghanaian women — bridal gowns, tailored suits, kaftans and evening couture, each with fabric and fitting details.",
+          "Browse Nova Nancy's Ankara portfolio for Ghanaian women, bridal gowns, tailored suits, kaftans and evening couture, each with fabric and fitting details.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "Portfolio — Ankara Couture by Mau" },
+      { property: "og:title", content: "Portfolio | Ankara Couture by Mau" },
       {
         property: "og:description",
-        content: "Bespoke Ankara pieces made in Kasoa, Ghana — view each design up close.",
+        content: "Bespoke Ankara pieces made in Kasoa, Ghana, view each design up close.",
       },
     ],
   }),
@@ -55,7 +55,7 @@ function PortfolioIndex() {
               <div className="aspect-[4/5] overflow-hidden bg-beige">
                 <img
                   src={piece.image}
-                  alt={`${piece.title} — ${piece.summary}`}
+                  alt={`${piece.title}: ${piece.summary}`}
                   loading="lazy"
                   width={1024}
                   height={1280}
@@ -79,7 +79,7 @@ function PortfolioIndex() {
           Seen something you <span className="italic">love</span>?
         </h2>
         <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-          Any design here can be re-cut in your fabric and your measurements.
+          Any design here can be recut in your fabric and your measurements.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link

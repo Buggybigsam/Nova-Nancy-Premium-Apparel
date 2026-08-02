@@ -10,15 +10,15 @@ import { portfolioPieces } from "@/data/portfolio";
 export const Route = createFileRoute("/designers")({
   head: () => ({
     meta: [
-      { title: "Mau — The Designer Behind Nova Nancy" },
+      { title: "Mau | The Designer Behind Nova Nancy" },
       {
         name: "description",
         content:
-          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear — follow mau_real91 on Instagram.",
+          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear, follow mau_real91 on Instagram.",
       },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "Mau — The Designer Behind Nova Nancy" },
+      { property: "og:title", content: "Mau | The Designer Behind Nova Nancy" },
       {
         property: "og:description",
         content: "One designer, every stitch. Bespoke couture from Kasoa, Ghana.",
@@ -50,8 +50,8 @@ function DesignerPage() {
               Kasoa, Walantu Street · Ghana
             </div>
             <p className="mt-6 max-w-md text-muted-foreground md:text-lg">
-              Nova Nancy is not a house of many names. Every commission — from the first sketch to
-              the last hand-finished hem — is drawn, cut, and fitted by Mau. That is the whole
+              Nova Nancy is not a house of many names. Every commission, from the first sketch to
+              the last hand finished hem, is drawn, cut, and fitted by Mau. That is the whole
               promise: your garment is never passed along.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
@@ -134,7 +134,7 @@ function DesignerPage() {
                   loading="lazy"
                   width={1024}
                   height={1280}
-                  alt={`${piece.title} — ${piece.summary}`}
+                  alt={`${piece.title}: ${piece.summary}`}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
@@ -161,7 +161,7 @@ function DesignerPage() {
           Start a conversation with <span className="italic">Mau</span>.
         </h2>
         <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-          Send a reference, a sketch, or just an idea — DMs on Instagram and Snapchat are answered
+          Send a reference, a sketch, or just an idea, DMs on Instagram and Snapchat are answered
           personally.
         </p>
         <div className="mt-8 flex justify-center">

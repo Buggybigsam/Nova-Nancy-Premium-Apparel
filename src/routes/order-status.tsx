@@ -15,9 +15,9 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/order-status")({
   head: () => ({
     meta: [
-      { title: "Track Your Order — Nova Nancy" },
+      { title: "Track Your Order | Nova Nancy" },
       { name: "description", content: "Look up your Nova Nancy order to view payment status, fulfillment, and shipping updates." },
-      { property: "og:title", content: "Track Your Order — Nova Nancy" },
+      { property: "og:title", content: "Track Your Order | Nova Nancy" },
       { property: "og:description", content: "Check payment, fulfillment, and delivery progress for your Nova Nancy order." },
     ],
   }),
@@ -82,7 +82,7 @@ function downloadInvoice(order: OrderLookupResult) {
         .filter(Boolean)
         .map((l) => esc(String(l)))
         .join("<br/>")
-    : "—";
+    : "N/A";
   const rows = order.lineItems
     .map(
       (li) => `
@@ -96,7 +96,7 @@ function downloadInvoice(order: OrderLookupResult) {
     .join("");
 
   const html = `<!doctype html>
-<html><head><meta charset="utf-8"/><title>Invoice ${esc(order.name)} — Nova Nancy</title>
+<html><head><meta charset="utf-8"/><title>Invoice ${esc(order.name)}: Nova Nancy</title>
 <style>
   * { box-sizing: border-box; }
   body { font-family: Georgia, 'Times New Roman', serif; color: #111; margin: 0; padding: 48px; background: #fff; }
@@ -131,7 +131,7 @@ function downloadInvoice(order: OrderLookupResult) {
   <div class="row" style="margin-top:32px">
     <div class="box" style="flex:1">
       <div class="muted">Billed to</div>
-      <div style="margin-top:6px">${order.email ? esc(order.email) : "—"}</div>
+      <div style="margin-top:6px">${order.email ? esc(order.email) : "N/A"}</div>
     </div>
     <div class="box" style="flex:1">
       <div class="muted">Ship to</div>
@@ -139,7 +139,7 @@ function downloadInvoice(order: OrderLookupResult) {
     </div>
     <div class="box" style="flex:1">
       <div class="muted">Status</div>
-      <div style="margin-top:6px">Payment: ${esc(order.financialStatus ?? "—")}<br/>Fulfillment: ${esc(order.fulfillmentStatus ?? "—")}</div>
+      <div style="margin-top:6px">Payment: ${esc(order.financialStatus ?? "N/A")}<br/>Fulfillment: ${esc(order.fulfillmentStatus ?? "N/A")}</div>
     </div>
   </div>
 

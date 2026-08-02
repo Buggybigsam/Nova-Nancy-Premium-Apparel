@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Nova Nancy Atelier" },
+      { title: "Sign in | Nova Nancy Atelier" },
       { name: "description", content: "Sign in or create your Nova Nancy account to book fittings and track custom orders." },
     ],
   }),
@@ -43,7 +43,7 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        toast.success("Welcome to Nova Nancy — your account is ready.");
+        toast.success("Welcome to Nova Nancy, your account is ready.");
         navigate({ to: "/dashboard" });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -64,7 +64,7 @@ function AuthPage() {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
-      toast.error("Google sign-in failed. Please try again.");
+      toast.error("Google sign in failed. Please try again.");
       setLoading(false);
       return;
     }
@@ -87,7 +87,7 @@ function AuthPage() {
                 Every stitch,<br /><span className="italic">yours to follow.</span>
               </h1>
               <p className="mt-6 max-w-md text-sm text-cream/70">
-                Book fittings, upload references, message your designer, and watch each piece take shape — all in one place.
+                Book fittings, upload references, message your designer, and watch each piece take shape, all in one place.
               </p>
             </div>
             <div className="text-[11px] uppercase tracking-[0.3em] text-cream/50">

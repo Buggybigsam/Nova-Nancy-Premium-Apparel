@@ -6,7 +6,7 @@ import { DashboardShell, EmptyState } from "@/components/dashboard/shell";
 import { MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/messages")({
-  head: () => ({ meta: [{ title: "Messages — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Messages | Nova Nancy" }] }),
   component: MessagesPage,
 });
 

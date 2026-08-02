@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { DashboardShell, EmptyState, StatusPill, ProgressBar } from "@/components/dashboard/shell";
 
 export const Route = createFileRoute("/_authenticated/orders")({
-  head: () => ({ meta: [{ title: "Orders — Nova Nancy" }] }),
+  head: () => ({ meta: [{ title: "Orders | Nova Nancy" }] }),
   component: OrdersPage,
 });
 
@@ -53,7 +53,7 @@ function OrdersPage() {
                     <Link to="/orders/$id" params={{ id: o.id }} className="font-serif text-lg hover:text-accent">{o.title}</Link>
                     <div className="text-xs text-muted-foreground">#{o.id.slice(0,8)}</div>
                   </td>
-                  <td className="p-4 text-sm">{o.services?.title ?? "—"}</td>
+                  <td className="p-4 text-sm">{o.services?.title ?? "N/A"}</td>
                   <td className="p-4"><StatusPill status={o.status} /></td>
                   <td className="p-4 w-48"><ProgressBar value={o.progress_percent} /><div className="mt-1 text-xs text-muted-foreground">{o.progress_percent}%</div></td>
                   <td className="p-4 text-sm">{o.deadline ?? "Flexible"}</td>

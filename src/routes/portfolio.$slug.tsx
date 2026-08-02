@@ -13,11 +13,11 @@ export const Route = createFileRoute("/portfolio/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Design not found — Nova Nancy" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Design not found | Nova Nancy" }, { name: "robots", content: "noindex" }],
       };
     }
     const { piece } = loaderData;
-    const title = `${piece.title} — Nova Nancy Portfolio`;
+    const title = `${piece.title}: Nova Nancy Portfolio`;
     return {
       meta: [
         { title },
@@ -62,7 +62,7 @@ function PortfolioDetail() {
         <div className="aspect-[4/5] overflow-hidden bg-beige">
           <img
             src={piece.image}
-            alt={`${piece.title} — ${piece.summary}`}
+            alt={`${piece.title}: ${piece.summary}`}
             width={1024}
             height={1280}
             className="h-full w-full object-cover"
@@ -128,7 +128,7 @@ function PortfolioDetail() {
                 <div className="aspect-[4/5] overflow-hidden bg-beige">
                   <img
                     src={p.image}
-                    alt={`${p.title} — ${p.summary}`}
+                    alt={`${p.title}: ${p.summary}`}
                     loading="lazy"
                     width={1024}
                     height={1280}

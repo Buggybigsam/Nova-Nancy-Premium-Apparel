@@ -146,7 +146,7 @@ function ProductPage() {
             </div>
           </div>
 
-          {/* Order summary — confirms totals before checkout */}
+          {/* Order summary, confirms totals before checkout */}
           <div className="mt-8 rounded-md border border-border/60 bg-secondary/10 p-5">
             <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Order summary</p>
             <dl className="mt-4 space-y-2 text-sm">
@@ -206,7 +206,7 @@ function ProductPage() {
             </span>
           </div>
 
-          {/* Payment method details — what's covered and when charged */}
+          {/* Payment method details, what's covered and when charged */}
           <div className="mt-4 rounded-md border border-border/60 bg-secondary/10 p-4 text-[11px] leading-relaxed text-muted-foreground">
             <p className="font-medium text-foreground">Payment details</p>
             <ul className="mt-2 space-y-1.5">

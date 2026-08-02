@@ -7,10 +7,10 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services — Nova Nancy Atelier" },
+      { title: "Services | Nova Nancy Atelier" },
       { name: "description", content: "Bespoke tailoring, bridal, corporate, and heritage couture services from Nova Nancy." },
       { property: "og:title", content: "Nova Nancy Services" },
-      { property: "og:description", content: "Explore our couture services — from bespoke bridal to corporate uniform programs." },
+      { property: "og:description", content: "Explore our couture services, from bespoke bridal to corporate uniform programs." },
     ],
   }),
   component: ServicesPage,
