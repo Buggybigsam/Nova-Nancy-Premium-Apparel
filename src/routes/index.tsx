@@ -455,8 +455,8 @@ function About() {
           </p>
           <p className="mb-8 text-muted-foreground md:text-lg">
             Follow the studio day to day — fittings, fabric runs, and behind-the-scenes cuts — on
-            Instagram <span className="text-foreground">@mau_real91</span> and Snapchat{" "}
-            <span className="text-foreground">mau.real</span>.
+            Instagram <span className="text-foreground">mau_real91</span> and Snapchat{" "}
+            <span className="text-foreground">mau.real91</span>.
           </p>
           <SocialLinks variant="circle" includeWhatsApp />
           <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
@@ -671,7 +671,7 @@ function Contact() {
                   rel="noopener noreferrer"
                   className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
                 >
-                  @mau_real91
+                  mau_real91
                 </a>
               </div>
             </div>
@@ -687,7 +687,7 @@ function Contact() {
                   rel="noopener noreferrer"
                   className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
                 >
-                  mau.real
+                  mau.real91
                 </a>
               </div>
             </div>
@@ -791,7 +791,7 @@ function Footer() {
             <SocialLinks variant="dark" includeWhatsApp />
           </div>
           <div className="mt-4 text-[10px] uppercase tracking-[0.25em]">
-            IG @mau_real91 · Snap mau.real
+            IG mau_real91 · Snap mau.real91
           </div>
         </div>
         <div>

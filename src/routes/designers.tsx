@@ -18,7 +18,7 @@ export const Route = createFileRoute("/designers")({
       {
         name: "description",
         content:
-          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear — follow @mau_real91 on Instagram.",
+          "Meet Mau, the sole designer behind Nova Nancy Atelier in Kasoa, Ghana. Bespoke bridal, tailoring and traditional wear — follow mau_real91 on Instagram.",
       },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -91,7 +91,7 @@ function DesignerPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
                 >
-                  <Instagram className="h-4 w-4 text-accent" /> @mau_real91
+                  <Instagram className="h-4 w-4 text-accent" /> mau_real91
                 </a>
                 <a
                   href={SNAPCHAT_URL}
@@ -99,7 +99,7 @@ function DesignerPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
                 >
-                  <SnapchatIcon className="h-4 w-4 text-accent" /> mau.real
+                  <SnapchatIcon className="h-4 w-4 text-accent" /> mau.real91
                 </a>
               </div>
             </div>

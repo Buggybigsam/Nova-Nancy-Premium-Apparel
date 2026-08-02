@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 import { WHATSAPP_URL } from "@/components/whatsapp-button";
 
 export const INSTAGRAM_HANDLE = "mau_real91";
-export const SNAPCHAT_HANDLE = "mau.real";
+export const SNAPCHAT_HANDLE = "mau.real91";
 export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
 export const SNAPCHAT_URL = `https://snapchat.com/add/${SNAPCHAT_HANDLE}`;
 
