@@ -24,7 +24,8 @@ import collection1 from "@/assets/collection-1.jpg";
 import collection2 from "@/assets/collection-2.jpg";
 import collection3 from "@/assets/collection-3.jpg";
 import collection4 from "@/assets/collection-4.jpg";
-import founder from "@/assets/founder.jpg";
+import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
+const founder = founderAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({

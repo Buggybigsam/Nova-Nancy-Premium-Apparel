@@ -3,7 +3,8 @@ import { Instagram, Star } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
-import founder from "@/assets/founder.jpg";
+import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
+const founder = founderAsset.url;
 import { portfolioPieces } from "@/data/portfolio";
 
 
