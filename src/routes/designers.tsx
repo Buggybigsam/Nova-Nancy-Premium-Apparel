@@ -6,6 +6,7 @@ import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/compon
 import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
 const founder = founderAsset.url;
 import { portfolioPieces } from "@/data/portfolio";
+import { Reveal, Float } from "@/components/reveal";
 
 
 export const Route = createFileRoute("/designers")({
@@ -101,13 +102,13 @@ function DesignerPage() {
               </div>
             </div>
           </div>
-          <div className="order-1 md:order-2">
+          <Float className="order-1 md:order-2">
             <img
               src={founder}
               alt="Mau, designer and founder of Nova Nancy Atelier"
               className="aspect-[4/5] w-full object-cover ring-1 ring-foreground/5"
             />
-          </div>
+          </Float>
         </div>
       </section>
 
@@ -122,9 +123,9 @@ function DesignerPage() {
           <SocialLinks variant="circle" includeWhatsApp />
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {portfolioPieces.map((piece) => (
+          {portfolioPieces.map((piece, i) => (
+            <Reveal key={piece.slug} delay={i * 0.05}>
             <Link
-              key={piece.slug}
               to="/portfolio/$slug"
               params={{ slug: piece.slug }}
               className="group block"
@@ -144,6 +145,7 @@ function DesignerPage() {
                 <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
               </div>
             </Link>
+            </Reveal>
           ))}
         </div>
         <div className="mt-10 text-center">

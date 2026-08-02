@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SocialLinks } from "@/components/social-links";
 import { portfolioPieces } from "@/data/portfolio";
+import { Reveal } from "@/components/reveal";
 
 export const Route = createFileRoute("/portfolio/")({
   head: () => ({
@@ -45,9 +46,9 @@ function PortfolioIndex() {
 
       <section className="container mx-auto px-6 py-16 md:px-10 md:py-20">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {portfolioPieces.map((piece) => (
+          {portfolioPieces.map((piece, i) => (
+            <Reveal key={piece.slug} delay={i * 0.06}>
             <Link
-              key={piece.slug}
               to="/portfolio/$slug"
               params={{ slug: piece.slug }}
               className="group block"
@@ -70,6 +71,7 @@ function PortfolioIndex() {
                 <p className="mt-1 text-sm text-muted-foreground">{piece.summary}</p>
               </div>
             </Link>
+            </Reveal>
           ))}
         </div>
       </section>
