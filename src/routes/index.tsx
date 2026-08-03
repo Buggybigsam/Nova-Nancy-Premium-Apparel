@@ -197,6 +197,9 @@ function Hero() {
           </div>
         </div>
       </div>
+      <div className="relative flex justify-center pb-8">
+        <ScrollCue className="h-16 w-10" />
+      </div>
     </section>
   );
 }
