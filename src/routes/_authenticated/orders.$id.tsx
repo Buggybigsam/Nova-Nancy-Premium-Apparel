@@ -17,16 +17,23 @@ function OrderDetail() {
   const [order, setOrder] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
+  const [refs, setRefs] = useState<string[]>([]);
   const [msg, setMsg] = useState("");
   const [update, setUpdate] = useState({ stage: "", note: "", progress: 0 });
 
   async function refresh() {
-    const [{ data: o }, { data: u }, { data: m }] = await Promise.all([
+    const [{ data: o }, { data: u }, { data: m }, { data: d }] = await Promise.all([
       supabase.from("orders").select("*, services(title), designers(profiles(full_name))").eq("id", id).maybeSingle(),
       supabase.from("order_updates").select("*").eq("order_id", id).order("created_at", { ascending: false }),
       supabase.from("messages").select("*, profiles(full_name)").eq("order_id", id).order("created_at", { ascending: true }),
+      supabase.from("design_uploads").select("image_url").eq("order_id", id).order("created_at"),
     ]);
     setOrder(o); setUpdates(u ?? []); setMessages(m ?? []);
+    const paths = (d ?? []).map((r) => r.image_url).filter(Boolean);
+    if (paths.length) {
+      const { data: signed } = await supabase.storage.from("design-uploads").createSignedUrls(paths, 3600);
+      setRefs((signed ?? []).map((s) => s.signedUrl).filter(Boolean) as string[]);
+    } else setRefs([]);
     if (o) setUpdate((s) => ({ ...s, progress: o.progress_percent }));
   }
 
@@ -79,6 +86,35 @@ function OrderDetail() {
             </div>
             {order.notes && <p className="mt-6 text-sm text-muted-foreground">{order.notes}</p>}
           </div>
+
+          {refs.length > 0 && (
+            <div className="border border-border bg-background p-6">
+              <h3 className="mb-4 font-serif text-xl">Reference images</h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {refs.map((src, i) => (
+                  <a key={src} href={src} target="_blank" rel="noreferrer" className="aspect-square overflow-hidden border border-border">
+                    <img src={src} alt={`Reference ${i + 1}`} className="h-full w-full object-cover transition-transform hover:scale-105" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {order.measurements && Object.values(order.measurements).some((v) => v) && (
+            <div className="border border-border bg-background p-6">
+              <h3 className="mb-4 font-serif text-xl">Measurements</h3>
+              <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {Object.entries(order.measurements as Record<string, string>)
+                  .filter(([, v]) => v)
+                  .map(([k, v]) => (
+                    <div key={k}>
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{k.replace(/_/g, " ")}</dt>
+                      <dd className="mt-1 font-serif text-lg">{v}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
+          )}
 
           <div className="border border-border bg-background p-6">
             <h3 className="mb-4 font-serif text-xl">Timeline</h3>
