@@ -25,26 +25,34 @@ interface LottieProps {
  * the user's reduced motion preference.
  */
 export function Lottie({ animationData, loop = true, className, playOnView }: LottieProps) {
-  const [mounted, setMounted] = useState(false);
+  const [Player, setPlayer] = useState<ComponentType<PlayerProps> | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
   const reduce = useReducedMotion();
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    let active = true;
+    import("lottie-react").then((mod) => {
+      const resolved = ((mod as { default?: unknown }).default ??
+        mod) as ComponentType<PlayerProps>;
+      if (active) setPlayer(() => resolved);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const shouldPlay = !reduce && (!playOnView || inView);
 
   return (
     <div ref={ref} className={className} aria-hidden="true">
-      {mounted && (
-        <Suspense fallback={null}>
-          <LottiePlayer
-            animationData={animationData as object}
-            loop={loop}
-            autoplay={shouldPlay}
-            className="h-full w-full"
-          />
-        </Suspense>
+      {Player && (
+        <Player
+          animationData={animationData as object}
+          loop={loop}
+          autoplay={shouldPlay}
+          className="h-full w-full"
+        />
       )}
     </div>
   );
