@@ -1,13 +1,16 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { useInView, useReducedMotion } from "motion/react";
 
 import heroOrbit from "@/assets/lottie/hero-orbit.json";
 import stitchDivider from "@/assets/lottie/stitch-divider.json";
 import scrollCue from "@/assets/lottie/scroll-cue.json";
 
-const LottiePlayer = lazy(() =>
-  import("lottie-react").then((m) => ({ default: m.default })),
-);
+type PlayerProps = {
+  animationData: object;
+  loop?: boolean;
+  autoplay?: boolean;
+  className?: string;
+};
 
 interface LottieProps {
   animationData: unknown;
