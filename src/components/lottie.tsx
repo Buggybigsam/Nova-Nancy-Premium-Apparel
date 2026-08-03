@@ -32,12 +32,16 @@ export function Lottie({ animationData, loop = true, className, playOnView }: Lo
 
   useEffect(() => {
     let active = true;
+    const isComponent = (v: unknown) =>
+      typeof v === "function" || (typeof v === "object" && v !== null && "$$typeof" in v);
     import("lottie-react").then((mod) => {
-      const raw = mod as { default?: unknown };
-      const inner = (raw.default as { default?: unknown } | undefined);
-      const resolved = ((typeof raw.default === "function" ? raw.default : inner?.default) ??
-        mod) as ComponentType<PlayerProps>;
-      if (active) setPlayer(() => resolved);
+      let candidate: unknown = mod;
+      for (let i = 0; i < 4 && !isComponent(candidate); i += 1) {
+        candidate = (candidate as { default?: unknown } | null)?.default;
+      }
+      if (active && isComponent(candidate)) {
+        setPlayer(() => candidate as ComponentType<PlayerProps>);
+      }
     });
     return () => {
       active = false;
