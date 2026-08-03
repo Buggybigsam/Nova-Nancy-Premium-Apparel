@@ -87,6 +87,35 @@ function OrderDetail() {
             {order.notes && <p className="mt-6 text-sm text-muted-foreground">{order.notes}</p>}
           </div>
 
+          {refs.length > 0 && (
+            <div className="border border-border bg-background p-6">
+              <h3 className="mb-4 font-serif text-xl">Reference images</h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {refs.map((src, i) => (
+                  <a key={src} href={src} target="_blank" rel="noreferrer" className="aspect-square overflow-hidden border border-border">
+                    <img src={src} alt={`Reference ${i + 1}`} className="h-full w-full object-cover transition-transform hover:scale-105" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {order.measurements && Object.values(order.measurements).some((v) => v) && (
+            <div className="border border-border bg-background p-6">
+              <h3 className="mb-4 font-serif text-xl">Measurements</h3>
+              <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {Object.entries(order.measurements as Record<string, string>)
+                  .filter(([, v]) => v)
+                  .map(([k, v]) => (
+                    <div key={k}>
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{k.replace(/_/g, " ")}</dt>
+                      <dd className="mt-1 font-serif text-lg">{v}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
+          )}
+
           <div className="border border-border bg-background p-6">
             <h3 className="mb-4 font-serif text-xl">Timeline</h3>
             {updates.length === 0 ? <p className="text-sm text-muted-foreground">No updates yet.</p> : (
