@@ -118,13 +118,18 @@ function LandingPage() {
       <Hero />
       <Marquee />
       <Reveal><Collections /></Reveal>
+      <StitchDivider />
       <Reveal><Services /></Reveal>
+      <StitchDivider />
       <Reveal><OrderTracker /></Reveal>
       <Reveal><AIConcierge /></Reveal>
+      <StitchDivider />
       <Reveal><About /></Reveal>
       <Reveal><WhyUs /></Reveal>
+      <StitchDivider />
       <Reveal><Testimonials /></Reveal>
       <Reveal><Gallery /></Reveal>
+      <StitchDivider />
       <Reveal><Contact /></Reveal>
       <Reveal><Newsletter /></Reveal>
       <Footer />
