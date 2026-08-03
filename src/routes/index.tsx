@@ -150,7 +150,8 @@ function Nav() {
 function Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-beige">
-      <div className="container mx-auto grid grid-cols-12 items-center gap-8 px-6 py-20 md:px-10 md:py-28">
+      <HeroOrbit className="pointer-events-none absolute -right-24 top-1/2 hidden h-[560px] w-[560px] -translate-y-1/2 opacity-60 md:block" />
+      <div className="relative container mx-auto grid grid-cols-12 items-center gap-8 px-6 py-20 md:px-10 md:py-28">
         <div className="col-span-12 z-10 animate-fade-up md:col-span-6">
           <span className="eyebrow mb-6 block">Haute Couture 2026</span>
           <h1 className="mb-8 font-serif text-5xl leading-[0.95] md:text-7xl lg:text-8xl">
