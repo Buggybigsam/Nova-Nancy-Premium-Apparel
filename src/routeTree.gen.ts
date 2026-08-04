@@ -9,10 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as OrderStatusRouteImport } from './routes/order-status'
+import { Route as OrderConfirmedRouteImport } from './routes/order-confirmed'
 import { Route as DesignersRouteImport } from './routes/designers'
+import { Route as CustomOrderRouteImport } from './routes/custom-order'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -32,6 +35,11 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin.services'
 import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
 
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -47,9 +55,19 @@ const OrderStatusRoute = OrderStatusRouteImport.update({
   path: '/order-status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderConfirmedRoute = OrderConfirmedRouteImport.update({
+  id: '/order-confirmed',
+  path: '/order-confirmed',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DesignersRoute = DesignersRouteImport.update({
   id: '/designers',
   path: '/designers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomOrderRoute = CustomOrderRouteImport.update({
+  id: '/custom-order',
+  path: '/custom-order',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -148,10 +166,13 @@ const AuthenticatedAdminOrdersRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
+  '/order-confirmed': typeof OrderConfirmedRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -171,10 +192,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
+  '/order-confirmed': typeof OrderConfirmedRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -196,10 +220,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
+  '/order-confirmed': typeof OrderConfirmedRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -221,10 +248,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/custom-order'
     | '/designers'
+    | '/order-confirmed'
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/track'
     | '/appointments'
     | '/atelier'
     | '/dashboard'
@@ -244,10 +274,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/custom-order'
     | '/designers'
+    | '/order-confirmed'
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/track'
     | '/appointments'
     | '/atelier'
     | '/dashboard'
@@ -268,10 +301,13 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/custom-order'
     | '/designers'
+    | '/order-confirmed'
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/track'
     | '/_authenticated/appointments'
     | '/_authenticated/atelier'
     | '/_authenticated/dashboard'
@@ -293,10 +329,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CustomOrderRoute: typeof CustomOrderRoute
   DesignersRoute: typeof DesignersRouteWithChildren
+  OrderConfirmedRoute: typeof OrderConfirmedRoute
   OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
   ShopRoute: typeof ShopRoute
+  TrackRoute: typeof TrackRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
   PortfolioIndexRoute: typeof PortfolioIndexRoute
@@ -304,6 +343,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
@@ -325,11 +371,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/order-confirmed': {
+      id: '/order-confirmed'
+      path: '/order-confirmed'
+      fullPath: '/order-confirmed'
+      preLoaderRoute: typeof OrderConfirmedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/designers': {
       id: '/designers'
       path: '/designers'
       fullPath: '/designers'
       preLoaderRoute: typeof DesignersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/custom-order': {
+      id: '/custom-order'
+      path: '/custom-order'
+      fullPath: '/custom-order'
+      preLoaderRoute: typeof CustomOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -517,10 +577,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CustomOrderRoute: CustomOrderRoute,
   DesignersRoute: DesignersRouteWithChildren,
+  OrderConfirmedRoute: OrderConfirmedRoute,
   OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
   ShopRoute: ShopRoute,
+  TrackRoute: TrackRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ProductHandleRoute: ProductHandleRoute,
   PortfolioIndexRoute: PortfolioIndexRoute,
@@ -528,13 +591,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

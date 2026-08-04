@@ -30,7 +30,8 @@ export function SiteHeader() {
         <Link to="/services" className="transition-colors hover:text-accent">Services</Link>
 
         <Link to="/shop" className="transition-colors hover:text-accent">Shop</Link>
-        <Link to="/order-status" className="transition-colors hover:text-accent">Track Order</Link>
+        <Link to="/custom-order" className="transition-colors hover:text-accent">Design Your Outfit</Link>
+        <Link to="/track" className="transition-colors hover:text-accent">Track Order</Link>
         <Link to="/" hash="contact" className="transition-colors hover:text-accent">Contact</Link>
 
       </div>
