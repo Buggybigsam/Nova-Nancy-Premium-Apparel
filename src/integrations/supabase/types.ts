@@ -82,6 +82,246 @@ export type Database = {
           },
         ]
       }
+      custom_order_files: {
+        Row: {
+          file_name: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          kind: string | null
+          order_id: string
+          storage_path: string
+          uploaded_at: string
+        }
+        Insert: {
+          file_name: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          kind?: string | null
+          order_id: string
+          storage_path: string
+          uploaded_at?: string
+        }
+        Update: {
+          file_name?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          kind?: string | null
+          order_id?: string
+          storage_path?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_order_files_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "custom_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custom_order_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          order_id: string
+          sender: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          order_id: string
+          sender?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          sender?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_order_messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "custom_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custom_order_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          order_id: string
+          paid_at: string | null
+          payment_method: string | null
+          payment_status: Database["public"]["Enums"]["custom_payment_status"]
+          transaction_reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          order_id: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: Database["public"]["Enums"]["custom_payment_status"]
+          transaction_reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          order_id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: Database["public"]["Enums"]["custom_payment_status"]
+          transaction_reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_order_payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "custom_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custom_orders: {
+        Row: {
+          clothing_type: string | null
+          color: string | null
+          color_notes: string | null
+          created_at: string
+          currency: string
+          customer_id: string | null
+          customizations: string[]
+          delivery_address: string | null
+          description: string | null
+          email: string
+          event_date: string | null
+          event_type: string | null
+          expected_completion: string | null
+          fabric_preference: string | null
+          full_name: string
+          id: string
+          internal_notes: string | null
+          measurement_unit: string
+          measurements: Json
+          needs_measurement_help: boolean
+          order_number: string
+          order_type: string
+          payment_status: Database["public"]["Enums"]["custom_payment_status"]
+          phone: string
+          preferred_contact: string
+          price: number | null
+          required_date: string | null
+          selected_design: string | null
+          special_instructions: string | null
+          status: Database["public"]["Enums"]["custom_order_status"]
+          updated_at: string
+          urgency: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          clothing_type?: string | null
+          color?: string | null
+          color_notes?: string | null
+          created_at?: string
+          currency?: string
+          customer_id?: string | null
+          customizations?: string[]
+          delivery_address?: string | null
+          description?: string | null
+          email: string
+          event_date?: string | null
+          event_type?: string | null
+          expected_completion?: string | null
+          fabric_preference?: string | null
+          full_name: string
+          id?: string
+          internal_notes?: string | null
+          measurement_unit?: string
+          measurements?: Json
+          needs_measurement_help?: boolean
+          order_number: string
+          order_type?: string
+          payment_status?: Database["public"]["Enums"]["custom_payment_status"]
+          phone: string
+          preferred_contact?: string
+          price?: number | null
+          required_date?: string | null
+          selected_design?: string | null
+          special_instructions?: string | null
+          status?: Database["public"]["Enums"]["custom_order_status"]
+          updated_at?: string
+          urgency?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          clothing_type?: string | null
+          color?: string | null
+          color_notes?: string | null
+          created_at?: string
+          currency?: string
+          customer_id?: string | null
+          customizations?: string[]
+          delivery_address?: string | null
+          description?: string | null
+          email?: string
+          event_date?: string | null
+          event_type?: string | null
+          expected_completion?: string | null
+          fabric_preference?: string | null
+          full_name?: string
+          id?: string
+          internal_notes?: string | null
+          measurement_unit?: string
+          measurements?: Json
+          needs_measurement_help?: boolean
+          order_number?: string
+          order_type?: string
+          payment_status?: Database["public"]["Enums"]["custom_payment_status"]
+          phone?: string
+          preferred_contact?: string
+          price?: number | null
+          required_date?: string | null
+          selected_design?: string | null
+          special_instructions?: string | null
+          status?: Database["public"]["Enums"]["custom_order_status"]
+          updated_at?: string
+          urgency?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "public_designer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       design_uploads: {
         Row: {
           created_at: string
@@ -487,6 +727,23 @@ export type Database = {
       app_role: "customer" | "designer" | "admin"
       appointment_status: "scheduled" | "confirmed" | "completed" | "cancelled"
       appointment_type: "consultation" | "fitting" | "delivery"
+      custom_order_status:
+        | "order_received"
+        | "under_review"
+        | "measurements_verified"
+        | "design_consultation"
+        | "price_quotation"
+        | "awaiting_client_approval"
+        | "payment_pending"
+        | "payment_confirmed"
+        | "production_started"
+        | "fitting"
+        | "adjustments_required"
+        | "completed"
+        | "ready_for_delivery"
+        | "delivered"
+        | "cancelled"
+      custom_payment_status: "unpaid" | "deposit_paid" | "paid" | "refunded"
       order_status:
         | "pending"
         | "accepted"
@@ -624,6 +881,24 @@ export const Constants = {
       app_role: ["customer", "designer", "admin"],
       appointment_status: ["scheduled", "confirmed", "completed", "cancelled"],
       appointment_type: ["consultation", "fitting", "delivery"],
+      custom_order_status: [
+        "order_received",
+        "under_review",
+        "measurements_verified",
+        "design_consultation",
+        "price_quotation",
+        "awaiting_client_approval",
+        "payment_pending",
+        "payment_confirmed",
+        "production_started",
+        "fitting",
+        "adjustments_required",
+        "completed",
+        "ready_for_delivery",
+        "delivered",
+        "cancelled",
+      ],
+      custom_payment_status: ["unpaid", "deposit_paid", "paid", "refunded"],
       order_status: [
         "pending",
         "accepted",
