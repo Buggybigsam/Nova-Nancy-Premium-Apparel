@@ -1,0 +1,290 @@
+import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import {
+  uploadRequestSchema,
+  submitOrderSchema,
+  trackSchema,
+  adminListSchema,
+  adminUpdateSchema,
+  adminMessageSchema,
+} from "@/lib/custom-orders.schemas";
+
+/** Creates signed upload slots in the private bucket for a pending intake. */
+export const createIntakeUploads = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => uploadRequestSchema.parse(d))
+  .handler(async ({ data }) => {
+    const { ALLOWED_FILE_TYPES, MAX_FILE_SIZE } = await import("@/lib/custom-orders");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const slots: { name: string; path: string; token: string }[] = [];
+    for (const file of data.files) {
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) throw new Error(`Unsupported file type: ${file.name}`);
+      if (file.size > MAX_FILE_SIZE) throw new Error(`${file.name} is larger than 10MB`);
+      const ext = (file.name.split(".").pop() ?? "bin").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5);
+      const path = `intake/${data.intakeId}/${crypto.randomUUID()}.${ext}`;
+      const { data: signed, error } = await supabaseAdmin.storage
+        .from("design-uploads")
+        .createSignedUploadUrl(path);
+      if (error || !signed) throw new Error(error?.message ?? "Could not prepare upload");
+      slots.push({ name: file.name, path, token: signed.token });
+    }
+    return { slots };
+  });
+
+export const submitCustomOrder = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => submitOrderSchema.parse(d))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Only accept file paths that belong to this intake session.
+    const files = data.files.filter((f) => f.path.startsWith(`intake/${data.intakeId}/`));
+
+    const { data: order, error } = await supabaseAdmin
+      .from("custom_orders")
+      .insert({
+        full_name: data.fullName,
+        email: data.email.toLowerCase(),
+        phone: data.phone,
+        whatsapp: data.whatsapp || null,
+        preferred_contact: data.preferredContact,
+        delivery_address: data.deliveryAddress || null,
+        order_type: data.orderType,
+        selected_design: data.selectedDesign || null,
+        clothing_type: data.clothingType || null,
+        fabric_preference: data.fabricPreference || null,
+        color: data.color || null,
+        color_notes: data.colorNotes || null,
+        customizations: data.customizations,
+        description: data.description || null,
+        special_instructions: data.specialInstructions || null,
+        event_type: data.eventType || null,
+        event_date: data.eventDate || null,
+        required_date: data.requiredDate || null,
+        urgency: data.urgency || null,
+        measurement_unit: data.measurementUnit,
+        measurements: data.measurements,
+        needs_measurement_help: data.needsMeasurementHelp,
+      })
+      .select("id, order_number, created_at, status")
+      .single();
+
+    if (error || !order) throw new Error(error?.message ?? "Could not save your order");
+
+    if (files.length) {
+      const { error: fileError } = await supabaseAdmin.from("custom_order_files").insert(
+        files.map((f) => ({
+          order_id: order.id,
+          file_name: f.name,
+          file_type: f.type,
+          file_size: f.size,
+          storage_path: f.path,
+          kind: f.kind ?? null,
+        })),
+      );
+      if (fileError) console.error("[custom-order] file rows failed", fileError.message);
+    }
+
+    return {
+      orderNumber: order.order_number,
+      createdAt: order.created_at,
+      status: order.status as string,
+      fileCount: files.length,
+    };
+  });
+
+/** Public tracking: requires the order number plus the email or phone on the order. */
+export const trackCustomOrder = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => trackSchema.parse(d))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const contact = data.contact.trim().toLowerCase();
+
+    const { data: order } = await supabaseAdmin
+      .from("custom_orders")
+      .select(
+        "id, order_number, full_name, email, phone, whatsapp, status, payment_status, price, currency, clothing_type, selected_design, order_type, event_type, event_date, required_date, expected_completion, created_at, updated_at",
+      )
+      .eq("order_number", data.orderNumber.trim().toUpperCase())
+      .maybeSingle();
+
+    const digits = (v: string) => v.replace(/\D/g, "");
+    const matches =
+      !!order &&
+      (order.email.toLowerCase() === contact ||
+        (digits(contact).length >= 6 &&
+          (digits(order.phone ?? "").endsWith(digits(contact)) ||
+            digits(order.whatsapp ?? "").endsWith(digits(contact)))));
+
+    if (!order || !matches) {
+      throw new Error("No order found for that reference and contact detail.");
+    }
+
+    const { data: messages } = await supabaseAdmin
+      .from("custom_order_messages")
+      .select("id, sender, body, created_at")
+      .eq("order_id", order.id)
+      .order("created_at", { ascending: true });
+
+    const { count: fileCount } = await supabaseAdmin
+      .from("custom_order_files")
+      .select("id", { count: "exact", head: true })
+      .eq("order_id", order.id);
+
+    return {
+      orderNumber: order.order_number,
+      fullName: order.full_name,
+      status: order.status as string,
+      paymentStatus: order.payment_status as string,
+      price: order.price,
+      currency: order.currency,
+      clothingType: order.clothing_type,
+      selectedDesign: order.selected_design,
+      orderType: order.order_type,
+      eventType: order.event_type,
+      eventDate: order.event_date,
+      requiredDate: order.required_date,
+      expectedCompletion: order.expected_completion,
+      createdAt: order.created_at,
+      updatedAt: order.updated_at,
+      fileCount: fileCount ?? 0,
+      messages: messages ?? [],
+    };
+  });
+
+/** Orders belonging to the signed-in client, matched by account id or email. */
+export const listMyCustomOrders = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const email = (context.claims as { email?: string })?.email?.toLowerCase();
+
+    let query = supabaseAdmin
+      .from("custom_orders")
+      .select("id, order_number, status, payment_status, price, currency, clothing_type, selected_design, required_date, created_at")
+      .order("created_at", { ascending: false });
+
+    query = email
+      ? query.or(`customer_id.eq.${context.userId},email.eq.${email}`)
+      : query.eq("customer_id", context.userId);
+
+    const { data, error } = await query;
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+export const adminListCustomOrders = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => adminListSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    let query = supabaseAdmin
+      .from("custom_orders")
+      .select(
+        "id, order_number, full_name, email, phone, status, payment_status, price, currency, clothing_type, order_type, required_date, created_at",
+      )
+      .order("created_at", { ascending: false })
+      .limit(300);
+
+    if (data.status && data.status !== "any") query = query.eq("status", data.status as never);
+    if (data.category && data.category !== "any") query = query.eq("clothing_type", data.category);
+    if (data.from) query = query.gte("created_at", data.from);
+    if (data.to) query = query.lte("created_at", `${data.to}T23:59:59`);
+    if (data.search) {
+      const s = data.search.trim();
+      query = query.or(
+        `order_number.ilike.%${s}%,full_name.ilike.%${s}%,email.ilike.%${s}%,phone.ilike.%${s}%`,
+      );
+    }
+
+    const { data: rows, error } = await query;
+    if (error) throw new Error(error.message);
+    return rows ?? [];
+  });
+
+export const adminGetCustomOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: order, error } = await supabaseAdmin
+      .from("custom_orders")
+      .select("*")
+      .eq("id", data.id)
+      .single();
+    if (error || !order) throw new Error(error?.message ?? "Order not found");
+
+    const { data: files } = await supabaseAdmin
+      .from("custom_order_files")
+      .select("*")
+      .eq("order_id", order.id)
+      .order("uploaded_at", { ascending: true });
+
+    const withUrls = [] as (NonNullable<typeof files>[number] & { url: string | null })[];
+    for (const f of files ?? []) {
+      const { data: signed } = await supabaseAdmin.storage
+        .from("design-uploads")
+        .createSignedUrl(f.storage_path, 60 * 60);
+      withUrls.push({ ...f, url: signed?.signedUrl ?? null });
+    }
+
+    const { data: messages } = await supabaseAdmin
+      .from("custom_order_messages")
+      .select("*")
+      .eq("order_id", order.id)
+      .order("created_at", { ascending: true });
+
+    return { order, files: withUrls, messages: messages ?? [] };
+  });
+
+export const adminUpdateCustomOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => adminUpdateSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const patch: Record<string, unknown> = {};
+    if (data.status) patch['status'] = data.status;
+    if (data.paymentStatus) patch['payment_status'] = data.paymentStatus;
+    if (data.price !== undefined) patch['price'] = data.price;
+    if (data.internalNotes !== undefined) patch['internal_notes'] = data.internalNotes;
+    if (data.expectedCompletion !== undefined) patch['expected_completion'] = data.expectedCompletion || null;
+
+    const { error } = await supabaseAdmin.from("custom_orders").update(patch).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminAddOrderMessage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => adminMessageSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("custom_order_messages")
+      .insert({ order_id: data.orderId, sender: "admin", body: data.body });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
