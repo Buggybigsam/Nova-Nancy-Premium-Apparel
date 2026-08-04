@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as OrderStatusRouteImport } from './routes/order-status'
@@ -34,6 +35,11 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin.services'
 import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
 
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/track': typeof TrackRoute
   '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/track'
     | '/appointments'
     | '/atelier'
     | '/dashboard'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/track'
     | '/appointments'
     | '/atelier'
     | '/dashboard'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/track'
     | '/_authenticated/appointments'
     | '/_authenticated/atelier'
     | '/_authenticated/dashboard'
@@ -323,6 +335,7 @@ export interface RootRouteChildren {
   OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
   ShopRoute: typeof ShopRoute
+  TrackRoute: typeof TrackRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
   PortfolioIndexRoute: typeof PortfolioIndexRoute
@@ -330,6 +343,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
@@ -563,6 +583,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
   ShopRoute: ShopRoute,
+  TrackRoute: TrackRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ProductHandleRoute: ProductHandleRoute,
   PortfolioIndexRoute: PortfolioIndexRoute,
