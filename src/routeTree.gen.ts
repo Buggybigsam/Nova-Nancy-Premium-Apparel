@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as OrderStatusRouteImport } from './routes/order-status'
+import { Route as OrderConfirmedRouteImport } from './routes/order-confirmed'
 import { Route as DesignersRouteImport } from './routes/designers'
 import { Route as CustomOrderRouteImport } from './routes/custom-order'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -46,6 +47,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const OrderStatusRoute = OrderStatusRouteImport.update({
   id: '/order-status',
   path: '/order-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderConfirmedRoute = OrderConfirmedRouteImport.update({
+  id: '/order-confirmed',
+  path: '/order-confirmed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignersRoute = DesignersRouteImport.update({
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
+  '/order-confirmed': typeof OrderConfirmedRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
+  '/order-confirmed': typeof OrderConfirmedRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
+  '/order-confirmed': typeof OrderConfirmedRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/custom-order'
     | '/designers'
+    | '/order-confirmed'
     | '/order-status'
     | '/services'
     | '/shop'
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/custom-order'
     | '/designers'
+    | '/order-confirmed'
     | '/order-status'
     | '/services'
     | '/shop'
@@ -281,6 +292,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/custom-order'
     | '/designers'
+    | '/order-confirmed'
     | '/order-status'
     | '/services'
     | '/shop'
@@ -307,6 +319,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CustomOrderRoute: typeof CustomOrderRoute
   DesignersRoute: typeof DesignersRouteWithChildren
+  OrderConfirmedRoute: typeof OrderConfirmedRoute
   OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
   ShopRoute: typeof ShopRoute
@@ -336,6 +349,13 @@ declare module '@tanstack/react-router' {
       path: '/order-status'
       fullPath: '/order-status'
       preLoaderRoute: typeof OrderStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order-confirmed': {
+      id: '/order-confirmed'
+      path: '/order-confirmed'
+      fullPath: '/order-confirmed'
+      preLoaderRoute: typeof OrderConfirmedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/designers': {
@@ -539,6 +559,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CustomOrderRoute: CustomOrderRoute,
   DesignersRoute: DesignersRouteWithChildren,
+  OrderConfirmedRoute: OrderConfirmedRoute,
   OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
   ShopRoute: ShopRoute,
