@@ -13,6 +13,7 @@ import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as OrderStatusRouteImport } from './routes/order-status'
 import { Route as DesignersRouteImport } from './routes/designers'
+import { Route as CustomOrderRouteImport } from './routes/custom-order'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -50,6 +51,11 @@ const OrderStatusRoute = OrderStatusRouteImport.update({
 const DesignersRoute = DesignersRouteImport.update({
   id: '/designers',
   path: '/designers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomOrderRoute = CustomOrderRouteImport.update({
+  id: '/custom-order',
+  path: '/custom-order',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -148,6 +154,7 @@ const AuthenticatedAdminOrdersRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/custom-order'
     | '/designers'
     | '/order-status'
     | '/services'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/custom-order'
     | '/designers'
     | '/order-status'
     | '/services'
@@ -268,6 +279,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/custom-order'
     | '/designers'
     | '/order-status'
     | '/services'
@@ -293,6 +305,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CustomOrderRoute: typeof CustomOrderRoute
   DesignersRoute: typeof DesignersRouteWithChildren
   OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       path: '/designers'
       fullPath: '/designers'
       preLoaderRoute: typeof DesignersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/custom-order': {
+      id: '/custom-order'
+      path: '/custom-order'
+      fullPath: '/custom-order'
+      preLoaderRoute: typeof CustomOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -517,6 +537,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CustomOrderRoute: CustomOrderRoute,
   DesignersRoute: DesignersRouteWithChildren,
   OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
