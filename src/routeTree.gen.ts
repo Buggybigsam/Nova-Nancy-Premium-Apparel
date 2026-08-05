@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackRouteImport } from './routes/track'
+import { Route as StudioAccessRouteImport } from './routes/studio-access'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as OrderStatusRouteImport } from './routes/order-status'
@@ -40,6 +41,11 @@ import { Route as AuthenticatedAdminRequestsIdRouteImport } from './routes/_auth
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
   path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioAccessRoute = StudioAccessRouteImport.update({
+  id: '/studio-access',
+  path: '/studio-access',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopRoute = ShopRouteImport.update({
@@ -186,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/studio-access': typeof StudioAccessRoute
   '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/studio-access': typeof StudioAccessRoute
   '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
   '/atelier': typeof AuthenticatedAtelierRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
+  '/studio-access': typeof StudioAccessRoute
   '/track': typeof TrackRoute
   '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
@@ -274,6 +283,7 @@ export interface FileRouteTypes {
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/studio-access'
     | '/track'
     | '/appointments'
     | '/atelier'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/studio-access'
     | '/track'
     | '/appointments'
     | '/atelier'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/order-status'
     | '/services'
     | '/shop'
+    | '/studio-access'
     | '/track'
     | '/_authenticated/appointments'
     | '/_authenticated/atelier'
@@ -361,6 +373,7 @@ export interface RootRouteChildren {
   OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
   ShopRoute: typeof ShopRoute
+  StudioAccessRoute: typeof StudioAccessRoute
   TrackRoute: typeof TrackRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
@@ -374,6 +387,13 @@ declare module '@tanstack/react-router' {
       path: '/track'
       fullPath: '/track'
       preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio-access': {
+      id: '/studio-access'
+      path: '/studio-access'
+      fullPath: '/studio-access'
+      preLoaderRoute: typeof StudioAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop': {
@@ -639,6 +659,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
   ShopRoute: ShopRoute,
+  StudioAccessRoute: StudioAccessRoute,
   TrackRoute: TrackRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ProductHandleRoute: ProductHandleRoute,
