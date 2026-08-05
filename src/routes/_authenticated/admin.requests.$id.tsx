@@ -98,7 +98,7 @@ function RequestDetail() {
       {isLoading && <div className="text-muted-foreground">Loading request…</div>}
       {error && <div className="border border-red-200 bg-red-50 p-4 text-sm text-red-700">{(error as Error).message}</div>}
 
-      {order && (
+      {order && data && (
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="space-y-6">
             <section className="border border-border bg-background p-6">

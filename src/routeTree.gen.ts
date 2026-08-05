@@ -35,6 +35,7 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin.services'
 import { Route as AuthenticatedAdminRequestsRouteImport } from './routes/_authenticated/admin.requests'
 import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
+import { Route as AuthenticatedAdminRequestsIdRouteImport } from './routes/_authenticated/admin.requests.$id'
 
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
@@ -169,6 +170,12 @@ const AuthenticatedAdminOrdersRoute =
     path: '/admin/orders',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminRequestsIdRoute =
+  AuthenticatedAdminRequestsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminRequestsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -191,11 +198,12 @@ export interface FileRoutesByFullPath {
   '/product/$handle': typeof ProductHandleRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
-  '/admin/requests': typeof AuthenticatedAdminRequestsRoute
+  '/admin/requests': typeof AuthenticatedAdminRequestsRouteWithChildren
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/orders/new': typeof AuthenticatedOrdersNewRoute
+  '/admin/requests/$id': typeof AuthenticatedAdminRequestsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -218,11 +226,12 @@ export interface FileRoutesByTo {
   '/product/$handle': typeof ProductHandleRoute
   '/portfolio': typeof PortfolioIndexRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
-  '/admin/requests': typeof AuthenticatedAdminRequestsRoute
+  '/admin/requests': typeof AuthenticatedAdminRequestsRouteWithChildren
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/orders/new': typeof AuthenticatedOrdersNewRoute
+  '/admin/requests/$id': typeof AuthenticatedAdminRequestsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -247,11 +256,12 @@ export interface FileRoutesById {
   '/product/$handle': typeof ProductHandleRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
-  '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRoute
+  '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRouteWithChildren
   '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/_authenticated/orders/new': typeof AuthenticatedOrdersNewRoute
+  '/_authenticated/admin/requests/$id': typeof AuthenticatedAdminRequestsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/orders/$id'
     | '/orders/new'
+    | '/admin/requests/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/orders/$id'
     | '/orders/new'
+    | '/admin/requests/$id'
   id:
     | '__root__'
     | '/'
@@ -336,6 +348,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/users'
     | '/_authenticated/orders/$id'
     | '/_authenticated/orders/new'
+    | '/_authenticated/admin/requests/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -538,6 +551,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/requests/$id': {
+      id: '/_authenticated/admin/requests/$id'
+      path: '/$id'
+      fullPath: '/admin/requests/$id'
+      preLoaderRoute: typeof AuthenticatedAdminRequestsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRequestsRoute
+    }
   }
 }
 
@@ -554,6 +574,20 @@ const AuthenticatedOrdersRouteChildren: AuthenticatedOrdersRouteChildren = {
 const AuthenticatedOrdersRouteWithChildren =
   AuthenticatedOrdersRoute._addFileChildren(AuthenticatedOrdersRouteChildren)
 
+interface AuthenticatedAdminRequestsRouteChildren {
+  AuthenticatedAdminRequestsIdRoute: typeof AuthenticatedAdminRequestsIdRoute
+}
+
+const AuthenticatedAdminRequestsRouteChildren: AuthenticatedAdminRequestsRouteChildren =
+  {
+    AuthenticatedAdminRequestsIdRoute: AuthenticatedAdminRequestsIdRoute,
+  }
+
+const AuthenticatedAdminRequestsRouteWithChildren =
+  AuthenticatedAdminRequestsRoute._addFileChildren(
+    AuthenticatedAdminRequestsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppointmentsRoute: typeof AuthenticatedAppointmentsRoute
   AuthenticatedAtelierRoute: typeof AuthenticatedAtelierRoute
@@ -562,7 +596,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRouteWithChildren
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
-  AuthenticatedAdminRequestsRoute: typeof AuthenticatedAdminRequestsRoute
+  AuthenticatedAdminRequestsRoute: typeof AuthenticatedAdminRequestsRouteWithChildren
   AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
 }
@@ -575,7 +609,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrdersRoute: AuthenticatedOrdersRouteWithChildren,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
-  AuthenticatedAdminRequestsRoute: AuthenticatedAdminRequestsRoute,
+  AuthenticatedAdminRequestsRoute: AuthenticatedAdminRequestsRouteWithChildren,
   AuthenticatedAdminServicesRoute: AuthenticatedAdminServicesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
 }
@@ -613,13 +647,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
