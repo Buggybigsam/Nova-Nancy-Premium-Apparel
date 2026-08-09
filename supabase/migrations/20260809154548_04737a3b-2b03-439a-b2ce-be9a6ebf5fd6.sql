@@ -1,0 +1,1 @@
+DELETE FROM public.custom_order_messages WHERE body = 'Hello from test';

@@ -70,3 +70,10 @@ export const adminMessageSchema = z.object({
 });
 
 export type SubmitOrderInput = z.infer<typeof submitOrderSchema>;
+
+export const conversationSchema = z.object({ orderId: z.string().uuid() });
+
+export const threadMessageSchema = z.object({
+  orderId: z.string().uuid(),
+  body: z.string().trim().min(1).max(3000),
+});
