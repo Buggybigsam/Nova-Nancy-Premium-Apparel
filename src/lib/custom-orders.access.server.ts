@@ -1,6 +1,6 @@
 /** Resolves whether the current caller is an admin, plus their email claim. */
 export async function resolveAccess(context: {
-  supabase: { rpc: (fn: never, args: never) => Promise<{ data: unknown }> };
+  supabase: { rpc: (fn: never, args: never) => PromiseLike<{ data: unknown }> };
   userId: string;
   claims: unknown;
 }) {
