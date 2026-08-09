@@ -289,3 +289,109 @@ export const adminAddOrderMessage = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+/* ---------------- Conversations (client <-> studio) ---------------- */
+
+async function resolveAccess(context: { supabase: any; userId: string; claims: unknown }) {
+  const { data: isAdmin } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
+  const email = (context.claims as { email?: string })?.email?.toLowerCase() ?? null;
+  return { isAdmin: !!isAdmin, email };
+}
+
+export const listConversations = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { isAdmin, email } = await resolveAccess(context);
+
+    let query = supabaseAdmin
+      .from("custom_orders")
+      .select("id, order_number, full_name, clothing_type, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (!isAdmin) {
+      query = email
+        ? query.or(`customer_id.eq.${context.userId},email.eq.${email}`)
+        : query.eq("customer_id", context.userId);
+    }
+
+    const { data: orders, error } = await query;
+    if (error) throw new Error(error.message);
+    if (!orders?.length) return { isAdmin, conversations: [] };
+
+    const { data: messages } = await supabaseAdmin
+      .from("custom_order_messages")
+      .select("order_id, body, sender, created_at")
+      .in("order_id", orders.map((o) => o.id))
+      .order("created_at", { ascending: false });
+
+    const last = new Map<string, { body: string; sender: string; created_at: string }>();
+    for (const m of messages ?? []) if (!last.has(m.order_id)) last.set(m.order_id, m);
+
+    return {
+      isAdmin,
+      conversations: orders.map((o) => ({ ...o, lastMessage: last.get(o.id) ?? null })),
+    };
+  });
+
+export const getConversation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => conversationSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { isAdmin, email } = await resolveAccess(context);
+
+    const { data: order } = await supabaseAdmin
+      .from("custom_orders")
+      .select("id, order_number, full_name, email, customer_id, clothing_type, status")
+      .eq("id", data.orderId)
+      .maybeSingle();
+    if (!order) throw new Error("Conversation not found");
+
+    const allowed =
+      isAdmin ||
+      order.customer_id === context.userId ||
+      (!!email && order.email.toLowerCase() === email);
+    if (!allowed) throw new Error("Forbidden");
+
+    const { data: messages } = await supabaseAdmin
+      .from("custom_order_messages")
+      .select("id, sender, body, created_at")
+      .eq("order_id", order.id)
+      .order("created_at", { ascending: true });
+
+    return { isAdmin, order, messages: messages ?? [] };
+  });
+
+export const sendConversationMessage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => threadMessageSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { isAdmin, email } = await resolveAccess(context);
+
+    const { data: order } = await supabaseAdmin
+      .from("custom_orders")
+      .select("id, email, customer_id")
+      .eq("id", data.orderId)
+      .maybeSingle();
+    if (!order) throw new Error("Conversation not found");
+
+    const allowed =
+      isAdmin ||
+      order.customer_id === context.userId ||
+      (!!email && order.email.toLowerCase() === email);
+    if (!allowed) throw new Error("Forbidden");
+
+    const { data: inserted, error } = await supabaseAdmin
+      .from("custom_order_messages")
+      .insert({ order_id: order.id, sender: isAdmin ? "admin" : "client", body: data.body })
+      .select("id, sender, body, created_at")
+      .single();
+    if (error) throw new Error(error.message);
+    return inserted;
+  });
