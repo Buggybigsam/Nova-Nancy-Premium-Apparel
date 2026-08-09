@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { resolveAccess } from "@/lib/custom-orders.access.server";
 import {
   uploadRequestSchema,
   submitOrderSchema,
@@ -7,6 +8,8 @@ import {
   adminListSchema,
   adminUpdateSchema,
   adminMessageSchema,
+  conversationSchema,
+  threadMessageSchema,
 } from "@/lib/custom-orders.schemas";
 
 /** Creates signed upload slots in the private bucket for a pending intake. */
@@ -291,15 +294,6 @@ export const adminAddOrderMessage = createServerFn({ method: "POST" })
   });
 
 /* ---------------- Conversations (client <-> studio) ---------------- */
-
-async function resolveAccess(context: { supabase: any; userId: string; claims: unknown }) {
-  const { data: isAdmin } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
-  const email = (context.claims as { email?: string })?.email?.toLowerCase() ?? null;
-  return { isAdmin: !!isAdmin, email };
-}
 
 export const listConversations = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
