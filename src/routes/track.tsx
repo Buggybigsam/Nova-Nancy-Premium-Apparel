@@ -26,7 +26,7 @@ type Result = Awaited<ReturnType<typeof trackCustomOrder>>;
 function TrackPage() {
   const { ref } = useSearch({ from: "/track" });
   const track = useServerFn(trackCustomOrder);
-  const [orderNumber, setOrderNumber] = useState(ref);
+  const [orderNumber, setOrderNumber] = useState(ref ?? "");
   const [contact, setContact] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
