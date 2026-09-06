@@ -7,7 +7,7 @@ import { TIMELINE, statusLabel } from "@/lib/custom-orders";
 import { Loader2, Search, Check } from "lucide-react";
 
 export const Route = createFileRoute("/track")({
-  validateSearch: (s: Record<string, unknown>) => ({ ref: typeof s['ref'] === "string" ? s['ref'] : "" }),
+  validateSearch: (s: Record<string, unknown>) => ({ ref: typeof s['ref'] === "string" ? s['ref'] : undefined }) as { ref?: string },
   head: () => ({
     meta: [
       { title: "Track your custom order | Nova Nancy" },

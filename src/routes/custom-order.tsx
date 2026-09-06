@@ -23,7 +23,7 @@ import { Check, FileText, Loader2, Upload, X, AlertTriangle, ChevronLeft, Chevro
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/custom-order")({
-  validateSearch: (s: Record<string, unknown>) => ({ design: typeof s['design'] === "string" ? s['design'] : undefined }),
+  validateSearch: (s: Record<string, unknown>) => ({ design: typeof s['design'] === "string" ? s['design'] : undefined }) as { design?: string },
   head: () => ({
     meta: [
       { title: "Design Your Outfit | Nova Nancy Custom Order" },
