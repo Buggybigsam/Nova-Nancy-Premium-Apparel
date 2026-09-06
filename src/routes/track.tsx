@@ -7,7 +7,7 @@ import { TIMELINE, statusLabel } from "@/lib/custom-orders";
 import { Loader2, Search, Check } from "lucide-react";
 
 export const Route = createFileRoute("/track")({
-  validateSearch: (s: Record<string, unknown>) => ({ ref: typeof s['ref'] === "string" ? s['ref'] : "" }),
+  validateSearch: (s: Record<string, unknown>) => ({ ref: typeof s['ref'] === "string" ? s['ref'] : undefined }) as { ref?: string },
   head: () => ({
     meta: [
       { title: "Track your custom order | Nova Nancy" },
@@ -26,7 +26,7 @@ type Result = Awaited<ReturnType<typeof trackCustomOrder>>;
 function TrackPage() {
   const { ref } = useSearch({ from: "/track" });
   const track = useServerFn(trackCustomOrder);
-  const [orderNumber, setOrderNumber] = useState(ref);
+  const [orderNumber, setOrderNumber] = useState(ref ?? "");
   const [contact, setContact] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

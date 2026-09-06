@@ -18,6 +18,7 @@ export const Route = createFileRoute("/nn-studio-7f3a91")({
 });
 
 const LINKS = [
+  { to: "/admin/portal", label: "Admin portal", icon: KeyRound, desc: "Everything: people, orders, revenue, messages" },
   { to: "/admin/requests", label: "Commission requests", icon: Scissors, desc: "Briefs, files, measurements, client messaging" },
   { to: "/messages", label: "Messages", icon: MessageCircle, desc: "Conversations grouped by order" },
   { to: "/admin/orders", label: "Shop orders", icon: ShoppingBag, desc: "Payments and fulfilment" },
