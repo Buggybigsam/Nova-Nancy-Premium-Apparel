@@ -13,6 +13,7 @@ import {
   UserRound,
   ClipboardList,
   Palette,
+  KeyRound,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
