@@ -47,7 +47,13 @@ function AdminPortal() {
 
   async function load() {
     try {
-      setData(await overviewFn({ data: undefined } as never));
+      const res = await overviewFn({ data: undefined } as never);
+      if ("locked" in res && res.locked) {
+        setUnlocked(false);
+        setData(null);
+        return;
+      }
+      setData(res as Overview);
     } catch {
       setUnlocked(false);
     }
