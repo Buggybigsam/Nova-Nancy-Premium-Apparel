@@ -29,9 +29,9 @@ const NAV: NavItem[] = [
   { to: "/admin/portal", label: "Admin Portal", icon: KeyRound, roles: ["admin"] },
   { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
   { to: "/admin/requests", label: "Requests", icon: Scissors, roles: ["admin"] },
-  { to: "/admin/orders", label: "Shop Orders", icon: ShoppingBag, roles: ["admin"] },
+  { to: "/admin/styles", label: "Homepage Styles", icon: Palette, roles: ["admin"] },
   { to: "/admin/services", label: "Services", icon: ClipboardList, roles: ["admin"] },
-  { to: "/profile", label: "Profile", icon: UserRound },
+  { to: "/profile", label: "Profile", icon: UserRound, roles: ["customer", "designer"] },
 ];
 
 export function DashboardShell({ children, title }: { children: ReactNode; title: string }) {
