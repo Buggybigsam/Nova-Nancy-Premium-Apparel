@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin/portal")({
   component: AdminPortal,
 });
 
-type Overview = Awaited<ReturnType<typeof getAdminOverview>>;
+type Overview = Extract<Awaited<ReturnType<typeof getAdminOverview>>, { stats: unknown }>;
 
 const money = (n: number, c = "USD") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: c || "USD" }).format(n || 0);
@@ -47,7 +47,13 @@ function AdminPortal() {
 
   async function load() {
     try {
-      setData(await overviewFn({ data: undefined } as never));
+      const res = await overviewFn({ data: undefined } as never);
+      if ("locked" in res && res.locked) {
+        setUnlocked(false);
+        setData(null);
+        return;
+      }
+      setData(res as Overview);
     } catch {
       setUnlocked(false);
     }
