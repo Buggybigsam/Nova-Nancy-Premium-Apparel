@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserRound, MessageCircle } from "lucide-react";
-import { CartDrawer } from "@/components/shop/cart-drawer";
 import { WHATSAPP_URL } from "@/components/whatsapp-button";
 import { SocialLinks } from "@/components/social-links";
 
@@ -29,7 +28,6 @@ export function SiteHeader() {
         <Link to="/portfolio" className="transition-colors hover:text-accent">Portfolio</Link>
         <Link to="/services" className="transition-colors hover:text-accent">Services</Link>
 
-        <Link to="/shop" className="transition-colors hover:text-accent">Shop</Link>
         <Link to="/custom-order" className="transition-colors hover:text-accent">Design Your Outfit</Link>
         <Link to="/track" className="transition-colors hover:text-accent">Track Order</Link>
         <Link to="/" hash="contact" className="transition-colors hover:text-accent">Contact</Link>
@@ -46,7 +44,6 @@ export function SiteHeader() {
         >
           <MessageCircle className="h-5 w-5" />
         </a>
-        <CartDrawer />
         {loading ? (
           <div className="h-9 w-24 animate-pulse bg-muted" />
         ) : user ? (

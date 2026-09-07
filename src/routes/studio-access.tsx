@@ -21,7 +21,7 @@ const LINKS = [
   { to: "/admin/portal", label: "Admin portal", icon: KeyRound, desc: "Everything: people, orders, revenue, messages" },
   { to: "/admin/requests", label: "Commission requests", icon: Scissors, desc: "Briefs, files, measurements, client messaging" },
   { to: "/messages", label: "Messages", icon: MessageCircle, desc: "Conversations grouped by order" },
-  { to: "/admin/orders", label: "Shop orders", icon: ShoppingBag, desc: "Payments and fulfilment" },
+  { to: "/admin/styles", label: "Homepage styles", icon: ShoppingBag, desc: "Upload new fashion styles" },
   { to: "/admin/users", label: "Users and roles", icon: Users, desc: "Accounts and access" },
   { to: "/admin/services", label: "Services", icon: ClipboardList, desc: "Catalogue of offerings" },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, desc: "Studio overview" },
