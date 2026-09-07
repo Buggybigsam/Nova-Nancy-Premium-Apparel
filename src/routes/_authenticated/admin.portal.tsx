@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin/portal")({
   component: AdminPortal,
 });
 
-type Overview = Awaited<ReturnType<typeof getAdminOverview>>;
+type Overview = Extract<Awaited<ReturnType<typeof getAdminOverview>>, { stats: unknown }>;
 
 const money = (n: number, c = "USD") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: c || "USD" }).format(n || 0);
