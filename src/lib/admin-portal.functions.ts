@@ -73,7 +73,7 @@ export const getAdminOverview = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     await requireAdmin(context);
     const session = await useSession<PortalSession>(sessionConfig());
-    if (session.data.unlockedFor !== context.userId) throw new Error("Locked");
+    if (session.data.unlockedFor !== context.userId) return { locked: true as const };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
