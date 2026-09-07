@@ -12,7 +12,9 @@ function sessionConfig() {
     password: process.env["SESSION_SECRET"]!,
     name: "nn-admin-portal",
     maxAge: SESSION_MAX_AGE,
-    cookie: { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
+    // The app is often viewed inside an iframe (editor preview), where a "lax"
+    // cookie is treated as third party and never sent back. "none" + secure keeps it working.
+    cookie: { httpOnly: true, secure: true, sameSite: "none" as const, path: "/" },
   };
 }
 
