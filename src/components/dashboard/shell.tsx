@@ -40,6 +40,7 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
   const loc = useLocation();
   const navigate = useNavigate();
 
+  const isAdmin = roles.includes("admin");
   const items = NAV.filter((i) => !i.roles || i.roles.some((r) => roles.includes(r)) || i.roles.includes(primary));
 
   return (
@@ -91,14 +92,16 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
               <span className="eyebrow">Atelier</span>
               <h1 className="mt-1 font-serif text-3xl">{title}</h1>
             </div>
-            <div className="flex items-center gap-3">
-              <Link
-                to="/orders/new"
-                className="bg-primary px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent"
-              >
-                + New Order
-              </Link>
-            </div>
+            {!isAdmin && (
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/orders/new"
+                  className="bg-primary px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent"
+                >
+                  + New Order
+                </Link>
+              </div>
+            )}
           </header>
           <div className="px-10 py-8">{children}</div>
         </main>
