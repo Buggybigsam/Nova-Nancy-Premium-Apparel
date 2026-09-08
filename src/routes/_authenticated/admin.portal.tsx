@@ -305,19 +305,13 @@ function AdminPortal() {
         )}
 
         {tab === "messages" && (
-          <div className="divide-y divide-border/60">
-            {(data?.messages ?? []).map((m) => (
-              <div key={m.id} className="p-5">
-                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  <span>{m.sender}</span>
-                  <span>{new Date(m.created_at).toLocaleString()}</span>
-                </div>
-                <p className="mt-2 text-sm">{m.body}</p>
-              </div>
-            ))}
-            {!data?.messages.length && <p className="p-6 text-sm text-muted-foreground">No messages yet.</p>}
-          </div>
+          <MessagesPanel
+            messages={data?.messages ?? []}
+            orders={data?.customOrders ?? []}
+            onSent={load}
+          />
         )}
+
       </div>
     </DashboardShell>
   );
