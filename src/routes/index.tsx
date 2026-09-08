@@ -233,6 +233,25 @@ function Marquee() {
 
 /* ---------- Collections ---------- */
 function Collections() {
+  const [uploaded, setUploaded] = useState<{ title: string; tag: string | null; image: string }[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+    fetchPublishedStyles(8).then((rows) => {
+      if (!alive) return;
+      setUploaded(
+        rows
+          .filter((r) => r.imageUrl)
+          .map((r) => ({ title: r.title, tag: r.tag, image: r.imageUrl as string })),
+      );
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const items = uploaded.length > 0 ? uploaded : collections;
+
   return (
     <section id="collections" className="px-6 py-24 md:px-10 md:py-32">
       <div className="mx-auto max-w-7xl">
@@ -243,19 +262,18 @@ function Collections() {
               This season's <span className="italic">edit</span>.
             </h2>
           </div>
-          <a
-            href="#"
+          <Link
+            to="/portfolio"
             className="border-b border-foreground/30 pb-1 text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
           >
             Browse the archive
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {collections.map((c, i) => (
-            <a
-              key={c.title}
-              href="#"
+          {items.map((c, i) => (
+            <div
+              key={`${c.title}-${i}`}
               className="group block"
               style={{ transform: i % 2 === 1 ? "translateY(2rem)" : undefined }}
             >
@@ -278,13 +296,14 @@ function Collections() {
                 </div>
                 <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-accent" />
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </div>
     </section>
   );
 }
+
 
 /* ---------- Services ---------- */
 function Services() {
