@@ -8,6 +8,13 @@
       "when": 1788775862475,
       "tag": "0000_create_styles_showcase",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788827522211,
+      "tag": "0001_grant_styles_access",
+      "breakpoints": true
     }
   ]
 }
