@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { fetchPublishedStyles } from "@/lib/styles";
+
 import {
   ArrowUpRight,
   Instagram,
