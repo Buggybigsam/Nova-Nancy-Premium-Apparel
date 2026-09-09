@@ -97,16 +97,17 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
               <span className="eyebrow">Atelier</span>
               <h1 className="mt-1 font-serif text-3xl">{title}</h1>
             </div>
-            {!isAdmin && (
-              <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
+              <NotificationBell />
+              {!isAdmin && (
                 <Link
                   to="/orders/new"
                   className="bg-primary px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent"
                 >
                   + New Order
                 </Link>
-              </div>
-            )}
+              )}
+            </div>
           </header>
           <div className="px-10 py-8">{children}</div>
         </main>
