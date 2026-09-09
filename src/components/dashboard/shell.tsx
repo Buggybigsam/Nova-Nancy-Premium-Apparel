@@ -14,8 +14,11 @@ import {
   ClipboardList,
   Palette,
   KeyRound,
+  Images,
+  Star,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { NotificationBell } from "@/components/notification-bell";
 
 type NavItem = { to: string; label: string; icon: any; roles?: AppRole[] };
 
@@ -30,6 +33,8 @@ const NAV: NavItem[] = [
   { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
   { to: "/admin/requests", label: "Requests", icon: Scissors, roles: ["admin"] },
   { to: "/admin/styles", label: "Homepage Styles", icon: Palette, roles: ["admin"] },
+  { to: "/admin/portfolio", label: "Portfolio", icon: Images, roles: ["admin"] },
+  { to: "/admin/reviews", label: "Reviews", icon: Star, roles: ["admin"] },
   { to: "/admin/services", label: "Services", icon: ClipboardList, roles: ["admin"] },
   { to: "/profile", label: "Profile", icon: UserRound, roles: ["customer", "designer"] },
 ];
