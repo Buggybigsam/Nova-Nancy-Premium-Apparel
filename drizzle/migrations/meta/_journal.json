@@ -15,6 +15,13 @@
       "when": 1788827522211,
       "tag": "0001_grant_styles_access",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788938313822,
+      "tag": "0002_notifications_reviews_portfolio",
+      "breakpoints": true
     }
   ]
 }
