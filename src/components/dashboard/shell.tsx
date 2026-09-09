@@ -14,8 +14,11 @@ import {
   ClipboardList,
   Palette,
   KeyRound,
+  Images,
+  Star,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { NotificationBell } from "@/components/notification-bell";
 
 type NavItem = { to: string; label: string; icon: any; roles?: AppRole[] };
 
@@ -30,6 +33,8 @@ const NAV: NavItem[] = [
   { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
   { to: "/admin/requests", label: "Requests", icon: Scissors, roles: ["admin"] },
   { to: "/admin/styles", label: "Homepage Styles", icon: Palette, roles: ["admin"] },
+  { to: "/admin/portfolio", label: "Portfolio", icon: Images, roles: ["admin"] },
+  { to: "/admin/reviews", label: "Reviews", icon: Star, roles: ["admin"] },
   { to: "/admin/services", label: "Services", icon: ClipboardList, roles: ["admin"] },
   { to: "/profile", label: "Profile", icon: UserRound, roles: ["customer", "designer"] },
 ];
@@ -92,16 +97,17 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
               <span className="eyebrow">Atelier</span>
               <h1 className="mt-1 font-serif text-3xl">{title}</h1>
             </div>
-            {!isAdmin && (
-              <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
+              <NotificationBell />
+              {!isAdmin && (
                 <Link
                   to="/orders/new"
                   className="bg-primary px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent"
                 >
                   + New Order
                 </Link>
-              </div>
-            )}
+              )}
+            </div>
           </header>
           <div className="px-10 py-8">{children}</div>
         </main>

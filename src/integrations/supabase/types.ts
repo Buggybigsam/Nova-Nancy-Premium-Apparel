@@ -474,6 +474,54 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          kind: string
+          link: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_designer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_updates: {
         Row: {
           author_id: string
@@ -603,6 +651,66 @@ export type Database = {
           },
         ]
       }
+      portfolio_items: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          details: Json
+          id: string
+          is_published: boolean
+          slug: string
+          sort_order: number
+          storage_path: string
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          details?: Json
+          id?: string
+          is_published?: boolean
+          slug: string
+          sort_order?: number
+          storage_path: string
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          details?: Json
+          id?: string
+          is_published?: boolean
+          slug?: string
+          sort_order?: number
+          storage_path?: string
+          summary?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_items_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portfolio_items_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_designer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -632,6 +740,54 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          author_name: string
+          body: string
+          created_at: string
+          customer_id: string | null
+          id: string
+          is_approved: boolean
+          location: string | null
+          rating: number
+        }
+        Insert: {
+          author_name: string
+          body: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          is_approved?: boolean
+          location?: string | null
+          rating?: number
+        }
+        Update: {
+          author_name?: string
+          body?: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          is_approved?: boolean
+          location?: string | null
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "public_designer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
@@ -757,6 +913,20 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      notify_admins: {
+        Args: { _body: string; _kind: string; _link: string; _title: string }
+        Returns: undefined
+      }
+      notify_user: {
+        Args: {
+          _body: string
+          _kind: string
+          _link: string
+          _title: string
+          _user_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
