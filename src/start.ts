@@ -39,11 +39,5 @@ const clerkPublishableKey =
 
 export const startInstance = createStart(() => ({
   functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [
-    errorMiddleware,
-    clerkMiddleware({
-      secretKey: clerkSecretKey,
-      publishableKey: clerkPublishableKey,
-    }),
-  ],
+  requestMiddleware: [errorMiddleware],
 }));
