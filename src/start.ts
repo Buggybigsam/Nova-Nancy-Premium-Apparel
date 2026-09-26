@@ -28,7 +28,22 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
   }
 });
 
+const clerkSecretKey =
+  (typeof process !== "undefined" && process.env?.CLERK_SECRET_KEY) ||
+  "sk_test_RHUrxDyvbUSfrO75RBwYgUEri9VIDXbOeXxJRaIhYH";
+
+const clerkPublishableKey =
+  (typeof process !== "undefined" && (process.env?.VITE_CLERK_PUBLISHABLE_KEY || process.env?.CLERK_PUBLISHABLE_KEY)) ||
+  import.meta.env?.VITE_CLERK_PUBLISHABLE_KEY ||
+  "pk_test_YWNlLXNoZWVwLTM2NS5jbGVyay5hY2NvdW50cy5kZXYk";
+
 export const startInstance = createStart(() => ({
   functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [errorMiddleware, clerkMiddleware()],
+  requestMiddleware: [
+    errorMiddleware,
+    clerkMiddleware({
+      secretKey: clerkSecretKey,
+      publishableKey: clerkPublishableKey,
+    }),
+  ],
 }));
