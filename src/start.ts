@@ -8,18 +8,27 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
     return await next();
   } catch (error) {
-    if (error != null && typeof error === "object" && "statusCode" in error) {
-      throw error;
+    if (error instanceof Response) {
+      return error;
     }
-    console.error(error);
-    return new Response(renderErrorPage(), {
+    if (error != null && typeof error === "object" && ("statusCode" in error || "status" in error)) {
+      const status = (error as any).status ?? (error as any).statusCode;
+      if (typeof status === "number" && status < 500) {
+        throw error;
+      }
+    }
+    console.error("[SSR_MIDDLEWARE_ERROR]", error);
+    return new Response(renderErrorPage(error), {
       status: 500,
-      headers: { "content-type": "text/html; charset=utf-8" },
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "x-ssr-error": String(error).replace(/[\r\n]+/g, " ").slice(0, 500),
+      },
     });
   }
 });
 
 export const startInstance = createStart(() => ({
   functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [clerkMiddleware(), errorMiddleware],
+  requestMiddleware: [errorMiddleware, clerkMiddleware()],
 }));
