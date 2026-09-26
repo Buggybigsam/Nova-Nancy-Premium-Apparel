@@ -14,7 +14,10 @@ export const Route = createFileRoute("/_authenticated/messages")({
   head: () => ({
     meta: [
       { title: "Messages | Nova Nancy" },
-      { name: "description", content: "Talk directly with the Nova Nancy atelier about your commission." },
+      {
+        name: "description",
+        content: "Talk directly with the Nova Nancy atelier about your commission.",
+      },
     ],
   }),
   component: MessagesPage,

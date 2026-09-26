@@ -1,7 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { fetchPublishedStyles } from "@/lib/styles";
-
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   ArrowUpRight,
   Instagram,
@@ -28,8 +26,7 @@ import collection3 from "@/assets/collection-3.jpg";
 import collection4 from "@/assets/collection-4.jpg";
 import { Reveal } from "@/components/reveal";
 import { HeroOrbit, StitchDivider, ScrollCue } from "@/components/lottie";
-import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
-const founder = founderAsset.url;
+import founder from "@/assets/founder.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -120,21 +117,41 @@ function LandingPage() {
       <Nav />
       <Hero />
       <Marquee />
-      <Reveal><Collections /></Reveal>
+      <Reveal>
+        <Collections />
+      </Reveal>
       <StitchDivider />
-      <Reveal><Services /></Reveal>
+      <Reveal>
+        <Services />
+      </Reveal>
       <StitchDivider />
-      <Reveal><OrderTracker /></Reveal>
-      <Reveal><AIConcierge /></Reveal>
+      <Reveal>
+        <OrderTracker />
+      </Reveal>
+      <Reveal>
+        <AIConcierge />
+      </Reveal>
       <StitchDivider />
-      <Reveal><About /></Reveal>
-      <Reveal><WhyUs /></Reveal>
+      <Reveal>
+        <About />
+      </Reveal>
+      <Reveal>
+        <WhyUs />
+      </Reveal>
       <StitchDivider />
-      <Reveal><Testimonials /></Reveal>
-      <Reveal><Gallery /></Reveal>
+      <Reveal>
+        <Testimonials />
+      </Reveal>
+      <Reveal>
+        <Gallery />
+      </Reveal>
       <StitchDivider />
-      <Reveal><Contact /></Reveal>
-      <Reveal><Newsletter /></Reveal>
+      <Reveal>
+        <Contact />
+      </Reveal>
+      <Reveal>
+        <Newsletter />
+      </Reveal>
       <Footer />
       <WhatsAppButton variant="fab" />
     </div>
@@ -146,7 +163,6 @@ import { SiteHeader } from "@/components/site-header";
 function Nav() {
   return <SiteHeader />;
 }
-
 
 /* ---------- Hero ---------- */
 function Hero() {
@@ -220,10 +236,7 @@ function Marquee() {
     <div className="overflow-hidden border-y border-border bg-background py-5">
       <div className="flex animate-[marquee_28s_linear_infinite] gap-16 whitespace-nowrap">
         {[...items, ...items].map((item, i) => (
-          <span
-            key={i}
-            className="font-serif text-2xl italic text-muted-foreground md:text-3xl"
-          >
+          <span key={i} className="font-serif text-2xl italic text-muted-foreground md:text-3xl">
             {item} <span className="text-accent">✦</span>
           </span>
         ))}
@@ -235,25 +248,6 @@ function Marquee() {
 
 /* ---------- Collections ---------- */
 function Collections() {
-  const [uploaded, setUploaded] = useState<{ title: string; tag: string | null; image: string }[]>([]);
-
-  useEffect(() => {
-    let alive = true;
-    fetchPublishedStyles(8).then((rows) => {
-      if (!alive) return;
-      setUploaded(
-        rows
-          .filter((r) => r.imageUrl)
-          .map((r) => ({ title: r.title, tag: r.tag, image: r.imageUrl as string })),
-      );
-    });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const items = uploaded.length > 0 ? uploaded : collections;
-
   return (
     <section id="collections" className="px-6 py-24 md:px-10 md:py-32">
       <div className="mx-auto max-w-7xl">
@@ -264,18 +258,19 @@ function Collections() {
               This season's <span className="italic">edit</span>.
             </h2>
           </div>
-          <Link
-            to="/portfolio"
+          <a
+            href="#"
             className="border-b border-foreground/30 pb-1 text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
           >
             Browse the archive
-          </Link>
+          </a>
         </div>
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((c, i) => (
-            <div
-              key={`${c.title}-${i}`}
+          {collections.map((c, i) => (
+            <a
+              key={c.title}
+              href="#"
               className="group block"
               style={{ transform: i % 2 === 1 ? "translateY(2rem)" : undefined }}
             >
@@ -298,14 +293,13 @@ function Collections() {
                 </div>
                 <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-accent" />
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
     </section>
   );
 }
-
 
 /* ---------- Services ---------- */
 function Services() {
@@ -321,8 +315,7 @@ function Services() {
           </div>
           <p className="text-muted-foreground md:col-span-6 md:col-start-7 md:text-lg">
             From the first mood board to the final fitting, every step is guided by hand, and
-            supported by a private client dashboard so you can track your creation stitch by
-            stitch.
+            supported by a private client dashboard so you can track your creation stitch by stitch.
           </p>
         </div>
 
@@ -389,8 +382,8 @@ function OrderTracker() {
                     s.state === "active"
                       ? "text-accent"
                       : s.state === "upcoming"
-                      ? "text-muted-foreground"
-                      : ""
+                        ? "text-muted-foreground"
+                        : ""
                   }`}
                 >
                   {s.label}
@@ -418,8 +411,8 @@ function AIConcierge() {
             <div className="rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-6">
               <h3 className="eyebrow mb-2">Fabric Suggestion</h3>
               <p className="text-sm text-primary-foreground/70">
-                Based on your uploaded sketch, we recommend 4-ply Crepe de Chine for optimal
-                drape and quiet sheen.
+                Based on your uploaded sketch, we recommend 4-ply Crepe de Chine for optimal drape
+                and quiet sheen.
               </p>
             </div>
             <div className="rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-6">
@@ -493,7 +486,6 @@ function About() {
           </p>
           <SocialLinks variant="circle" includeWhatsApp />
           <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
-
             <div>
               <div className="font-serif text-3xl md:text-4xl">120+</div>
               <div className="mt-2 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
@@ -522,10 +514,26 @@ function About() {
 /* ---------- Why Us ---------- */
 function WhyUs() {
   const points = [
-    { n: "01", title: "Hand cut by master tailors", desc: "Every panel drafted from your measurements, no digital pattern reused." },
-    { n: "02", title: "Fabric sourced ethically", desc: "Silk from Como, wool from Yorkshire, cotton from Egypt. Traceable to the mill." },
-    { n: "03", title: "Live progress transparency", desc: "Ten production stages, notifications at every handover, photos on demand." },
-    { n: "04", title: "Lifetime alteration promise", desc: "Bodies change. Your garments should too, free alterations, always." },
+    {
+      n: "01",
+      title: "Hand cut by master tailors",
+      desc: "Every panel drafted from your measurements, no digital pattern reused.",
+    },
+    {
+      n: "02",
+      title: "Fabric sourced ethically",
+      desc: "Silk from Como, wool from Yorkshire, cotton from Egypt. Traceable to the mill.",
+    },
+    {
+      n: "03",
+      title: "Live progress transparency",
+      desc: "Ten production stages, notifications at every handover, photos on demand.",
+    },
+    {
+      n: "04",
+      title: "Lifetime alteration promise",
+      desc: "Bodies change. Your garments should too, free alterations, always.",
+    },
   ];
   return (
     <section className="bg-beige px-6 py-24 md:px-10 md:py-32">
@@ -832,10 +840,26 @@ function Footer() {
             Atelier
           </h4>
           <ul className="space-y-3 text-sm">
-            <li><a href="#collections" className="hover:text-accent">Collections</a></li>
-            <li><a href="#services" className="hover:text-accent">Custom Tailoring</a></li>
-            <li><a href="#about" className="hover:text-accent">Our Story</a></li>
-            <li><a href="#contact" className="hover:text-accent">Contact</a></li>
+            <li>
+              <a href="#collections" className="hover:text-accent">
+                Collections
+              </a>
+            </li>
+            <li>
+              <a href="#services" className="hover:text-accent">
+                Custom Tailoring
+              </a>
+            </li>
+            <li>
+              <a href="#about" className="hover:text-accent">
+                Our Story
+              </a>
+            </li>
+            <li>
+              <a href="#contact" className="hover:text-accent">
+                Contact
+              </a>
+            </li>
           </ul>
         </div>
         <div>
@@ -843,10 +867,26 @@ function Footer() {
             Client
           </h4>
           <ul className="space-y-3 text-sm">
-            <li><a href="#" className="hover:text-accent">Sign in</a></li>
-            <li><a href="#" className="hover:text-accent">Book appointment</a></li>
-            <li><a href="#" className="hover:text-accent">Track order</a></li>
-            <li><a href="#" className="hover:text-accent">FAQs</a></li>
+            <li>
+              <a href="#" className="hover:text-accent">
+                Sign in
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-accent">
+                Book appointment
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-accent">
+                Track order
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-accent">
+                FAQs
+              </a>
+            </li>
           </ul>
         </div>
       </div>

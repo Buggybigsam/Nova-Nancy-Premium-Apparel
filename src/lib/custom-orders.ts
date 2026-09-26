@@ -80,11 +80,18 @@ export const EVENT_TYPES = [
   "Other",
 ];
 
-export const MEASUREMENT_GROUPS: { group: string; fields: { key: string; label: string; hint?: string }[] }[] = [
+export const MEASUREMENT_GROUPS: {
+  group: string;
+  fields: { key: string; label: string; hint?: string }[];
+}[] = [
   {
     group: "Upper body",
     fields: [
-      { key: "shoulder", label: "Shoulder width", hint: "Across the back, shoulder point to shoulder point" },
+      {
+        key: "shoulder",
+        label: "Shoulder width",
+        hint: "Across the back, shoulder point to shoulder point",
+      },
       { key: "bust", label: "Bust / Chest", hint: "Fullest part of the bust, tape level" },
       { key: "waist", label: "Waist", hint: "Narrowest part of the torso" },
       { key: "armhole", label: "Armhole", hint: "Around the top of the arm and shoulder" },
@@ -116,7 +123,13 @@ export const MEASUREMENT_GROUPS: { group: string; fields: { key: string; label: 
   },
 ];
 
-export const ALLOWED_FILE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
+export const ALLOWED_FILE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+];
 export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 export const MAX_FILES = 12;
 

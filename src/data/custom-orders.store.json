@@ -1,0 +1,36 @@
+[
+  {
+    "id": "demo-order-1",
+    "order_number": "NN-2026-1001",
+    "full_name": "Ama Mensah",
+    "email": "ama.mensah@example.com",
+    "phone": "+233541234567",
+    "whatsapp": "+233541234567",
+    "preferred_contact": "whatsapp",
+    "order_type": "custom_design",
+    "clothing_type": "Bespoke Bridal",
+    "fabric_preference": "Wax print with corded lace",
+    "color": "Gold and Emerald",
+    "customizations": [
+      "Hand beading",
+      "Extended train"
+    ],
+    "description": "Bridal gown for traditional wedding in Accra",
+    "measurement_unit": "inches",
+    "measurements": {
+      "bust": "36",
+      "waist": "28",
+      "hips": "40",
+      "height": "66"
+    },
+    "needs_measurement_help": false,
+    "status": "pending_review",
+    "payment_status": "unpaid",
+    "price": 980,
+    "currency": "GHS",
+    "created_at": "2026-09-26T16:47:31.531Z",
+    "updated_at": "2026-09-26T16:47:31.532Z",
+    "files": [],
+    "messages": []
+  }
+]

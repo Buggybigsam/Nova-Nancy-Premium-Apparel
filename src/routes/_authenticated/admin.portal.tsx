@@ -9,7 +9,6 @@ import {
   getAdminOverview,
 } from "@/lib/admin-portal.functions";
 import { toast } from "sonner";
-import { sendConversationMessage } from "@/lib/custom-orders.functions";
 import { KeyRound, Lock, RefreshCw, Search } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/portal")({
@@ -17,15 +16,21 @@ export const Route = createFileRoute("/_authenticated/admin/portal")({
     meta: [
       { title: "Admin Portal | Nova Nancy" },
       { name: "robots", content: "noindex, nofollow" },
-      { name: "description", content: "Private studio control room for users, orders and revenue." },
+      {
+        name: "description",
+        content: "Private studio control room for users, orders and revenue.",
+      },
       { property: "og:title", content: "Admin Portal | Nova Nancy" },
-      { property: "og:description", content: "Private studio control room for users, orders and revenue." },
+      {
+        property: "og:description",
+        content: "Private studio control room for users, orders and revenue.",
+      },
     ],
   }),
   component: AdminPortal,
 });
 
-type Overview = Extract<Awaited<ReturnType<typeof getAdminOverview>>, { stats: unknown }>;
+type Overview = Awaited<ReturnType<typeof getAdminOverview>>;
 
 const money = (n: number, c = "USD") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: c || "USD" }).format(n || 0);
@@ -48,13 +53,7 @@ function AdminPortal() {
 
   async function load() {
     try {
-      const res = await overviewFn({ data: undefined } as never);
-      if ("locked" in res && res.locked) {
-        setUnlocked(false);
-        setData(null);
-        return;
-      }
-      setData(res as Overview);
+      setData(await overviewFn({ data: undefined } as never));
     } catch {
       setUnlocked(false);
     }
@@ -110,7 +109,9 @@ function AdminPortal() {
       <DashboardShell title="Admin Portal">
         <div className="border border-border bg-background p-10">
           <p className="font-serif text-2xl">This portal is reserved</p>
-          <p className="mt-2 text-sm text-muted-foreground">Your account does not have studio privileges.</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Your account does not have studio privileges.
+          </p>
         </div>
       </DashboardShell>
     );
@@ -180,29 +181,53 @@ function AdminPortal() {
           />
         </div>
         <div className="flex gap-2">
-          <button onClick={load} className="flex items-center gap-2 border border-input px-4 py-2.5 text-xs hover:bg-secondary">
+          <button
+            onClick={load}
+            className="flex items-center gap-2 border border-input px-4 py-2.5 text-xs hover:bg-secondary"
+          >
             <RefreshCw className="h-3.5 w-3.5" /> Refresh
           </button>
-          <button onClick={lock} className="flex items-center gap-2 border border-input px-4 py-2.5 text-xs hover:bg-secondary">
+          <button
+            onClick={lock}
+            className="flex items-center gap-2 border border-input px-4 py-2.5 text-xs hover:bg-secondary"
+          >
             <Lock className="h-3.5 w-3.5" /> Lock portal
           </button>
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="People" value={s?.totalUsers ?? 0} hint={`${s?.newUsers30d ?? 0} joined in 30 days`} />
-        <StatCard label="Commissions" value={s?.totalCustomOrders ?? 0} hint={`${s?.openCustomOrders ?? 0} still open`} />
-        <StatCard label="Quoted value" value={money(s?.quotedValue ?? 0)} hint={`${money(s?.collected ?? 0)} collected`} />
-        <StatCard label="Unpaid orders" value={s?.unpaidOrders ?? 0} hint={`${s?.messages ?? 0} recent messages`} />
+        <StatCard
+          label="People"
+          value={s?.totalUsers ?? 0}
+          hint={`${s?.newUsers30d ?? 0} joined in 30 days`}
+        />
+        <StatCard
+          label="Commissions"
+          value={s?.totalCustomOrders ?? 0}
+          hint={`${s?.openCustomOrders ?? 0} still open`}
+        />
+        <StatCard
+          label="Quoted value"
+          value={money(s?.quotedValue ?? 0)}
+          hint={`${money(s?.collected ?? 0)} collected`}
+        />
+        <StatCard
+          label="Unpaid orders"
+          value={s?.unpaidOrders ?? 0}
+          hint={`${s?.messages ?? 0} recent messages`}
+        />
       </div>
 
       <div className="mt-8 flex flex-wrap gap-2">
-        {([
-          ["users", `People (${data?.users.length ?? 0})`],
-          ["commissions", `Commissions (${data?.customOrders.length ?? 0})`],
-          ["studio", `Studio orders (${data?.orders.length ?? 0})`],
-          ["messages", `Messages (${data?.messages.length ?? 0})`],
-        ] as const).map(([key, label]) => (
+        {(
+          [
+            ["users", `People (${data?.users.length ?? 0})`],
+            ["commissions", `Commissions (${data?.customOrders.length ?? 0})`],
+            ["studio", `Studio orders (${data?.orders.length ?? 0})`],
+            ["messages", `Messages (${data?.messages.length ?? 0})`],
+          ] as const
+        ).map(([key, label]) => (
           <button
             key={key}
             onClick={() => setTab(key)}
@@ -270,9 +295,15 @@ function AdminPortal() {
                     <div className="text-xs text-muted-foreground">{o.phone}</div>
                   </td>
                   <td className={cell}>{o.clothing_type ?? "N/A"}</td>
-                  <td className={cell}><StatusPill status={o.status} /></td>
-                  <td className={cell}><StatusPill status={o.payment_status} /></td>
-                  <td className={cell}>{o.price ? money(Number(o.price), o.currency) : "Not quoted"}</td>
+                  <td className={cell}>
+                    <StatusPill status={o.status} />
+                  </td>
+                  <td className={cell}>
+                    <StatusPill status={o.payment_status} />
+                  </td>
+                  <td className={cell}>
+                    {o.price ? money(Number(o.price), o.currency) : "Not quoted"}
+                  </td>
                   <td className={cell}>{when(o.created_at)}</td>
                 </tr>
               ))}
@@ -295,7 +326,9 @@ function AdminPortal() {
               {(data?.orders ?? []).map((o) => (
                 <tr key={o.id} className="border-b border-border/60 last:border-0">
                   <td className={cell}>{o.title}</td>
-                  <td className={cell}><StatusPill status={o.status} /></td>
+                  <td className={cell}>
+                    <StatusPill status={o.status} />
+                  </td>
                   <td className={cell}>{o.progress_percent}%</td>
                   <td className={cell}>{o.budget ? money(Number(o.budget)) : "N/A"}</td>
                   <td className={cell}>{when(o.created_at)}</td>
@@ -306,101 +339,22 @@ function AdminPortal() {
         )}
 
         {tab === "messages" && (
-          <MessagesPanel
-            messages={data?.messages ?? []}
-            orders={data?.customOrders ?? []}
-            onSent={load}
-          />
-        )}
-
-      </div>
-    </DashboardShell>
-  );
-}
-
-type PortalMessage = { id: string; order_id: string; sender: string; body: string; created_at: string };
-type PortalOrder = { id: string; order_number: string; full_name: string };
-
-function MessagesPanel({
-  messages,
-  orders,
-  onSent,
-}: {
-  messages: PortalMessage[];
-  orders: PortalOrder[];
-  onSent: () => void | Promise<void>;
-}) {
-  const sendFn = useServerFn(sendConversationMessage);
-  const [drafts, setDrafts] = useState<Record<string, string>>({});
-  const [sending, setSending] = useState<string | null>(null);
-
-  const byOrder = new Map<string, PortalMessage[]>();
-  for (const m of messages) byOrder.set(m.order_id, [...(byOrder.get(m.order_id) ?? []), m]);
-
-  const threads = orders
-    .filter((o) => byOrder.has(o.id))
-    .map((o) => ({ order: o, items: [...(byOrder.get(o.id) ?? [])].reverse() }));
-
-  async function reply(orderId: string) {
-    const body = (drafts[orderId] ?? "").trim();
-    if (!body) return;
-    setSending(orderId);
-    try {
-      await sendFn({ data: { orderId, body } });
-      setDrafts((d) => ({ ...d, [orderId]: "" }));
-      await onSent();
-      toast.success("Message sent to your client");
-    } catch {
-      toast.error("Could not send that message");
-    } finally {
-      setSending(null);
-    }
-  }
-
-  if (threads.length === 0) return <p className="p-6 text-sm text-muted-foreground">No messages yet.</p>;
-
-  return (
-    <div className="divide-y divide-border/60">
-      {threads.map(({ order, items }) => (
-        <div key={order.id} className="p-5">
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <span>
-              {order.full_name} · {order.order_number}
-            </span>
-            <span>{new Date(items[items.length - 1]!.created_at).toLocaleString()}</span>
-          </div>
-          <div className="mt-3 space-y-2">
-            {items.map((m) => (
-              <div
-                key={m.id}
-                className={`max-w-[80%] px-4 py-2 text-sm ${
-                  m.sender === "admin" ? "ml-auto bg-ink text-cream" : "bg-secondary"
-                }`}
-              >
-                {m.body}
+          <div className="divide-y divide-border/60">
+            {(data?.messages ?? []).map((m) => (
+              <div key={m.id} className="p-5">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  <span>{m.sender}</span>
+                  <span>{new Date(m.created_at).toLocaleString()}</span>
+                </div>
+                <p className="mt-2 text-sm">{m.body}</p>
               </div>
             ))}
+            {!data?.messages.length && (
+              <p className="p-6 text-sm text-muted-foreground">No messages yet.</p>
+            )}
           </div>
-          <div className="mt-3 flex gap-2">
-            <input
-              value={drafts[order.id] ?? ""}
-              onChange={(e) => setDrafts((d) => ({ ...d, [order.id]: e.target.value }))}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") reply(order.id);
-              }}
-              placeholder="Write to this client"
-              className="flex-1 border border-input bg-background px-3 py-2 text-sm"
-            />
-            <button
-              onClick={() => reply(order.id)}
-              disabled={sending === order.id}
-              className="bg-primary px-5 py-2 text-[10px] uppercase tracking-[0.25em] text-primary-foreground disabled:opacity-60"
-            >
-              Send
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
+        )}
+      </div>
+    </DashboardShell>
   );
 }

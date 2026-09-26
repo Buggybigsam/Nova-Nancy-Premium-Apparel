@@ -3,7 +3,11 @@ import { z } from "zod";
 export const fileMetaSchema = z.object({
   name: z.string().min(1).max(200),
   type: z.string().min(1).max(120),
-  size: z.number().int().positive().max(10 * 1024 * 1024),
+  size: z
+    .number()
+    .int()
+    .positive()
+    .max(10 * 1024 * 1024),
   kind: z.string().max(60).optional(),
 });
 

@@ -1,6 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { KeyRound, Scissors, MessageCircle, Users, ShoppingBag, ClipboardList, LayoutDashboard } from "lucide-react";
+import {
+  KeyRound,
+  Scissors,
+  MessageCircle,
+  Users,
+  ShoppingBag,
+  ClipboardList,
+  LayoutDashboard,
+} from "lucide-react";
 import { useAuth, useUserRoles } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/studio-access")({
@@ -18,10 +26,25 @@ export const Route = createFileRoute("/studio-access")({
 });
 
 const LINKS = [
-  { to: "/admin/portal", label: "Admin portal", icon: KeyRound, desc: "Everything: people, orders, revenue, messages" },
-  { to: "/admin/requests", label: "Commission requests", icon: Scissors, desc: "Briefs, files, measurements, client messaging" },
-  { to: "/messages", label: "Messages", icon: MessageCircle, desc: "Conversations grouped by order" },
-  { to: "/admin/styles", label: "Homepage styles", icon: ShoppingBag, desc: "Upload new fashion styles" },
+  {
+    to: "/admin/portal",
+    label: "Admin portal",
+    icon: KeyRound,
+    desc: "Everything: people, orders, revenue, messages",
+  },
+  {
+    to: "/admin/requests",
+    label: "Commission requests",
+    icon: Scissors,
+    desc: "Briefs, files, measurements, client messaging",
+  },
+  {
+    to: "/messages",
+    label: "Messages",
+    icon: MessageCircle,
+    desc: "Conversations grouped by order",
+  },
+  { to: "/admin/orders", label: "Shop orders", icon: ShoppingBag, desc: "Payments and fulfilment" },
   { to: "/admin/users", label: "Users and roles", icon: Users, desc: "Accounts and access" },
   { to: "/admin/services", label: "Services", icon: ClipboardList, desc: "Catalogue of offerings" },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, desc: "Studio overview" },
@@ -47,7 +70,8 @@ function StudioAccessPage() {
         </div>
         <h1 className="mt-4 font-serif text-4xl">Studio Access</h1>
         <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-          Direct entry to the studio workspace. This page is unlisted and hidden from the public navigation.
+          Direct entry to the studio workspace. This page is unlisted and hidden from the public
+          navigation.
         </p>
 
         {busy ? (
@@ -58,7 +82,10 @@ function StudioAccessPage() {
             <p className="mt-2 text-sm text-muted-foreground">
               Your account does not have studio privileges.
             </p>
-            <Link to="/dashboard" className="mt-6 inline-block text-sm text-accent underline underline-offset-4">
+            <Link
+              to="/dashboard"
+              className="mt-6 inline-block text-sm text-accent underline underline-offset-4"
+            >
               Go to your dashboard
             </Link>
           </div>

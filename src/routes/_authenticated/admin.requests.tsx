@@ -47,11 +47,14 @@ function AdminRequests() {
       }),
   });
 
-  const rows = data ?? [];
+  const rows = useMemo(() => data ?? [], [data]);
   const stats = useMemo(() => {
-    const open = rows.filter((r: any) => !["delivered", "cancelled", "completed"].includes(r.status)).length;
-    const unpaid = rows.filter((r: any) => r.payment_status === "unpaid").length;
-    const value = rows.reduce((a: number, r: any) => a + Number(r.price ?? 0), 0);
+    const open = rows.filter(
+      (r) =>
+        !(["delivered", "cancelled", "completed"] as string[]).includes(String(r.status ?? "")),
+    ).length;
+    const unpaid = rows.filter((r) => r.payment_status === "unpaid").length;
+    const value = rows.reduce((a: number, r) => a + Number(r.price ?? 0), 0);
     return { total: rows.length, open, unpaid, value };
   }, [rows]);
 
@@ -66,7 +69,9 @@ function AdminRequests() {
             { l: "Quoted value", v: `GHS ${stats.value.toLocaleString()}` },
           ].map((s) => (
             <div key={s.l} className="border border-border bg-background p-5">
-              <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">{s.l}</div>
+              <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                {s.l}
+              </div>
               <div className="mt-2 font-serif text-3xl">{s.v}</div>
             </div>
           ))}
@@ -88,31 +93,62 @@ function AdminRequests() {
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </form>
-          <select className="border border-border bg-background px-3 py-2 text-sm" value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select
+            className="border border-border bg-background px-3 py-2 text-sm"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
             <option value="any">All statuses</option>
             {ORDER_STATUSES.map((s) => (
-              <option key={s} value={s}>{statusLabel(s)}</option>
+              <option key={s} value={s}>
+                {statusLabel(s)}
+              </option>
             ))}
           </select>
-          <select className="border border-border bg-background px-3 py-2 text-sm" value={category} onChange={(e) => setCategory(e.target.value)}>
+          <select
+            className="border border-border bg-background px-3 py-2 text-sm"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
             <option value="any">All categories</option>
-            {CLOTHING_TYPES.map((c: any) => {
-              const v = typeof c === "string" ? c : c.value ?? c.label;
-              const l = typeof c === "string" ? c : c.label ?? c.value;
-              return <option key={v} value={v}>{l}</option>;
-            })}
+            {CLOTHING_TYPES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
-          <input type="date" className="border border-border bg-background px-3 py-2 text-sm" value={from} onChange={(e) => setFrom(e.target.value)} />
-          <input type="date" className="border border-border bg-background px-3 py-2 text-sm" value={to} onChange={(e) => setTo(e.target.value)} />
-          <button onClick={() => refetch()} className="inline-flex items-center gap-2 border border-border px-3 py-2 text-sm hover:bg-secondary">
+          <input
+            type="date"
+            className="border border-border bg-background px-3 py-2 text-sm"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+          />
+          <input
+            type="date"
+            className="border border-border bg-background px-3 py-2 text-sm"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+          />
+          <button
+            onClick={() => refetch()}
+            className="inline-flex items-center gap-2 border border-border px-3 py-2 text-sm hover:bg-secondary"
+          >
             <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} /> Refresh
           </button>
         </div>
 
-        {error && <div className="border border-red-200 bg-red-50 p-4 text-sm text-red-700">{(error as Error).message}</div>}
+        {error && (
+          <div className="border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            {(error as Error).message}
+          </div>
+        )}
 
         {!isLoading && !error && rows.length === 0 ? (
-          <EmptyState icon={ClipboardList} title="No requests found" description="Nothing matches these filters yet. Adjust the search or date range." />
+          <EmptyState
+            icon={ClipboardList}
+            title="No requests found"
+            description="Nothing matches these filters yet. Adjust the search or date range."
+          />
         ) : (
           <div className="overflow-x-auto border border-border bg-background">
             <table className="w-full text-sm">
@@ -129,16 +165,31 @@ function AdminRequests() {
               </thead>
               <tbody>
                 {isLoading && (
-                  <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">Loading requests…</td></tr>
+                  <tr>
+                    <td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">
+                      Loading requests…
+                    </td>
+                  </tr>
                 )}
-                {rows.map((o: any) => (
-                  <tr key={o.id} className="border-b border-border/50 last:border-0 hover:bg-secondary/40">
+                {rows.map((o) => (
+                  <tr
+                    key={o.id}
+                    className="border-b border-border/50 last:border-0 hover:bg-secondary/40"
+                  >
                     <td className="px-4 py-3 font-medium">
-                      <Link to="/admin/requests/$id" params={{ id: o.id }} className="underline-offset-4 hover:underline">
+                      <Link
+                        to="/admin/requests/$id"
+                        params={{ id: o.id }}
+                        className="underline-offset-4 hover:underline"
+                      >
                         {o.order_number}
                       </Link>
                       <div className="text-xs text-muted-foreground">
-                        {new Date(o.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                        {new Date(o.created_at).toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -147,13 +198,21 @@ function AdminRequests() {
                     </td>
                     <td className="px-4 py-3">{o.clothing_type ?? "N/A"}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${pill(o.status)}`}>
+                      <span
+                        className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${pill(o.status)}`}
+                      >
                         {statusLabel(o.status)}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs uppercase tracking-wide text-muted-foreground">{String(o.payment_status).replace(/_/g, " ")}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{o.required_date ?? "Flexible"}</td>
-                    <td className="px-4 py-3 text-right">{o.price ? `${o.currency} ${Number(o.price).toLocaleString()}` : "To quote"}</td>
+                    <td className="px-4 py-3 text-xs uppercase tracking-wide text-muted-foreground">
+                      {String(o.payment_status).replace(/_/g, " ")}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {o.required_date ?? "Flexible"}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {o.price ? `${o.currency} ${Number(o.price).toLocaleString()}` : "To quote"}
+                    </td>
                   </tr>
                 ))}
               </tbody>

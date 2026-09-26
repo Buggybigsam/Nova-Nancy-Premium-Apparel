@@ -10,6 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/users")({
 });
 
 function AdminUsers() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [profiles, setProfiles] = useState<any[]>([]);
   const [rolesByUser, setRolesByUser] = useState<Record<string, string[]>>({});
 
@@ -20,10 +21,14 @@ function AdminUsers() {
     ]);
     setProfiles(p ?? []);
     const map: Record<string, string[]> = {};
-    (r ?? []).forEach((row: any) => { (map[row.user_id] ||= []).push(row.role); });
+    (r ?? []).forEach((row) => {
+      (map[row.user_id] ||= []).push(row.role);
+    });
     setRolesByUser(map);
   }
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => {
+    refresh();
+  }, []);
 
   async function toggle(userId: string, role: "customer" | "designer" | "admin") {
     const has = rolesByUser[userId]?.includes(role);
@@ -32,7 +37,8 @@ function AdminUsers() {
     } else {
       await supabase.from("user_roles").insert({ user_id: userId, role });
     }
-    toast.success("Roles updated"); refresh();
+    toast.success("Roles updated");
+    refresh();
   }
 
   return (
@@ -40,7 +46,10 @@ function AdminUsers() {
       <div className="border border-border bg-background">
         <table className="w-full">
           <thead className="border-b border-border text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <tr><th className="p-4 text-left">Member</th><th className="p-4 text-left">Roles</th></tr>
+            <tr>
+              <th className="p-4 text-left">Member</th>
+              <th className="p-4 text-left">Roles</th>
+            </tr>
           </thead>
           <tbody>
             {profiles.map((p) => (
@@ -51,11 +60,14 @@ function AdminUsers() {
                 </td>
                 <td className="p-4">
                   <div className="flex gap-2">
-                    {(["customer","designer","admin"] as const).map((role) => {
+                    {(["customer", "designer", "admin"] as const).map((role) => {
                       const active = rolesByUser[p.id]?.includes(role);
                       return (
-                        <button key={role} onClick={() => toggle(p.id, role)}
-                          className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] ${active ? "bg-ink text-cream" : "border border-input hover:bg-secondary"}`}>
+                        <button
+                          key={role}
+                          onClick={() => toggle(p.id, role)}
+                          className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] ${active ? "bg-ink text-cream" : "border border-input hover:bg-secondary"}`}
+                        >
                           {role}
                         </button>
                       );

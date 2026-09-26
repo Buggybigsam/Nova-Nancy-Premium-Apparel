@@ -1,65 +1,114 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { useUser, useClerk } from "@clerk/tanstack-react-start";
+import { isSuperAdminEmail } from "@/lib/admin-config";
 
 export type AppRole = "customer" | "designer" | "admin";
 
+export type UnifiedUser = {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    full_name?: string;
+    avatar_url?: string;
+  };
+};
+
 export function useAuth() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { isLoaded: clerkLoaded, isSignedIn: clerkSignedIn, user: clerkUser } = useUser();
+  const [supabaseSession, setSupabaseSession] = useState<Session | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
+  const [supabaseLoading, setSupabaseLoading] = useState(true);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
+      setSupabaseSession(s);
+      setSupabaseUser(s?.user ?? null);
     });
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
+      setSupabaseSession(data.session);
+      setSupabaseUser(data.session?.user ?? null);
+      setSupabaseLoading(false);
     });
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  return { session, user, loading };
+  const loading = !clerkLoaded || (supabaseLoading && !clerkSignedIn);
+
+  let unifiedUser: (User | UnifiedUser) | null = null;
+
+  if (clerkSignedIn && clerkUser) {
+    unifiedUser = {
+      id: clerkUser.id,
+      email: clerkUser.primaryEmailAddress?.emailAddress ?? "",
+      user_metadata: {
+        full_name: clerkUser.fullName ?? clerkUser.firstName ?? "",
+        avatar_url: clerkUser.imageUrl ?? "",
+      },
+    };
+  } else if (supabaseUser) {
+    unifiedUser = supabaseUser;
+  }
+
+  return {
+    session: supabaseSession,
+    user: unifiedUser,
+    loading: !clerkLoaded,
+    clerkUser,
+  };
 }
 
 export function useUserRoles(userId?: string) {
+  const { user } = useAuth();
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const isEmailAdmin = isSuperAdminEmail(user?.email);
+
   useEffect(() => {
     if (!userId) {
-      setRoles([]);
+      setRoles(isEmailAdmin ? ["admin"] : []);
       setLoading(false);
       return;
     }
     let active = true;
     setLoading(true);
-    supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
+    Promise.resolve(supabase.from("user_roles").select("role").eq("user_id", userId))
       .then(({ data }) => {
         if (!active) return;
-        setRoles((data ?? []).map((r) => r.role as AppRole));
+        const fetchedRoles = (data ?? []).map((r) => r.role as AppRole);
+        if (isEmailAdmin && !fetchedRoles.includes("admin")) {
+          fetchedRoles.push("admin");
+        }
+        setRoles(fetchedRoles.length > 0 ? fetchedRoles : ["customer"]);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setRoles(isEmailAdmin ? ["admin"] : ["customer"]);
         setLoading(false);
       });
     return () => {
       active = false;
     };
-  }, [userId]);
+  }, [userId, isEmailAdmin]);
 
-  const primary: AppRole = roles.includes("admin")
+  const effectiveRoles =
+    isEmailAdmin && !roles.includes("admin") ? (["admin", ...roles] as AppRole[]) : roles;
+  const primary: AppRole = effectiveRoles.includes("admin")
     ? "admin"
-    : roles.includes("designer")
+    : effectiveRoles.includes("designer")
       ? "designer"
       : "customer";
-  return { roles, primary, loading };
+  return { roles: effectiveRoles, primary, loading };
 }
 
 export async function signOutAndRedirect() {
-  await supabase.auth.signOut();
+  try {
+    await supabase.auth.signOut();
+  } catch (e) {
+    console.error(e);
+  }
   window.location.href = "/";
 }

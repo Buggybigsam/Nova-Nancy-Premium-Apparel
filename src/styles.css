@@ -50,11 +50,11 @@
   --radius: 0.5rem;
 
   /* Brand palette */
-  --ink: oklch(0.18 0.005 60);           /* #121212 near-black */
-  --gold: oklch(0.72 0.11 82);           /* #C5A059 warm gold */
-  --gold-soft: oklch(0.86 0.06 82);      /* muted champagne */
-  --beige: oklch(0.955 0.012 82);        /* #F5F2ED soft beige */
-  --cream: oklch(0.985 0.005 82);        /* near-white cream */
+  --ink: oklch(0.18 0.005 60); /* #121212 near-black */
+  --gold: oklch(0.72 0.11 82); /* #C5A059 warm gold */
+  --gold-soft: oklch(0.86 0.06 82); /* muted champagne */
+  --beige: oklch(0.955 0.012 82); /* #F5F2ED soft beige */
+  --cream: oklch(0.985 0.005 82); /* near-white cream */
 
   /* Semantic tokens mapped onto the palette */
   --background: oklch(1 0 0);
@@ -115,7 +115,10 @@
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-serif);
     letter-spacing: -0.02em;
   }
@@ -140,13 +143,24 @@
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes shimmer {
-  0%, 100% { opacity: 0.4; }
-  50%      { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @utility animate-fade-up {

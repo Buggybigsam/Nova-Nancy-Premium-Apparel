@@ -14,13 +14,11 @@ import {
   ClipboardList,
   Palette,
   KeyRound,
-  Images,
-  Star,
+  type LucideIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { NotificationBell } from "@/components/notification-bell";
 
-type NavItem = { to: string; label: string; icon: any; roles?: AppRole[] };
+type NavItem = { to: string; label: string; icon: LucideIcon; roles?: AppRole[] };
 
 const NAV: NavItem[] = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -32,11 +30,9 @@ const NAV: NavItem[] = [
   { to: "/admin/portal", label: "Admin Portal", icon: KeyRound, roles: ["admin"] },
   { to: "/admin/users", label: "Users", icon: Users, roles: ["admin"] },
   { to: "/admin/requests", label: "Requests", icon: Scissors, roles: ["admin"] },
-  { to: "/admin/styles", label: "Homepage Styles", icon: Palette, roles: ["admin"] },
-  { to: "/admin/portfolio", label: "Portfolio", icon: Images, roles: ["admin"] },
-  { to: "/admin/reviews", label: "Reviews", icon: Star, roles: ["admin"] },
+  { to: "/admin/orders", label: "Shop Orders", icon: ShoppingBag, roles: ["admin"] },
   { to: "/admin/services", label: "Services", icon: ClipboardList, roles: ["admin"] },
-  { to: "/profile", label: "Profile", icon: UserRound, roles: ["customer", "designer"] },
+  { to: "/profile", label: "Profile", icon: UserRound },
 ];
 
 export function DashboardShell({ children, title }: { children: ReactNode; title: string }) {
@@ -45,8 +41,9 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
   const loc = useLocation();
   const navigate = useNavigate();
 
-  const isAdmin = roles.includes("admin");
-  const items = NAV.filter((i) => !i.roles || i.roles.some((r) => roles.includes(r)) || i.roles.includes(primary));
+  const items = NAV.filter(
+    (i) => !i.roles || i.roles.some((r) => roles.includes(r)) || i.roles.includes(primary),
+  );
 
   return (
     <div className="min-h-screen bg-beige">
@@ -68,7 +65,7 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
                 return (
                   <Link
                     key={item.to}
-                    to={item.to as any}
+                    to={item.to as never}
                     className={`flex items-center gap-3 rounded-sm px-4 py-2.5 text-sm transition-colors ${
                       active ? "bg-ink text-cream" : "text-foreground hover:bg-secondary"
                     }`}
@@ -98,15 +95,12 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
               <h1 className="mt-1 font-serif text-3xl">{title}</h1>
             </div>
             <div className="flex items-center gap-3">
-              <NotificationBell />
-              {!isAdmin && (
-                <Link
-                  to="/orders/new"
-                  className="bg-primary px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent"
-                >
-                  + New Order
-                </Link>
-              )}
+              <Link
+                to="/custom-order"
+                className="bg-primary px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent"
+              >
+                + New Order
+              </Link>
             </div>
           </header>
           <div className="px-10 py-8">{children}</div>
@@ -116,7 +110,15 @@ export function DashboardShell({ children, title }: { children: ReactNode; title
   );
 }
 
-export function StatCard({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
+export function StatCard({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string | number;
+  hint?: string;
+}) {
   return (
     <div className="border border-border bg-background p-6">
       <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">{label}</div>
@@ -126,7 +128,17 @@ export function StatCard({ label, value, hint }: { label: string; value: string 
   );
 }
 
-export function EmptyState({ icon: Icon = Scissors, title, description, action }: { icon?: any; title: string; description: string; action?: ReactNode }) {
+export function EmptyState({
+  icon: Icon = Scissors,
+  title,
+  description,
+  action,
+}: {
+  icon?: LucideIcon;
+  title: string;
+  description: string;
+  action?: ReactNode;
+}) {
   return (
     <div className="flex flex-col items-center justify-center border border-dashed border-border bg-background/60 px-6 py-20 text-center">
       <Icon className="mb-4 h-10 w-10 text-accent" />
@@ -147,7 +159,9 @@ export function StatusPill({ status }: { status: string }) {
     cancelled: "bg-red-100 text-red-900",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] ${colors[status] ?? "bg-muted"}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-[0.15em] ${colors[status] ?? "bg-muted"}`}
+    >
       {status.replace(/_/g, " ")}
     </span>
   );
@@ -156,7 +170,10 @@ export function StatusPill({ status }: { status: string }) {
 export function ProgressBar({ value }: { value: number }) {
   return (
     <div className="h-1.5 w-full overflow-hidden bg-muted">
-      <div className="h-full bg-accent transition-all" style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
+      <div
+        className="h-full bg-accent transition-all"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
     </div>
   );
 }

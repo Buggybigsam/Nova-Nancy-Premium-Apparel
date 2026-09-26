@@ -30,18 +30,40 @@ const shells: Record<Variant, string> = {
   dark: "flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground transition-colors hover:border-accent hover:text-accent",
 };
 
-export function SocialLinks({ variant = "circle", className = "", includeWhatsApp = false }: SocialLinksProps) {
+export function SocialLinks({
+  variant = "circle",
+  className = "",
+  includeWhatsApp = false,
+}: SocialLinksProps) {
   const shell = shells[variant];
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${INSTAGRAM_HANDLE}`} className={shell}>
+      <a
+        href={INSTAGRAM_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Instagram ${INSTAGRAM_HANDLE}`}
+        className={shell}
+      >
         <Instagram className="h-4 w-4" />
       </a>
-      <a href={SNAPCHAT_URL} target="_blank" rel="noopener noreferrer" aria-label={`Snapchat ${SNAPCHAT_HANDLE}`} className={shell}>
+      <a
+        href={SNAPCHAT_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Snapchat ${SNAPCHAT_HANDLE}`}
+        className={shell}
+      >
         <SnapchatIcon className="h-4 w-4" />
       </a>
       {includeWhatsApp && (
-        <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp the designer" className={shell}>
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp the designer"
+          className={shell}
+        >
           <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden="true">
             <path d="M12.04 2A9.9 9.9 0 0 0 2.1 11.9c0 1.75.46 3.45 1.34 4.95L2 22l5.3-1.39a9.9 9.9 0 0 0 4.74 1.2h.01A9.9 9.9 0 0 0 22 11.92 9.9 9.9 0 0 0 12.04 2Zm5.8 14.05c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.82-.11a16.6 16.6 0 0 1-1.65-.61c-2.9-1.25-4.79-4.17-4.94-4.37-.14-.2-1.18-1.57-1.18-3s.75-2.13 1.02-2.42c.27-.29.58-.36.78-.36l.56.01c.18.01.42-.07.66.5.24.58.83 2 .9 2.15.07.14.12.31.02.5-.1.2-.15.31-.29.48l-.44.51c-.14.14-.29.3-.13.59.17.29.74 1.22 1.59 1.98 1.09.97 2 1.27 2.29 1.41.29.15.46.12.63-.07.17-.2.72-.84.91-1.13.19-.29.39-.24.65-.14.27.1 1.68.79 1.97.94.29.14.48.21.55.33.07.12.07.7-.17 1.38Z" />
           </svg>

@@ -3,11 +3,9 @@ import { Instagram, Star } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
-import founderAsset from "@/assets/mau-portrait.jpg.asset.json";
-const founder = founderAsset.url;
+import founder from "@/assets/founder.jpg";
 import { portfolioPieces } from "@/data/portfolio";
 import { Reveal, Float } from "@/components/reveal";
-
 
 export const Route = createFileRoute("/designers")({
   head: () => ({
@@ -30,8 +28,12 @@ export const Route = createFileRoute("/designers")({
   component: DesignerPage,
 });
 
-const specialties = ["Bespoke Bridal", "Corporate Tailoring", "Traditional Wear", "Evening Couture"];
-
+const specialties = [
+  "Bespoke Bridal",
+  "Corporate Tailoring",
+  "Traditional Wear",
+  "Evening Couture",
+];
 
 function DesignerPage() {
   return (
@@ -58,14 +60,17 @@ function DesignerPage() {
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {specialties.map((s) => (
-                <span key={s} className="border border-border px-3 py-1 text-[11px] uppercase tracking-[0.2em]">
+                <span
+                  key={s}
+                  className="border border-border px-3 py-1 text-[11px] uppercase tracking-[0.2em]"
+                >
                   {s}
                 </span>
               ))}
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
-                to="/orders/new"
+                to="/custom-order"
                 className="bg-primary px-6 py-3 text-[11px] uppercase tracking-[0.25em] text-primary-foreground transition-colors hover:bg-accent"
               >
                 Commission a piece
@@ -125,26 +130,24 @@ function DesignerPage() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {portfolioPieces.map((piece, i) => (
             <Reveal key={piece.slug} delay={i * 0.05}>
-            <Link
-              to="/portfolio/$slug"
-              params={{ slug: piece.slug }}
-              className="group block"
-            >
-              <div className="aspect-[4/5] overflow-hidden bg-beige">
-                <img
-                  src={piece.image}
-                  loading="lazy"
-                  width={1024}
-                  height={1280}
-                  alt={`${piece.title}: ${piece.summary}`}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="mt-3">
-                <div className="text-[10px] uppercase tracking-[0.25em] text-accent">{piece.category}</div>
-                <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
-              </div>
-            </Link>
+              <Link to="/portfolio/$slug" params={{ slug: piece.slug }} className="group block">
+                <div className="aspect-[4/5] overflow-hidden bg-beige">
+                  <img
+                    src={piece.image}
+                    loading="lazy"
+                    width={1024}
+                    height={1280}
+                    alt={`${piece.title}: ${piece.summary}`}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="mt-3">
+                  <div className="text-[10px] uppercase tracking-[0.25em] text-accent">
+                    {piece.category}
+                  </div>
+                  <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
+                </div>
+              </Link>
             </Reveal>
           ))}
         </div>
@@ -156,7 +159,6 @@ function DesignerPage() {
             View full portfolio
           </Link>
         </div>
-
       </section>
 
       <section className="border-t border-border bg-beige px-6 py-16 text-center md:px-10">

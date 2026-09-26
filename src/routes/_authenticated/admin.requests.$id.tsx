@@ -16,13 +16,22 @@ export const Route = createFileRoute("/_authenticated/admin/requests/$id")({
   head: () => ({
     meta: [
       { title: "Admin · Request Detail | Nova Nancy" },
-      { name: "description", content: "Full commission brief: files, measurements, notes and client messaging." },
+      {
+        name: "description",
+        content: "Full commission brief: files, measurements, notes and client messaging.",
+      },
     ],
   }),
   component: RequestDetail,
 });
 
-function Field({ label, value }: { label: string; value: any }) {
+function Field({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | string[] | number | boolean | null | undefined;
+}) {
   if (value === null || value === undefined || value === "") return null;
   return (
     <div>
@@ -43,7 +52,8 @@ function RequestDetail() {
     queryFn: () => get({ data: { id } }),
   });
 
-  const order: any = data?.order;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const order = data?.order as any;
   const [status, setStatus] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
   const [price, setPrice] = useState("");
@@ -58,6 +68,7 @@ function RequestDetail() {
     setPrice(order.price != null ? String(order.price) : "");
     setExpected(order.expected_completion ?? "");
     setNotes(order.internal_notes ?? "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order?.id, order?.updated_at]);
 
   const save = useMutation({
@@ -76,7 +87,7 @@ function RequestDetail() {
       toast.success("Request updated");
       refetch();
     },
-    onError: (e: any) => toast.error(e.message ?? "Could not update"),
+    onError: (e: Error) => toast.error(e.message ?? "Could not update"),
   });
 
   const send = useMutation({
@@ -86,17 +97,24 @@ function RequestDetail() {
       toast.success("Message sent to client");
       refetch();
     },
-    onError: (e: any) => toast.error(e.message ?? "Could not send"),
+    onError: (e: Error) => toast.error(e.message ?? "Could not send"),
   });
 
   return (
     <DashboardShell title={order ? order.order_number : "Request"}>
-      <Link to="/admin/requests" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/admin/requests"
+        className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Back to requests
       </Link>
 
       {isLoading && <div className="text-muted-foreground">Loading request…</div>}
-      {error && <div className="border border-red-200 bg-red-50 p-4 text-sm text-red-700">{(error as Error).message}</div>}
+      {error && (
+        <div className="border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {(error as Error).message}
+        </div>
+      )}
 
       {order && data && (
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
@@ -124,13 +142,17 @@ function RequestDetail() {
               </div>
               {order.description && (
                 <div className="mt-5">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Description</div>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Description
+                  </div>
                   <p className="mt-1 whitespace-pre-wrap text-sm">{order.description}</p>
                 </div>
               )}
               {order.special_instructions && (
                 <div className="mt-4">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Special instructions</div>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Special instructions
+                  </div>
                   <p className="mt-1 whitespace-pre-wrap text-sm">{order.special_instructions}</p>
                 </div>
               )}
@@ -139,14 +161,28 @@ function RequestDetail() {
             <section className="border border-border bg-background p-6">
               <h2 className="font-serif text-2xl">Reference files</h2>
               {data.files.length === 0 ? (
-                <p className="mt-3 text-sm text-muted-foreground">No files uploaded with this request.</p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  No files uploaded with this request.
+                </p>
               ) : (
                 <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {data.files.map((f: any) => (
-                    <a key={f.id} href={f.url ?? "#"} target="_blank" rel="noreferrer" className="group block border border-border">
+                    <a
+                      key={f.id}
+                      href={f.url ?? "#"}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group block border border-border"
+                    >
                       <div className="flex aspect-square items-center justify-center overflow-hidden bg-secondary">
                         {f.url && String(f.file_type).startsWith("image/") ? (
-                          <img src={f.url} alt={f.file_name} loading="lazy" className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                          <img
+                            src={f.url}
+                            alt={f.file_name}
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                          />
                         ) : (
                           <FileText className="h-10 w-10 text-muted-foreground" />
                         )}
@@ -154,7 +190,8 @@ function RequestDetail() {
                       <div className="p-2">
                         <div className="truncate text-xs">{f.file_name}</div>
                         <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                          {f.kind ? `${f.kind} · ` : ""}{f.file_size ? formatFileSize(Number(f.file_size)) : ""}
+                          {f.kind ? `${f.kind} · ` : ""}
+                          {f.file_size ? formatFileSize(Number(f.file_size)) : ""}
                         </div>
                       </div>
                     </a>
@@ -175,8 +212,12 @@ function RequestDetail() {
                 <dl className="mt-4 grid gap-3 sm:grid-cols-3">
                   {Object.entries(order.measurements as Record<string, string>).map(([k, v]) => (
                     <div key={k} className="border border-border/60 p-3">
-                      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{k.replace(/_/g, " ")}</dt>
-                      <dd className="mt-1 font-serif text-lg">{v} {order.measurement_unit === "cm" ? "cm" : "in"}</dd>
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {k.replace(/_/g, " ")}
+                      </dt>
+                      <dd className="mt-1 font-serif text-lg">
+                        {v} {order.measurement_unit === "cm" ? "cm" : "in"}
+                      </dd>
                     </div>
                   ))}
                 </dl>
@@ -186,9 +227,15 @@ function RequestDetail() {
             <section className="border border-border bg-background p-6">
               <h2 className="font-serif text-2xl">Client messages</h2>
               <div className="mt-4 space-y-3">
-                {data.messages.length === 0 && <p className="text-sm text-muted-foreground">No messages yet.</p>}
+                {data.messages.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No messages yet.</p>
+                )}
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {data.messages.map((m: any) => (
-                  <div key={m.id} className={`max-w-[80%] p-3 text-sm ${m.sender === "admin" ? "ml-auto bg-ink text-cream" : "bg-secondary"}`}>
+                  <div
+                    key={m.id}
+                    className={`max-w-[80%] p-3 text-sm ${m.sender === "admin" ? "ml-auto bg-ink text-cream" : "bg-secondary"}`}
+                  >
                     <div className="whitespace-pre-wrap">{m.body}</div>
                     <div className="mt-1 text-[10px] opacity-70">
                       {m.sender} · {new Date(m.created_at).toLocaleString()}
@@ -223,24 +270,67 @@ function RequestDetail() {
           <aside className="space-y-4 lg:sticky lg:top-8 lg:self-start">
             <div className="border border-border bg-background p-6">
               <h2 className="font-serif text-xl">Manage</h2>
-              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Status</label>
-              <select className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm" value={status} onChange={(e) => setStatus(e.target.value)}>
-                {ORDER_STATUSES.map((s) => <option key={s} value={s}>{statusLabel(s)}</option>)}
+              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Status
+              </label>
+              <select
+                className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                {ORDER_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {statusLabel(s)}
+                  </option>
+                ))}
               </select>
 
-              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Payment</label>
-              <select className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm" value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)}>
-                {PAYMENT_STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, " ")}</option>)}
+              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Payment
+              </label>
+              <select
+                className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm"
+                value={paymentStatus}
+                onChange={(e) => setPaymentStatus(e.target.value)}
+              >
+                {PAYMENT_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {s.replace(/_/g, " ")}
+                  </option>
+                ))}
               </select>
 
-              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Quoted price ({order.currency})</label>
-              <input type="number" min="0" step="0.01" className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm" value={price} onChange={(e) => setPrice(e.target.value)} />
+              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Quoted price ({order.currency})
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
 
-              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Expected completion</label>
-              <input type="date" className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm" value={expected} onChange={(e) => setExpected(e.target.value)} />
+              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Expected completion
+              </label>
+              <input
+                type="date"
+                className="mt-1 w-full border border-border bg-background px-3 py-2 text-sm"
+                value={expected}
+                onChange={(e) => setExpected(e.target.value)}
+              />
 
-              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Internal notes</label>
-              <textarea className="mt-1 min-h-[110px] w-full border border-border bg-background p-3 text-sm" placeholder="Private notes, not visible to the client" value={notes} onChange={(e) => setNotes(e.target.value)} />
+              <label className="mt-4 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Internal notes
+              </label>
+              <textarea
+                className="mt-1 min-h-[110px] w-full border border-border bg-background p-3 text-sm"
+                placeholder="Private notes, not visible to the client"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
 
               <button
                 onClick={() => save.mutate()}

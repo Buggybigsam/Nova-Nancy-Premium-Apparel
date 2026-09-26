@@ -1,6 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { KeyRound, Scissors, MessageCircle, Users, ShoppingBag, ClipboardList, LayoutDashboard } from "lucide-react";
+import {
+  KeyRound,
+  Scissors,
+  MessageCircle,
+  Users,
+  ShoppingBag,
+  ClipboardList,
+  LayoutDashboard,
+} from "lucide-react";
 import { useAuth, useUserRoles } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/nn-studio-7f3a91")({
@@ -18,10 +26,25 @@ export const Route = createFileRoute("/nn-studio-7f3a91")({
 });
 
 const LINKS = [
-  { to: "/admin/portal", label: "Admin portal", icon: KeyRound, desc: "Everything: people, orders, revenue, messages" },
-  { to: "/admin/requests", label: "Commission requests", icon: Scissors, desc: "Briefs, files, measurements, client messaging" },
-  { to: "/messages", label: "Messages", icon: MessageCircle, desc: "Conversations grouped by order" },
-  { to: "/admin/styles", label: "Homepage styles", icon: ShoppingBag, desc: "Upload new fashion styles" },
+  {
+    to: "/admin/portal",
+    label: "Admin portal",
+    icon: KeyRound,
+    desc: "Everything: people, orders, revenue, messages",
+  },
+  {
+    to: "/admin/requests",
+    label: "Commission requests",
+    icon: Scissors,
+    desc: "Briefs, files, measurements, client messaging",
+  },
+  {
+    to: "/messages",
+    label: "Messages",
+    icon: MessageCircle,
+    desc: "Conversations grouped by order",
+  },
+  { to: "/admin/orders", label: "Shop orders", icon: ShoppingBag, desc: "Payments and fulfilment" },
   { to: "/admin/users", label: "Users and roles", icon: Users, desc: "Accounts and access" },
   { to: "/admin/services", label: "Services", icon: ClipboardList, desc: "Catalogue of offerings" },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, desc: "Studio overview" },
@@ -55,15 +78,24 @@ function StudioPortalPage() {
         ) : primary !== "admin" ? (
           <div className="mt-12 border border-border bg-card p-8">
             <p className="font-serif text-xl">This entrance is reserved</p>
-            <p className="mt-2 text-sm text-muted-foreground">Your account does not have studio privileges.</p>
-            <Link to="/dashboard" className="mt-6 inline-block text-sm text-accent underline underline-offset-4">
+            <p className="mt-2 text-sm text-muted-foreground">
+              Your account does not have studio privileges.
+            </p>
+            <Link
+              to="/dashboard"
+              className="mt-6 inline-block text-sm text-accent underline underline-offset-4"
+            >
               Go to your dashboard
             </Link>
           </div>
         ) : (
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
             {LINKS.map((l) => (
-              <Link key={l.to} to={l.to} className="group border border-border bg-card p-6 transition-colors hover:border-accent">
+              <Link
+                key={l.to}
+                to={l.to}
+                className="group border border-border bg-card p-6 transition-colors hover:border-accent"
+              >
                 <l.icon className="h-5 w-5 text-accent" />
                 <div className="mt-4 font-serif text-lg">{l.label}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{l.desc}</div>

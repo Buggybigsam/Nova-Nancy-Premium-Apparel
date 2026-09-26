@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/tanstack-react-start";
 import "@fontsource/playfair-display/400.css";
 import "@fontsource/playfair-display/400-italic.css";
 import "@fontsource/playfair-display/700.css";
@@ -20,6 +21,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { useCartSync } from "@/hooks/use-cart-sync";
 
 function NotFoundComponent() {
   return (
@@ -103,7 +105,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/sticker.webp", type: "image/webp" },
+      { rel: "shortcut icon", href: "/sticker.webp" },
+      { rel: "apple-touch-icon", href: "/sticker.webp" },
     ],
   }),
   shellComponent: RootShell,
@@ -119,8 +123,10 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
-        <Scripts />
+        <ClerkProvider afterSignOutUrl="/">
+          {children}
+          <Scripts />
+        </ClerkProvider>
       </body>
     </html>
   );
@@ -128,6 +134,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useCartSync();
 
   return (
     <QueryClientProvider client={queryClient}>

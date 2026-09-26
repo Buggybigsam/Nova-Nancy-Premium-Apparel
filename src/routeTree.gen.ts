@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackRouteImport } from './routes/track'
 import { Route as StudioAccessRouteImport } from './routes/studio-access'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as OrderStatusRouteImport } from './routes/order-status'
 import { Route as OrderConfirmedRouteImport } from './routes/order-confirmed'
 import { Route as NnStudio7f3a91RouteImport } from './routes/nn-studio-7f3a91'
 import { Route as DesignersRouteImport } from './routes/designers'
@@ -20,6 +22,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
+import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
+import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
+import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as PortfolioSlugRouteImport } from './routes/portfolio.$slug'
 import { Route as DesignersIdRouteImport } from './routes/designers.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -31,10 +36,10 @@ import { Route as AuthenticatedAppointmentsRouteImport } from './routes/_authent
 import { Route as AuthenticatedOrdersNewRouteImport } from './routes/_authenticated/orders.new'
 import { Route as AuthenticatedOrdersIdRouteImport } from './routes/_authenticated/orders.$id'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
-import { Route as AuthenticatedAdminStylesRouteImport } from './routes/_authenticated/admin.styles'
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin.services'
 import { Route as AuthenticatedAdminRequestsRouteImport } from './routes/_authenticated/admin.requests'
 import { Route as AuthenticatedAdminPortalRouteImport } from './routes/_authenticated/admin.portal'
+import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
 import { Route as AuthenticatedAdminRequestsIdRouteImport } from './routes/_authenticated/admin.requests.$id'
 
 const TrackRoute = TrackRouteImport.update({
@@ -47,9 +52,19 @@ const StudioAccessRoute = StudioAccessRouteImport.update({
   path: '/studio-access',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderStatusRoute = OrderStatusRouteImport.update({
+  id: '/order-status',
+  path: '/order-status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrderConfirmedRoute = OrderConfirmedRouteImport.update({
@@ -89,6 +104,21 @@ const IndexRoute = IndexRouteImport.update({
 const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
   id: '/portfolio/',
   path: '/portfolio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpSplatRoute = SignUpSplatRouteImport.update({
+  id: '/sign-up/$',
+  path: '/sign-up/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInSplatRoute = SignInSplatRouteImport.update({
+  id: '/sign-in/$',
+  path: '/sign-in/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductHandleRoute = ProductHandleRouteImport.update({
+  id: '/product/$handle',
+  path: '/product/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortfolioSlugRoute = PortfolioSlugRouteImport.update({
@@ -147,12 +177,6 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedAdminStylesRoute =
-  AuthenticatedAdminStylesRouteImport.update({
-    id: '/admin/styles',
-    path: '/admin/styles',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAdminServicesRoute =
   AuthenticatedAdminServicesRouteImport.update({
     id: '/admin/services',
@@ -171,6 +195,12 @@ const AuthenticatedAdminPortalRoute =
     path: '/admin/portal',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminOrdersRoute =
+  AuthenticatedAdminOrdersRouteImport.update({
+    id: '/admin/orders',
+    path: '/admin/orders',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminRequestsIdRoute =
   AuthenticatedAdminRequestsIdRouteImport.update({
     id: '/$id',
@@ -185,7 +215,9 @@ export interface FileRoutesByFullPath {
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
   '/order-confirmed': typeof OrderConfirmedRoute
+  '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
+  '/shop': typeof ShopRoute
   '/studio-access': typeof StudioAccessRoute
   '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
@@ -196,11 +228,14 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
+  '/product/$handle': typeof ProductHandleRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
   '/portfolio/': typeof PortfolioIndexRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/portal': typeof AuthenticatedAdminPortalRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRouteWithChildren
   '/admin/services': typeof AuthenticatedAdminServicesRoute
-  '/admin/styles': typeof AuthenticatedAdminStylesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/orders/new': typeof AuthenticatedOrdersNewRoute
@@ -213,7 +248,9 @@ export interface FileRoutesByTo {
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
   '/order-confirmed': typeof OrderConfirmedRoute
+  '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
+  '/shop': typeof ShopRoute
   '/studio-access': typeof StudioAccessRoute
   '/track': typeof TrackRoute
   '/appointments': typeof AuthenticatedAppointmentsRoute
@@ -224,11 +261,14 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
+  '/product/$handle': typeof ProductHandleRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
   '/portfolio': typeof PortfolioIndexRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/portal': typeof AuthenticatedAdminPortalRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRouteWithChildren
   '/admin/services': typeof AuthenticatedAdminServicesRoute
-  '/admin/styles': typeof AuthenticatedAdminStylesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/orders/new': typeof AuthenticatedOrdersNewRoute
@@ -243,7 +283,9 @@ export interface FileRoutesById {
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
   '/order-confirmed': typeof OrderConfirmedRoute
+  '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
+  '/shop': typeof ShopRoute
   '/studio-access': typeof StudioAccessRoute
   '/track': typeof TrackRoute
   '/_authenticated/appointments': typeof AuthenticatedAppointmentsRoute
@@ -254,11 +296,14 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/designers/$id': typeof DesignersIdRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
+  '/product/$handle': typeof ProductHandleRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
   '/portfolio/': typeof PortfolioIndexRoute
+  '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/_authenticated/admin/portal': typeof AuthenticatedAdminPortalRoute
   '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRouteWithChildren
   '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRoute
-  '/_authenticated/admin/styles': typeof AuthenticatedAdminStylesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/_authenticated/orders/new': typeof AuthenticatedOrdersNewRoute
@@ -273,7 +318,9 @@ export interface FileRouteTypes {
     | '/designers'
     | '/nn-studio-7f3a91'
     | '/order-confirmed'
+    | '/order-status'
     | '/services'
+    | '/shop'
     | '/studio-access'
     | '/track'
     | '/appointments'
@@ -284,11 +331,14 @@ export interface FileRouteTypes {
     | '/profile'
     | '/designers/$id'
     | '/portfolio/$slug'
+    | '/product/$handle'
+    | '/sign-in/$'
+    | '/sign-up/$'
     | '/portfolio/'
+    | '/admin/orders'
     | '/admin/portal'
     | '/admin/requests'
     | '/admin/services'
-    | '/admin/styles'
     | '/admin/users'
     | '/orders/$id'
     | '/orders/new'
@@ -301,7 +351,9 @@ export interface FileRouteTypes {
     | '/designers'
     | '/nn-studio-7f3a91'
     | '/order-confirmed'
+    | '/order-status'
     | '/services'
+    | '/shop'
     | '/studio-access'
     | '/track'
     | '/appointments'
@@ -312,11 +364,14 @@ export interface FileRouteTypes {
     | '/profile'
     | '/designers/$id'
     | '/portfolio/$slug'
+    | '/product/$handle'
+    | '/sign-in/$'
+    | '/sign-up/$'
     | '/portfolio'
+    | '/admin/orders'
     | '/admin/portal'
     | '/admin/requests'
     | '/admin/services'
-    | '/admin/styles'
     | '/admin/users'
     | '/orders/$id'
     | '/orders/new'
@@ -330,7 +385,9 @@ export interface FileRouteTypes {
     | '/designers'
     | '/nn-studio-7f3a91'
     | '/order-confirmed'
+    | '/order-status'
     | '/services'
+    | '/shop'
     | '/studio-access'
     | '/track'
     | '/_authenticated/appointments'
@@ -341,11 +398,14 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/designers/$id'
     | '/portfolio/$slug'
+    | '/product/$handle'
+    | '/sign-in/$'
+    | '/sign-up/$'
     | '/portfolio/'
+    | '/_authenticated/admin/orders'
     | '/_authenticated/admin/portal'
     | '/_authenticated/admin/requests'
     | '/_authenticated/admin/services'
-    | '/_authenticated/admin/styles'
     | '/_authenticated/admin/users'
     | '/_authenticated/orders/$id'
     | '/_authenticated/orders/new'
@@ -360,10 +420,15 @@ export interface RootRouteChildren {
   DesignersRoute: typeof DesignersRouteWithChildren
   NnStudio7f3a91Route: typeof NnStudio7f3a91Route
   OrderConfirmedRoute: typeof OrderConfirmedRoute
+  OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
+  ShopRoute: typeof ShopRoute
   StudioAccessRoute: typeof StudioAccessRoute
   TrackRoute: typeof TrackRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
+  ProductHandleRoute: typeof ProductHandleRoute
+  SignInSplatRoute: typeof SignInSplatRoute
+  SignUpSplatRoute: typeof SignUpSplatRoute
   PortfolioIndexRoute: typeof PortfolioIndexRoute
 }
 
@@ -383,11 +448,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order-status': {
+      id: '/order-status'
+      path: '/order-status'
+      fullPath: '/order-status'
+      preLoaderRoute: typeof OrderStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/order-confirmed': {
@@ -444,6 +523,27 @@ declare module '@tanstack/react-router' {
       path: '/portfolio'
       fullPath: '/portfolio/'
       preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up/$': {
+      id: '/sign-up/$'
+      path: '/sign-up/$'
+      fullPath: '/sign-up/$'
+      preLoaderRoute: typeof SignUpSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in/$': {
+      id: '/sign-in/$'
+      path: '/sign-in/$'
+      fullPath: '/sign-in/$'
+      preLoaderRoute: typeof SignInSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/$handle': {
+      id: '/product/$handle'
+      path: '/product/$handle'
+      fullPath: '/product/$handle'
+      preLoaderRoute: typeof ProductHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portfolio/$slug': {
@@ -523,13 +623,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/admin/styles': {
-      id: '/_authenticated/admin/styles'
-      path: '/admin/styles'
-      fullPath: '/admin/styles'
-      preLoaderRoute: typeof AuthenticatedAdminStylesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/admin/services': {
       id: '/_authenticated/admin/services'
       path: '/admin/services'
@@ -549,6 +642,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/portal'
       fullPath: '/admin/portal'
       preLoaderRoute: typeof AuthenticatedAdminPortalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/orders': {
+      id: '/_authenticated/admin/orders'
+      path: '/admin/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/requests/$id': {
@@ -595,10 +695,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRouteWithChildren
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
   AuthenticatedAdminPortalRoute: typeof AuthenticatedAdminPortalRoute
   AuthenticatedAdminRequestsRoute: typeof AuthenticatedAdminRequestsRouteWithChildren
   AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRoute
-  AuthenticatedAdminStylesRoute: typeof AuthenticatedAdminStylesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
 }
 
@@ -609,10 +709,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
   AuthenticatedOrdersRoute: AuthenticatedOrdersRouteWithChildren,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
   AuthenticatedAdminPortalRoute: AuthenticatedAdminPortalRoute,
   AuthenticatedAdminRequestsRoute: AuthenticatedAdminRequestsRouteWithChildren,
   AuthenticatedAdminServicesRoute: AuthenticatedAdminServicesRoute,
-  AuthenticatedAdminStylesRoute: AuthenticatedAdminStylesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
 }
 
@@ -639,10 +739,15 @@ const rootRouteChildren: RootRouteChildren = {
   DesignersRoute: DesignersRouteWithChildren,
   NnStudio7f3a91Route: NnStudio7f3a91Route,
   OrderConfirmedRoute: OrderConfirmedRoute,
+  OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
+  ShopRoute: ShopRoute,
   StudioAccessRoute: StudioAccessRoute,
   TrackRoute: TrackRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
+  ProductHandleRoute: ProductHandleRoute,
+  SignInSplatRoute: SignInSplatRoute,
+  SignUpSplatRoute: SignUpSplatRoute,
   PortfolioIndexRoute: PortfolioIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -95,10 +95,11 @@ function PortfolioDetail() {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
-              to="/orders/new"
+              to="/custom-order"
+              search={{ design: piece.title }}
               className="bg-primary px-6 py-3 text-[11px] uppercase tracking-[0.25em] text-primary-foreground transition-colors hover:bg-accent"
             >
-              Commission this design
+              Request This Design
             </Link>
             <Link
               to="/appointments"
@@ -125,7 +126,12 @@ function PortfolioDetail() {
           </h2>
           <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3">
             {others.map((p) => (
-              <Link key={p.slug} to="/portfolio/$slug" params={{ slug: p.slug }} className="group block">
+              <Link
+                key={p.slug}
+                to="/portfolio/$slug"
+                params={{ slug: p.slug }}
+                className="group block"
+              >
                 <div className="aspect-[4/5] overflow-hidden bg-beige">
                   <img
                     src={p.image}

@@ -4,11 +4,17 @@ import { WHATSAPP_NUMBER } from "@/components/whatsapp-button";
 import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/order-confirmed")({
-  validateSearch: (s: Record<string, unknown>) => ({ ref: typeof s['ref'] === "string" ? s['ref'] : "" }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    ref: typeof s["ref"] === "string" ? s["ref"] : "",
+  }),
   head: () => ({
     meta: [
       { title: "Request received | Nova Nancy" },
-      { name: "description", content: "Your bespoke request has reached Nova Nancy. Keep your reference number to track progress." },
+      {
+        name: "description",
+        content:
+          "Your bespoke request has reached Nova Nancy. Keep your reference number to track progress.",
+      },
       { property: "og:title", content: "Request received | Nova Nancy" },
       { property: "og:description", content: "Your bespoke request has reached Nova Nancy." },
       { property: "og:type", content: "website" },
@@ -21,7 +27,11 @@ export const Route = createFileRoute("/order-confirmed")({
 
 function Confirmed() {
   const { ref } = useSearch({ from: "/order-confirmed" });
-  const submitted = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+  const submitted = new Date().toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Hello Nova Nancy, I just submitted custom order ${ref}. I would like to continue the conversation here.`,
   )}`;
@@ -49,23 +59,66 @@ function Confirmed() {
       <SiteHeader />
       <main className="mx-auto max-w-2xl px-5 py-16 text-center md:px-8">
         <CheckCircle2 className="mx-auto h-12 w-12 text-accent" />
-        <h1 className="mt-6 font-serif text-4xl">Your custom fashion request has been successfully submitted.</h1>
+        <h1 className="mt-6 font-serif text-4xl">
+          Your custom fashion request has been successfully submitted.
+        </h1>
         <div className="mt-8 border border-border bg-background p-8 text-left">
           <dl className="grid gap-5 sm:grid-cols-2">
-            <div><dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Order number</dt><dd className="mt-1 font-serif text-2xl">{ref}</dd></div>
-            <div><dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Submitted</dt><dd className="mt-1">{submitted}</dd></div>
-            <div><dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Current status</dt><dd className="mt-1">Order received</dd></div>
-            <div><dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Expected response</dt><dd className="mt-1">Within 24 to 48 hours</dd></div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                Order number
+              </dt>
+              <dd className="mt-1 font-serif text-2xl">{ref}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                Submitted
+              </dt>
+              <dd className="mt-1">{submitted}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                Current status
+              </dt>
+              <dd className="mt-1">Order received</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                Expected response
+              </dt>
+              <dd className="mt-1">Within 24 to 48 hours</dd>
+            </div>
           </dl>
           <p className="mt-6 text-sm text-muted-foreground">
-            Keep this reference. You can track progress at any time with your reference and the email or phone number you gave us.
+            Keep this reference. You can track progress at any time with your reference and the
+            email or phone number you gave us.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <button onClick={downloadSummary} className="border border-border px-5 py-3 text-[11px] uppercase tracking-[0.25em] hover:bg-secondary">Download summary</button>
-            <Link to="/track" search={{ ref }} className="bg-primary px-5 py-3 text-[11px] uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent">Track this order</Link>
-            <a href={waLink} target="_blank" rel="noopener noreferrer" className="bg-[#25D366] px-5 py-3 text-[11px] uppercase tracking-[0.25em] text-white">Continue on WhatsApp</a>
+            <button
+              onClick={downloadSummary}
+              className="border border-border px-5 py-3 text-[11px] uppercase tracking-[0.25em] hover:bg-secondary"
+            >
+              Download summary
+            </button>
+            <Link
+              to="/track"
+              search={{ ref }}
+              className="bg-primary px-5 py-3 text-[11px] uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent"
+            >
+              Track this order
+            </Link>
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#25D366] px-5 py-3 text-[11px] uppercase tracking-[0.25em] text-white"
+            >
+              Continue on WhatsApp
+            </a>
           </div>
-          <p className="mt-4 text-[11px] text-muted-foreground">Automatic email confirmation is pending and not yet enabled.</p>
+          <p className="mt-4 text-[11px] text-muted-foreground">
+            Automatic email confirmation is pending and not yet enabled.
+          </p>
         </div>
       </main>
     </div>
