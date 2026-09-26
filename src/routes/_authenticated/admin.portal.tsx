@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
+import { useServerFn } from "@/lib/server-fn-compat";
 import { DashboardShell, StatCard, StatusPill } from "@/components/dashboard/shell";
 import {
   getAdminPortalState,

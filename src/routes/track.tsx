@@ -1,6 +1,6 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
+import { useServerFn } from "@/lib/server-fn-compat";
 import { SiteHeader } from "@/components/site-header";
 import { trackCustomOrder } from "@/lib/custom-orders.functions";
 import { TIMELINE, statusLabel } from "@/lib/custom-orders";

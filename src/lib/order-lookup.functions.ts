@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn } from "@/lib/server-fn-compat";
 import { z } from "zod";
 
 const API_VERSION = "2025-07";

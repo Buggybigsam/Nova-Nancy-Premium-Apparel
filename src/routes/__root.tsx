@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/tanstack-react-start";
 import "@fontsource/playfair-display/400.css";
 import "@fontsource/playfair-display/400-italic.css";
 import "@fontsource/playfair-display/700.css";
@@ -116,11 +115,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-const clerkPublishableKey =
-  (typeof process !== "undefined" && process.env?.VITE_CLERK_PUBLISHABLE_KEY) ||
-  import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ||
-  "pk_test_YWNlLXNoZWVwLTM2NS5jbGVyay5hY2NvdW50cy5kZXYk";
-
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
@@ -128,10 +122,8 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ClerkProvider publishableKey={clerkPublishableKey} afterSignOutUrl="/">
-          {children}
-          <Scripts />
-        </ClerkProvider>
+        {children}
+        <Scripts />
       </body>
     </html>
   );

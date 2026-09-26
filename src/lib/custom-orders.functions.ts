@@ -1,5 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { createServerFn } from "@/lib/server-fn-compat";
 import { resolveAccess } from "@/lib/custom-orders.access.server";
 import {
   uploadRequestSchema,

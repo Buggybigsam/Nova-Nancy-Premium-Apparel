@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { useServerFn } from "@/lib/server-fn-compat";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { listShopifyOrders, type AdminOrder } from "@/lib/shopify-admin.functions";
 import { RefreshCw, Search } from "lucide-react";

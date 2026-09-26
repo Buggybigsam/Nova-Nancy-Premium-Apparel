@@ -868,8 +868,8 @@ function Footer() {
           </h4>
           <ul className="space-y-3 text-sm">
             <li>
-              <a href="#" className="hover:text-accent">
-                Sign in
+              <a href="/custom-order" className="hover:text-accent">
+                Bespoke Couture
               </a>
             </li>
             <li>
