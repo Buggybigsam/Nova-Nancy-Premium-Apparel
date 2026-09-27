@@ -305,6 +305,11 @@ function CustomOrderPage() {
             })),
         },
       });
+      if (result && "whatsappUrl" in result && (result as any).whatsappUrl) {
+        try {
+          sessionStorage.setItem(`order_wa_${result.orderNumber}`, (result as any).whatsappUrl);
+        } catch (_) {}
+      }
       nav({ to: "/order-confirmed", search: { ref: result.orderNumber } });
     } catch (err) {
       toast.error((err as Error).message);

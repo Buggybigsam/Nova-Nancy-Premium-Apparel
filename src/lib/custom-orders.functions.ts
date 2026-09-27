@@ -184,7 +184,38 @@ export const submitCustomOrder = createServerFn({ method: "POST" })
       console.warn("[custom-orders] Designer email notification error:", emailErr);
     }
 
-    return result;
+    // Generate rich WhatsApp order dispatch message & URL
+    const { getBespokeWhatsAppUrl } = await import("@/lib/bespoke-whatsapp");
+    const whatsappUrl = getBespokeWhatsAppUrl(localRecord);
+
+    return {
+      ...result,
+      whatsappUrl,
+    };
+  });
+
+/** Retrieves bespoke order details with generated WhatsApp link for the confirmation page. */
+export const getBespokeOrderForWhatsApp = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => {
+    if (typeof d === "object" && d && "orderNumber" in d && typeof (d as any).orderNumber === "string") {
+      return d as { orderNumber: string };
+    }
+    throw new Error("Invalid orderNumber");
+  })
+  .handler(async ({ data }) => {
+    const { getLocalOrderByNumber } = await import("@/lib/custom-orders.storage");
+    const { getBespokeWhatsAppUrl, generateBespokeWhatsAppMessage } = await import("@/lib/bespoke-whatsapp");
+    const order = getLocalOrderByNumber(data.orderNumber);
+    if (!order) return null;
+    return {
+      orderNumber: order.order_number,
+      fullName: order.full_name,
+      clothingType: order.clothing_type,
+      selectedDesign: order.selected_design,
+      whatsappUrl: getBespokeWhatsAppUrl(order),
+      whatsappMessage: generateBespokeWhatsAppMessage(order),
+      createdAt: order.created_at,
+    };
   });
 
 /** Public tracking: requires the order number plus the email or phone on the order. */
