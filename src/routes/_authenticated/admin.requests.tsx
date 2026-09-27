@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@/lib/server-fn-compat";
+import { useServerFn } from "@tanstack/react-start";
 import { DashboardShell, EmptyState } from "@/components/dashboard/shell";
 import { adminListCustomOrders } from "@/lib/custom-orders.functions";
 import { ORDER_STATUSES, CLOTHING_TYPES, statusLabel } from "@/lib/custom-orders";

@@ -1,4 +1,5 @@
-import { createServerFn } from "@/lib/server-fn-compat";
+import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { resolveAccess } from "@/lib/custom-orders.access.server";
 import {
   uploadRequestSchema,
@@ -174,6 +175,15 @@ export const submitCustomOrder = createServerFn({ method: "POST" })
 
     // Always back up / persist to local store
     saveLocalOrder(localRecord);
+
+    // Send complete intake details directly to the designer's email
+    try {
+      const { dispatchBespokeOrderEmail } = await import("@/lib/bespoke-email.server");
+      await dispatchBespokeOrderEmail(localRecord);
+    } catch (emailErr) {
+      console.warn("[custom-orders] Designer email notification error:", emailErr);
+    }
+
     return result;
   });
 

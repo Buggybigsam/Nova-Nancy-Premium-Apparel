@@ -1,4 +1,4 @@
-import { createServerFn } from "@/lib/server-fn-compat";
+import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isSuperAdminEmail } from "./admin-config";
 import { z } from "zod";

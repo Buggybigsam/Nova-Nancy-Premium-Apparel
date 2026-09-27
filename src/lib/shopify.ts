@@ -11,6 +11,7 @@ export interface ShopifyProduct {
     title: string;
     description: string;
     handle: string;
+    tags?: string[];
     priceRange: {
       minVariantPrice: { amount: string; currencyCode: string };
     };
@@ -43,11 +44,8 @@ export async function storefrontApiRequest(query: string, variables: Record<stri
   });
 
   if (response.status === 402) {
-    toast.error("Shopify: Payment required", {
-      description:
-        "Your Shopify store needs an active billing plan. Visit admin.shopify.com to upgrade.",
-    });
-    return;
+    // Storefront has inactive billing; gracefully fall back to local atelier catalog without jarring toast
+    return null;
   }
 
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);

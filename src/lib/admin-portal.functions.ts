@@ -1,162 +1,182 @@
-import { createServerFn } from "@/lib/server-fn-compat";
+import { createServerFn } from "@tanstack/react-start";
+import { useSession } from "@tanstack/react-start/server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { isSuperAdminEmail } from "./admin-config";
-import { supabase } from "@/integrations/supabase/client";
+
+type PortalSession = { unlockedFor?: string; at?: number };
+
+const SESSION_MAX_AGE = 60 * 60 * 8; // 8 hours
+
+function sessionConfig() {
+  return {
+    password: process.env["SESSION_SECRET"] || "nova-nancy-super-secret-key-32chars-min",
+    name: "nn-admin-portal",
+    maxAge: SESSION_MAX_AGE,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax" as const,
+      path: "/",
+    },
+  };
+}
 
 function codeMatches(input: string, expected: string) {
-  return input.trim() === expected.trim();
+  const a = createHash("sha256").update(input.trim(), "utf8").digest();
+  const b = createHash("sha256").update(expected.trim(), "utf8").digest();
+  return timingSafeEqual(a, b);
 }
 
-function getStoredAdminSession(): { unlockedFor?: string; at?: number } {
-  if (typeof window !== "undefined") {
-    try {
-      const raw = window.sessionStorage.getItem("nn_admin_portal_session");
-      return raw ? JSON.parse(raw) : {};
-    } catch {
-      return {};
-    }
-  }
-  return {};
-}
+async function requireAdmin(context: {
+  supabase: SupabaseClient<Database>;
+  userId: string;
+  claims?: unknown;
+}) {
+  const email = (context.claims as { email?: string })?.email?.toLowerCase() ?? null;
+  if (isSuperAdminEmail(email)) return;
 
-function setStoredAdminSession(session: { unlockedFor?: string; at?: number } | null) {
-  if (typeof window !== "undefined") {
-    try {
-      if (session) {
-        window.sessionStorage.setItem("nn_admin_portal_session", JSON.stringify(session));
-      } else {
-        window.sessionStorage.removeItem("nn_admin_portal_session");
-      }
-    } catch {
-      // ignore
-    }
-  }
+  const { data: isAdmin } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
+  if (!isAdmin) throw new Error("Forbidden");
 }
 
 /** Step 2 of login: signed-in admin enters the secret code. */
 export const unlockAdminPortal = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => {
-    const code = (d as { code?: string })?.code ?? "";
-    return { code: String(code) };
-  })
-  .handler(async ({ data }) => {
-    const expected = "admin2026";
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { code: string }) => ({ code: String(d?.code ?? "") }))
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context);
+    const expected = process.env["ADMIN_PORTAL_CODE"] || "admin2026";
     if (!data.code || !codeMatches(data.code, expected)) return { ok: false as const };
 
-    setStoredAdminSession({ unlockedFor: "admin_user", at: Date.now() });
+    const session = await useSession<PortalSession>(sessionConfig());
+    await session.update({ unlockedFor: context.userId, at: Date.now() });
     return { ok: true as const };
   });
 
 export const lockAdminPortal = createServerFn({ method: "POST" }).handler(async () => {
-  setStoredAdminSession(null);
+  const session = await useSession<PortalSession>(sessionConfig());
+  await session.clear();
   return { ok: true as const };
 });
 
-export const getAdminPortalState = createServerFn({ method: "POST" }).handler(async () => {
-  const session = getStoredAdminSession();
-  const unlocked = !!session.unlockedFor;
-  return {
-    isAdmin: true,
-    unlocked,
-  };
-});
+export const getAdminPortalState = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const email = (context.claims as { email?: string })?.email?.toLowerCase() ?? null;
+    let isAdmin = isSuperAdminEmail(email);
+    if (!isAdmin) {
+      const { data } = await context.supabase.rpc("has_role", {
+        _user_id: context.userId,
+        _role: "admin",
+      });
+      isAdmin = !!data;
+    }
+    const session = await useSession<PortalSession>(sessionConfig());
+    return {
+      isAdmin,
+      unlocked: isAdmin && session.data.unlockedFor === context.userId,
+    };
+  });
 
 /** Full snapshot of users, orders, revenue and message activity. */
-export const getAdminOverview = createServerFn({ method: "POST" }).handler(async () => {
-  const session = getStoredAdminSession();
-  if (!session.unlockedFor) {
-    // Return empty state or allow demo access
-  }
+export const getAdminOverview = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdmin(context);
+    const session = await useSession<PortalSession>(sessionConfig());
+    if (session.data.unlockedFor !== context.userId) throw new Error("Locked");
 
-  try {
-    const [profilesRes, rolesRes, customRes, ordersRes, msgRes, payRes] = await Promise.all([
-      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
-      supabase.from("user_roles").select("user_id, role"),
-      supabase
-        .from("custom_orders")
-        .select(
-          "id, order_number, full_name, email, phone, clothing_type, status, payment_status, price, currency, created_at, event_date, customer_id",
-        )
-        .order("created_at", { ascending: false })
-        .limit(300),
-      supabase
-        .from("orders")
-        .select("id, title, status, budget, progress_percent, created_at, customer_id")
-        .order("created_at", { ascending: false })
-        .limit(300),
-      supabase
-        .from("custom_order_messages")
-        .select("id, order_id, sender, body, created_at")
-        .order("created_at", { ascending: false })
-        .limit(60),
-      supabase
-        .from("custom_order_payments")
-        .select("id, order_id, amount, currency, status, reference, created_at")
-        .order("created_at", { ascending: false })
-        .limit(100),
-    ]);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const profiles = profilesRes.data ?? [];
-    const roles = rolesRes.data ?? [];
-    const roleMap = new Map(roles.map((r) => [r.user_id, r.role]));
+    const [{ data: authUsers }, profilesRes, rolesRes, customRes, ordersRes, msgRes, payRes] =
+      await Promise.all([
+        supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 }),
+        supabaseAdmin.from("profiles").select("*").order("created_at", { ascending: false }),
+        supabaseAdmin.from("user_roles").select("user_id, role"),
+        supabaseAdmin
+          .from("custom_orders")
+          .select(
+            "id, order_number, full_name, email, phone, clothing_type, status, payment_status, price, currency, created_at, event_date, customer_id",
+          )
+          .order("created_at", { ascending: false })
+          .limit(300),
+        supabaseAdmin
+          .from("orders")
+          .select("id, title, status, budget, progress_percent, created_at, customer_id")
+          .order("created_at", { ascending: false })
+          .limit(300),
+        supabaseAdmin
+          .from("custom_order_messages")
+          .select("id, order_id, sender, body, created_at")
+          .order("created_at", { ascending: false })
+          .limit(60),
+        supabaseAdmin
+          .from("custom_order_payments")
+          .select("amount, currency, payment_status, paid_at"),
+      ]);
 
-    const users = profiles.map((p) => ({
+    const emails = new Map<
+      string,
+      { email: string | null; lastSignIn: string | null; createdAt: string }
+    >();
+    for (const u of authUsers?.users ?? []) {
+      emails.set(u.id, {
+        email: u.email ?? null,
+        lastSignIn: u.last_sign_in_at ?? null,
+        createdAt: u.created_at,
+      });
+    }
+    const rolesByUser = new Map<string, string[]>();
+    for (const r of rolesRes.data ?? []) {
+      rolesByUser.set(r.user_id, [...(rolesByUser.get(r.user_id) ?? []), r.role as string]);
+    }
+
+    const users = (profilesRes.data ?? []).map((p) => ({
       id: p.id,
-      email: p.email ?? "no-email@novanancy.com",
       fullName: p.full_name,
-      avatarUrl: p.avatar_url,
-      role: roleMap.get(p.id) ?? (isSuperAdminEmail(p.email) ? "admin" : "client"),
       phone: p.phone,
       createdAt: p.created_at,
+      email: emails.get(p.id)?.email ?? null,
+      lastSignIn: emails.get(p.id)?.lastSignIn ?? null,
+      roles: rolesByUser.get(p.id) ?? ["customer"],
     }));
 
     const customOrders = customRes.data ?? [];
-    const standardOrders = ordersRes.data ?? [];
-    const messages = msgRes.data ?? [];
+    const orders = ordersRes.data ?? [];
     const payments = payRes.data ?? [];
 
-    const totalRevenue = payments
-      .filter((p) => p.status === "completed" || p.status === "paid")
-      .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+    const quoted = customOrders.reduce((s, o) => s + Number(o.price ?? 0), 0);
+    const collected = payments
+      .filter((p) => p.payment_status === "paid" || p.payment_status === "deposit_paid")
+      .reduce((s, p) => s + Number(p.amount ?? 0), 0);
 
-    const pendingReviewCount = customOrders.filter((o) => o.status === "pending_review").length;
-    const inProductionCount =
-      customOrders.filter((o) =>
-        ["design_consultation", "fabric_sourcing", "pattern_drafting", "cutting_sewing", "fitting"].includes(
-          o.status,
-        ),
-      ).length + standardOrders.filter((o) => o.status === "in_progress").length;
+    const since = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const stats = {
+      totalUsers: users.length,
+      newUsers30d: users.filter((u) => new Date(u.createdAt).getTime() > since).length,
+      admins: users.filter((u) => u.roles.includes("admin")).length,
+      totalCustomOrders: customOrders.length,
+      openCustomOrders: customOrders.filter(
+        (o) => o.status !== "delivered" && o.status !== "completed" && o.status !== "cancelled",
+      ).length,
+      unpaidOrders: customOrders.filter((o) => o.payment_status === "unpaid").length,
+      totalStudioOrders: orders.length,
+      quotedValue: quoted,
+      collected,
+      messages: msgRes.data?.length ?? 0,
+    };
 
     return {
+      stats,
       users,
       customOrders,
-      standardOrders,
-      messages,
-      payments,
-      stats: {
-        totalUsers: users.length,
-        totalCustomOrders: customOrders.length,
-        totalStandardOrders: standardOrders.length,
-        pendingReviewCount,
-        inProductionCount,
-        totalRevenueGhs: totalRevenue,
-      },
+      orders,
+      messages: msgRes.data ?? [],
     };
-  } catch (err) {
-    console.warn("[admin-portal] Fetching overview fallback:", err);
-    return {
-      users: [],
-      customOrders: [],
-      standardOrders: [],
-      messages: [],
-      payments: [],
-      stats: {
-        totalUsers: 0,
-        totalCustomOrders: 0,
-        totalStandardOrders: 0,
-        pendingReviewCount: 0,
-        inProductionCount: 0,
-        totalRevenueGhs: 0,
-      },
-    };
-  }
-});
+  });

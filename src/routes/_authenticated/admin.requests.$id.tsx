@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useServerFn } from "@/lib/server-fn-compat";
+import { useServerFn } from "@tanstack/react-start";
 import { DashboardShell } from "@/components/dashboard/shell";
 import {
   adminGetCustomOrder,

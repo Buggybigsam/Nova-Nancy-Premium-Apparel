@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/tanstack-react-start";
 import "@fontsource/playfair-display/400.css";
 import "@fontsource/playfair-display/400-italic.css";
 import "@fontsource/playfair-display/700.css";
@@ -90,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Nova Nancy is a couture atelier for bespoke tailoring, bridal, and corporate wear. Book a fitting, upload a design, and track every stitch.",
+          "Nova Nancy is a couture atelier for bespoke tailoring, bridal, and ceremonial wear, handcrafted in Kasoa, Ghana by designer Mau.",
       },
       { name: "author", content: "Nova Nancy Atelier" },
       { property: "og:title", content: "Nova Nancy | Bespoke Couture Atelier" },
@@ -122,8 +123,10 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
-        <Scripts />
+        <ClerkProvider afterSignOutUrl="/">
+          {children}
+          <Scripts />
+        </ClerkProvider>
       </body>
     </html>
   );

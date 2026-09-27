@@ -111,14 +111,21 @@ function Confirmed() {
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#25D366] px-5 py-3 text-[11px] uppercase tracking-[0.25em] text-white"
+              className="bg-[#25D366] px-5 py-3 text-[11px] uppercase tracking-[0.25em] text-white hover:bg-[#20ba59] transition-colors"
             >
               Continue on WhatsApp
             </a>
+            <a
+              href={`mailto:vikponunancy1234@gmail.com?subject=${encodeURIComponent(`Nova Nancy Custom Order ${ref}`)}`}
+              className="border border-border px-5 py-3 text-[11px] uppercase tracking-[0.25em] hover:bg-secondary transition-colors"
+            >
+              Email Designer
+            </a>
           </div>
-          <p className="mt-4 text-[11px] text-muted-foreground">
-            Automatic email confirmation is pending and not yet enabled.
-          </p>
+          <div className="mt-6 flex items-center gap-2 rounded border border-[#25D366]/30 bg-[#25D366]/10 p-3 text-xs text-foreground">
+            <span className="h-2 w-2 rounded-full bg-[#25D366] shrink-0" />
+            <span>All measurements and bespoke design details have been transmitted directly to the designer's email (<strong>vikponunancy1234@gmail.com</strong>) for immediate review.</span>
+          </div>
         </div>
       </main>
     </div>

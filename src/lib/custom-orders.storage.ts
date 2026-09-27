@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 export interface StoredCustomOrder {
   id: string;
   order_number: string;
@@ -50,30 +53,27 @@ export interface StoredCustomOrder {
   }>;
 }
 
-const LOCAL_STORAGE_KEY = "nova_nancy_custom_orders";
-let inMemoryStore: StoredCustomOrder[] = [];
+const STORE_PATH = path.join(process.cwd(), "src", "data", "custom-orders.store.json");
 
 function readStore(): StoredCustomOrder[] {
-  if (typeof window !== "undefined") {
-    try {
-      const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as StoredCustomOrder[]) : [];
-    } catch (err) {
-      console.warn("[custom-orders.storage] Failed to read localStorage:", err);
-      return inMemoryStore;
+  try {
+    if (fs.existsSync(STORE_PATH)) {
+      const raw = fs.readFileSync(STORE_PATH, "utf8");
+      return JSON.parse(raw) as StoredCustomOrder[];
     }
+  } catch (err) {
+    console.error("[custom-orders.storage] Failed to read store:", err);
   }
-  return inMemoryStore;
+  return [];
 }
 
 function writeStore(orders: StoredCustomOrder[]): void {
-  inMemoryStore = orders;
-  if (typeof window !== "undefined") {
-    try {
-      window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(orders));
-    } catch (err) {
-      console.warn("[custom-orders.storage] Failed to write localStorage:", err);
-    }
+  try {
+    const dir = path.dirname(STORE_PATH);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(STORE_PATH, JSON.stringify(orders, null, 2), "utf8");
+  } catch (err) {
+    console.error("[custom-orders.storage] Failed to write store:", err);
   }
 }
 

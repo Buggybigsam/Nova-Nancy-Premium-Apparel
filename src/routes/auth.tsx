@@ -1,15 +1,15 @@
+import { SignIn, SignUp, Show, UserButton } from "@clerk/tanstack-react-start";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MessageCircle, Scissors, PackageSearch, Sparkles } from "lucide-react";
-import { WHATSAPP_URL } from "@/components/whatsapp-button";
+import { useState } from "react";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Atelier Concierge | Nova Nancy Atelier" },
+      { title: "Sign in | Nova Nancy Atelier" },
       {
         name: "description",
         content:
-          "Connect directly with Nova Nancy Atelier. No account needed — book bespoke fittings, track orders, or design your couture garment.",
+          "Sign in or create your Nova Nancy account to book fittings and track custom orders.",
       },
     ],
   }),
@@ -17,112 +17,102 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const [isSignUp, setIsSignUp] = useState(false);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-beige">
       <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         {/* Left Atelier Showcase */}
-        <div className="relative hidden overflow-hidden bg-primary lg:block">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent/30" />
-          <div className="relative flex h-full flex-col justify-between p-12 text-primary-foreground">
-            <Link to="/" className="font-serif text-2xl font-bold">
+        <div className="relative hidden overflow-hidden bg-ink lg:block">
+          <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink to-accent/40" />
+          <div className="relative flex h-full flex-col justify-between p-12 text-cream">
+            <Link to="/" className="font-serif text-2xl">
               NOVA <span className="italic font-normal">NANCY</span>
             </Link>
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
-                Private Atelier
-              </span>
+              <span className="eyebrow">Atelier Access</span>
               <h1 className="mt-6 font-serif text-5xl leading-tight">
                 Every stitch,
                 <br />
-                <span className="italic">crafted exclusively for you.</span>
+                <span className="italic">yours to follow.</span>
               </h1>
-              <p className="mt-6 max-w-md text-sm text-primary-foreground/70 leading-relaxed">
-                No sign-in or password required. Seamlessly book bespoke fittings, consult directly with Mau via WhatsApp, and customize your pieces.
+              <p className="mt-6 max-w-md text-sm text-cream/70">
+                Book fittings, upload references, message your designer, and watch each piece take
+                shape, all in one place.
               </p>
             </div>
-            <div className="text-[11px] uppercase tracking-[0.3em] text-primary-foreground/50">
-              Couture Atelier · Accra & Global
+            <div className="text-[11px] uppercase tracking-[0.3em] text-cream/50">
+              Established 2015 · Kasoa · Milan
             </div>
           </div>
         </div>
 
-        {/* Right Direct Options */}
+        {/* Right Clerk Auth Card */}
         <div className="flex flex-col items-center justify-center px-6 py-16 lg:px-16">
-          <div className="w-full max-w-md space-y-8">
-            <div className="text-center">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
-                Direct Atelier Services
-              </span>
-              <h2 className="mt-3 font-serif text-3xl font-bold">How May We Assist You?</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Select an atelier service below to proceed immediately.
-              </p>
-            </div>
+          <div className="w-full max-w-md flex flex-col items-center">
+            <Show when="signed-in">
+              <div className="text-center p-8 bg-background border border-border/80 rounded-lg shadow-sm w-full space-y-4">
+                <span className="eyebrow">Authenticated</span>
+                <h2 className="font-serif text-3xl">You are signed in</h2>
+                <div className="py-4 flex justify-center">
+                  <UserButton
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-16 h-16 ring-2 ring-accent",
+                      },
+                    }}
+                  />
+                </div>
+                <div className="pt-2">
+                  <Link
+                    to="/dashboard"
+                    className="inline-flex items-center justify-center bg-primary px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.25em] text-primary-foreground transition-colors hover:bg-accent"
+                  >
+                    Go to Dashboard
+                  </Link>
+                </div>
+              </div>
+            </Show>
 
-            <div className="space-y-4">
-              <Link
-                to="/custom-order"
-                className="group flex items-center gap-4 border border-border p-5 transition-all duration-300 hover:border-primary hover:bg-secondary/40"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <Scissors className="h-5 w-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm">Design Your Outfit</div>
-                  <div className="text-xs text-muted-foreground">Submit measurements & custom bespoke references</div>
-                </div>
-              </Link>
-
-              <Link
-                to="/shop"
-                className="group flex items-center gap-4 border border-border p-5 transition-all duration-300 hover:border-primary hover:bg-secondary/40"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm">Shop the Boutique</div>
-                  <div className="text-xs text-muted-foreground">Browse ready-to-wear haute couture collections</div>
-                </div>
-              </Link>
-
-              <Link
-                to="/track"
-                className="group flex items-center gap-4 border border-border p-5 transition-all duration-300 hover:border-primary hover:bg-secondary/40"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <PackageSearch className="h-5 w-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm">Track Custom Order</div>
-                  <div className="text-xs text-muted-foreground">Instant status updates with your reference code</div>
-                </div>
-              </Link>
-
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-4 border border-border p-5 transition-all duration-300 hover:border-[#25D366] hover:bg-[#25D366]/5"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-colors">
-                  <MessageCircle className="h-5 w-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm">Chat Directly with Mau</div>
-                  <div className="text-xs text-muted-foreground">Direct WhatsApp consultation with our lead designer</div>
-                </div>
-              </a>
-            </div>
-
-            <div className="text-center pt-4">
-              <Link
-                to="/"
-                className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors"
-              >
-                ← Return to Homepage
-              </Link>
-            </div>
+            <Show when="signed-out">
+              <div className="w-full flex justify-center">
+                {isSignUp ? (
+                  <div className="w-full">
+                    <div className="mb-4 text-center">
+                      <span className="eyebrow">Join the Atelier</span>
+                      <h2 className="mt-2 font-serif text-3xl">Create your account</h2>
+                    </div>
+                    <SignUp routing="hash" signInUrl="/auth" fallbackRedirectUrl="/dashboard" />
+                    <p className="mt-6 text-center text-sm text-muted-foreground">
+                      Already have an account?{" "}
+                      <button
+                        onClick={() => setIsSignUp(false)}
+                        className="text-accent underline-offset-4 hover:underline"
+                      >
+                        Sign in
+                      </button>
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full">
+                    <div className="mb-4 text-center">
+                      <span className="eyebrow">Welcome Back</span>
+                      <h2 className="mt-2 font-serif text-3xl">Sign in to Nova Nancy</h2>
+                    </div>
+                    <SignIn routing="hash" signUpUrl="/auth" fallbackRedirectUrl="/dashboard" />
+                    <p className="mt-6 text-center text-sm text-muted-foreground">
+                      New to Nova Nancy?{" "}
+                      <button
+                        onClick={() => setIsSignUp(true)}
+                        className="text-accent underline-offset-4 hover:underline"
+                      >
+                        Create an account
+                      </button>
+                    </p>
+                  </div>
+                )}
+              </div>
+            </Show>
           </div>
         </div>
       </div>

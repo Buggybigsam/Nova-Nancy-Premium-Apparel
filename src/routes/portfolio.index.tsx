@@ -29,20 +29,19 @@ export const Route = createFileRoute("/portfolio/")({
 });
 
 const CATEGORIES = [
-  "All",
+  "All Collections",
   "Evening Couture",
   "Bespoke Bridal",
-  "Corporate Tailoring",
-  "Traditional Wear",
   "Statement Pieces",
-  "Everyday Luxe",
+  "Contemporary Luxury",
+  "Ceremonial Wear",
 ];
 
 export function PortfolioIndex() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All Collections");
 
   const filteredPieces = useMemo(() => {
-    if (selectedCategory === "All") return portfolioPieces;
+    if (selectedCategory === "All Collections") return portfolioPieces;
     return portfolioPieces.filter((p) => p.category === selectedCategory);
   }, [selectedCategory]);
 
@@ -87,81 +86,82 @@ export function PortfolioIndex() {
       {/* Gallery */}
       <section className="container mx-auto px-6 py-16 md:px-10 md:py-20">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredPieces.map((piece, i) => (
-            <Reveal key={piece.slug} delay={i * 0.05}>
-              <div className="group flex flex-col justify-between h-full border border-border/80 bg-background transition-shadow hover:shadow-md">
-                <div>
-                  <Link
-                    to="/portfolio/$slug"
-                    params={{ slug: piece.slug }}
-                    className="block aspect-[4/5] overflow-hidden bg-beige relative"
-                  >
-                    <img
-                      src={piece.image}
-                      alt={`${piece.title}: ${piece.summary}`}
-                      loading="lazy"
-                      width={1024}
-                      height={1280}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute top-3 left-3 bg-ink/80 backdrop-blur-sm px-2.5 py-1 text-[9px] uppercase tracking-widest text-cream">
-                      {piece.category}
+          {filteredPieces.map((piece) => (
+            <div
+              key={piece.slug}
+              className="group flex flex-col justify-between h-full border border-border/80 bg-background transition-shadow hover:shadow-md"
+            >
+              <div>
+                <Link
+                  to="/portfolio/$slug"
+                  params={{ slug: piece.slug }}
+                  className="block aspect-[4/5] overflow-hidden bg-beige relative"
+                >
+                  <img
+                    src={piece.image}
+                    alt={`${piece.title}: ${piece.summary}`}
+                    loading="lazy"
+                    width={1024}
+                    height={1280}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute top-3 left-3 bg-ink/80 backdrop-blur-sm px-2.5 py-1 text-[9px] uppercase tracking-widest text-cream">
+                    {piece.category}
+                  </div>
+                </Link>
+
+                <div className="p-6">
+                  <h2 className="font-serif text-2xl group-hover:text-accent transition-colors">
+                    <Link to="/portfolio/$slug" params={{ slug: piece.slug }}>
+                      {piece.title}
+                    </Link>
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+                    {piece.summary}
+                  </p>
+
+                  <div className="mt-4 pt-4 border-t border-border/60">
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                      Customizable options:
                     </div>
-                  </Link>
-
-                  <div className="p-6">
-                    <h2 className="font-serif text-2xl group-hover:text-accent transition-colors">
-                      <Link to="/portfolio/$slug" params={{ slug: piece.slug }}>
-                        {piece.title}
-                      </Link>
-                    </h2>
-                    <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
-                      {piece.summary}
-                    </p>
-
-                    <div className="mt-4 pt-4 border-t border-border/60">
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                        Customizable options:
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {[
-                          "Custom Measurements",
-                          "Neckline / Sleeves",
-                          "Fabric Choice",
-                          "Length",
-                        ].map((opt) => (
-                          <span
-                            key={opt}
-                            className="inline-block bg-secondary px-2 py-0.5 text-[9px] uppercase tracking-wider text-secondary-foreground"
-                          >
-                            {opt}
-                          </span>
-                        ))}
-                      </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        "Custom Measurements",
+                        "Neckline / Sleeves",
+                        "Fabric Choice",
+                        "Length",
+                      ].map((opt) => (
+                        <span
+                          key={opt}
+                          className="inline-block bg-secondary px-2 py-0.5 text-[9px] uppercase tracking-wider text-secondary-foreground"
+                        >
+                          {opt}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </div>
-
-                <div className="p-6 pt-0 flex items-center gap-2">
-                  <Link
-                    to="/custom-order"
-                    search={{ design: piece.title }}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 bg-primary px-4 py-3 text-[10px] font-medium uppercase tracking-[0.2em] text-primary-foreground transition-colors hover:bg-accent text-center"
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Request This Design
-                  </Link>
-                  <Link
-                    to="/portfolio/$slug"
-                    params={{ slug: piece.slug }}
-                    className="border border-border p-3 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                    title="View details"
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
               </div>
-            </Reveal>
+
+              <div className="p-6 pt-0 flex items-center gap-2">
+                <Link
+                  to="/custom-order"
+                  search={{ design: piece.title }}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 bg-primary px-4 py-3 text-[10px] font-medium uppercase tracking-[0.2em] text-primary-foreground transition-colors hover:bg-accent text-center"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Request This Design
+                </Link>
+                <Link
+                  to="/portfolio/$slug"
+                  params={{ slug: piece.slug }}
+                  className="border border-border p-3 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  title="View details"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
       </section>

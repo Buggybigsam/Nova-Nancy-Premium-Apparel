@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import {
   ArrowUpRight,
   Instagram,
@@ -15,18 +15,36 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { WhatsAppButton, WHATSAPP_URL } from "@/components/whatsapp-button";
-import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
+import {
+  SocialLinks,
+  SnapchatIcon,
+  TikTokIcon,
+  INSTAGRAM_URL,
+  SNAPCHAT_URL,
+  TIKTOK_URL,
+  INSTAGRAM_HANDLE,
+  SNAPCHAT_HANDLE,
+  TIKTOK_HANDLE,
+  PHONE_DISPLAY,
+  PHONE_RAW,
+} from "@/components/social-links";
 
 import heroCouture from "@/assets/hero-couture.jpg";
 import fabricSamples from "@/assets/fabric-samples.jpg";
 import designSketch from "@/assets/design-sketch.jpg";
-import collection1 from "@/assets/collection-1.jpg";
-import collection2 from "@/assets/collection-2.jpg";
-import collection3 from "@/assets/collection-3.jpg";
-import collection4 from "@/assets/collection-4.jpg";
+import collectionRoyalCorset from "@/assets/collection-royal-corset.jpg";
+import collectionCrimsonKente from "@/assets/collection-crimson-kente.jpg";
+import collectionEmeraldLeaf from "@/assets/collection-emerald-leaf.jpg";
+import collectionAnkaraMini from "@/assets/collection-ankara-mini.jpg";
+import collectionGreenFlair from "@/assets/collection-green-flair.jpg";
+import collectionKenteMermaid from "@/assets/collection-kente-mermaid.jpg";
+import collectionEmeraldStripe from "@/assets/collection-emerald-stripe.jpg";
+import collectionSunsetCoral from "@/assets/collection-sunset-coral.jpg";
+import collectionFanHighLow from "@/assets/collection-fan-highlow.jpg";
 import { Reveal } from "@/components/reveal";
 import { HeroOrbit, StitchDivider, ScrollCue } from "@/components/lottie";
 import founder from "@/assets/founder.jpg";
+import { SiteHeader } from "@/components/site-header";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,10 +60,18 @@ export const Route = createFileRoute("/")({
 });
 
 const collections = [
-  { title: "Lumière Tailoring", tag: "Corporate", image: collection1 },
-  { title: "Ivoire Bridal", tag: "Wedding", image: collection2 },
-  { title: "Héritage", tag: "Traditional", image: collection3 },
-  { title: "Noir Series", tag: "Men's Formal", image: collection4 },
+  { title: "Golden Kente Leaf Peplum Gown", tag: "Imperial Ashanti Couture", image: collectionKenteMermaid },
+  { title: "Sunset Coral Beaded Corset Gown", tag: "Haute Couture Gala", image: collectionSunsetCoral },
+  { title: "Royal Blue Beaded Gown", tag: "Gala Couture", image: collectionRoyalCorset },
+  { title: "Crimson Kente Empress", tag: "Ceremonial & Bridal", image: collectionCrimsonKente },
+  { title: "Emerald & Gilt Striped Sheath", tag: "Structured Tailoring", image: collectionEmeraldStripe },
+  { title: "Onyx & Gold Fan Flounce Gown", tag: "Architectural Ankara", image: collectionFanHighLow },
+  { title: "Emerald Starburst Corset", tag: "Botanical Wax", image: collectionEmeraldLeaf },
+  { title: "Royal Ankara Bow Mini", tag: "Cosmopolitan Luxury", image: collectionAnkaraMini },
+  { title: "Verdant Cape Flounce Dress", tag: "Artisanal Silhouette", image: collectionGreenFlair },
+  { title: "Heritage Ankara Corset", tag: "Signature Corsetry", image: fabricSamples },
+  { title: "Imperial Boubou Robe", tag: "Ceremonial Regalia", image: designSketch },
+  { title: "Midnight Gilt Gala Gown", tag: "Haute Couture Nº 08", image: heroCouture },
 ];
 
 const services = [
@@ -66,55 +92,58 @@ const services = [
   },
   {
     icon: Sparkles,
-    title: "AI Style Concierge",
-    desc: "Guided fabric, palette, and silhouette suggestions from your inspiration board.",
+    title: "Ceremonial & Evening",
+    desc: "Red carpet, galas, and bespoke African luxury crafted with hand-beaded lace and silk.",
   },
 ];
 
 const testimonials = [
   {
     quote:
-      "The most considered fitting I've ever experienced. Nova Nancy translated a mood board into a gown I'll wear for the rest of my life.",
-    name: "Amara Okonkwo",
-    role: "Bride, Autumn Wedding",
+      "The wedding gown Mau crafted for me was sheer poetry. From our first conversation in the studio to the final hand-stitched lace, it was flawless.",
+    name: "Nana Akua B.",
+    role: "Bespoke Bride, Accra",
   },
   {
     quote:
-      "The corporate wardrobe they built for me commands every room. Precision-cut, and the fabric feels like it was chosen for my skin.",
-    name: "Marcus Chen",
-    role: "Managing Partner",
+      "The cut of the double-breasted suit commands every room. Mau understands drape, movement, and true bespoke tailoring.",
+    name: "Kofi Mensah",
+    role: "Private Client, London & Accra",
   },
   {
     quote:
-      "Six weeks from sketch to first fitting, tracked stitch by stitch on my phone. This is what luxury service should feel like.",
-    name: "Elena Rossi",
-    role: "Creative Director",
+      "From the first sketch to the final hand-stitched hem, Mau's artistry is extraordinary. It feels like wearing fine art.",
+    name: "Stephanie Darko",
+    role: "Gala Commission",
   },
-];
-
-const trackerStages = [
-  { label: "Measurements", state: "done" as const },
-  { label: "Fabric Sourcing", state: "done" as const },
-  { label: "Sewing & Draping", state: "active" as const },
-  { label: "Quality Check", state: "upcoming" as const },
-  { label: "Delivery", state: "upcoming" as const },
 ];
 
 const galleryImages = [
-  collection2,
-  collection3,
-  collection1,
+  collectionKenteMermaid,
+  collectionSunsetCoral,
+  collectionRoyalCorset,
+  collectionCrimsonKente,
+  collectionEmeraldStripe,
+  collectionFanHighLow,
+  collectionEmeraldLeaf,
+  collectionAnkaraMini,
+  collectionGreenFlair,
   fabricSamples,
-  collection4,
   designSketch,
   heroCouture,
-  collection3,
 ];
 
 function LandingPage() {
+  useEffect(() => {
+    // If the visitor opens the site without a specific anchor, guarantee the view starts at the top
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+      <SiteHeader />
       <Hero />
       <Marquee />
       <Reveal>
@@ -126,10 +155,11 @@ function LandingPage() {
       </Reveal>
       <StitchDivider />
       <Reveal>
-        <OrderTracker />
+        <BespokeCraft />
       </Reveal>
+      <StitchDivider />
       <Reveal>
-        <AIConcierge />
+        <PrivateFittingBooking />
       </Reveal>
       <StitchDivider />
       <Reveal>
@@ -158,12 +188,6 @@ function LandingPage() {
   );
 }
 
-/* ---------- Nav ---------- */
-import { SiteHeader } from "@/components/site-header";
-function Nav() {
-  return <SiteHeader />;
-}
-
 /* ---------- Hero ---------- */
 function Hero() {
   return (
@@ -179,22 +203,22 @@ function Hero() {
           </h1>
           <p className="mb-10 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
             Bespoke tailoring that marries ancestral craftsmanship with modern silhouettes.
-            Sketched, measured, and stitched exclusively for you.
+            Sketched, measured, and stitched exclusively for you by Mau.
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <a
-              href="#contact"
+              href="#booking"
               className="group inline-flex items-center gap-3 bg-primary px-8 py-4 text-[11px] font-medium uppercase tracking-[0.25em] text-primary-foreground transition-colors duration-500 hover:bg-accent md:px-10 md:py-5"
             >
-              Book Your Style
+              Book Private Fitting
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </a>
-            <a
-              href="#collections"
+            <Link
+              to="/shop"
               className="border-b border-foreground pb-1 text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
             >
-              View collections
-            </a>
+              Explore Boutique
+            </Link>
           </div>
         </div>
         <div className="col-span-12 md:col-span-6">
@@ -227,10 +251,11 @@ function Marquee() {
   const items = [
     "Bespoke Bridal",
     "Corporate Tailoring",
-    "Traditional Wear",
+    "Traditional Luxury",
+    "Gala Silhouettes",
     "Bespoke Bridal",
     "Corporate Tailoring",
-    "Traditional Wear",
+    "Traditional Luxury",
   ];
   return (
     <div className="overflow-hidden border-y border-border bg-background py-5">
@@ -258,21 +283,20 @@ function Collections() {
               This season's <span className="italic">edit</span>.
             </h2>
           </div>
-          <a
-            href="#"
+          <Link
+            to="/shop"
             className="border-b border-foreground/30 pb-1 text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
           >
-            Browse the archive
-          </a>
+            Browse all pieces
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {collections.map((c, i) => (
-            <a
+          {collections.map((c) => (
+            <Link
               key={c.title}
-              href="#"
+              to="/shop"
               className="group block"
-              style={{ transform: i % 2 === 1 ? "translateY(2rem)" : undefined }}
             >
               <div className="mb-4 overflow-hidden bg-muted">
                 <img
@@ -293,7 +317,7 @@ function Collections() {
                 </div>
                 <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-accent" />
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -314,8 +338,8 @@ function Services() {
             </h2>
           </div>
           <p className="text-muted-foreground md:col-span-6 md:col-start-7 md:text-lg">
-            From the first mood board to the final fitting, every step is guided by hand, and
-            supported by a private client dashboard so you can track your creation stitch by stitch.
+            From the first mood board to the final fitting, every garment is drafted, cut, and
+            hand-finished by Mau in our private atelier.
           </p>
         </div>
 
@@ -338,116 +362,285 @@ function Services() {
   );
 }
 
-/* ---------- Order Tracker ---------- */
-function OrderTracker() {
+/* ---------- Bespoke Craft / The Journey ---------- */
+function BespokeCraft() {
+  const steps = [
+    {
+      num: "01",
+      title: "Consultation & Silhouette",
+      desc: "Discuss your event, personal aesthetics, drape preferences, and silhouette inspiration directly with Mau.",
+    },
+    {
+      num: "02",
+      title: "Anatomical Blueprint",
+      desc: "Detailed body measurements taken at our Kasoa atelier or via our guided remote fitting protocol.",
+    },
+    {
+      num: "03",
+      title: "Textile Architecture",
+      desc: "Curating rare silks, Italian wools, rich brocades, and genuine Ghanaian woven textiles.",
+    },
+    {
+      num: "04",
+      title: "The Muslin Toile",
+      desc: "A prototype garment sculpted on your body to balance movement, poise, and posture before final cuts.",
+    },
+    {
+      num: "05",
+      title: "Hand-Stitched Execution",
+      desc: "Every seam, lining, and embellishment completed by hand by Mau. An heirloom piece made only for you.",
+    },
+  ];
+
   return (
-    <section className="px-6 py-24 md:px-10 md:py-32">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <span className="eyebrow mb-3 block">Live Order Tracking</span>
-            <h2 className="font-serif text-4xl md:text-5xl">Track your creation.</h2>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Order NN-88291 · Midnight Silk Gala Gown
-            </p>
-          </div>
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-accent px-4 py-1.5 text-[10px] uppercase tracking-[0.25em] text-accent">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-shimmer" />
-            In Production
-          </span>
+    <section className="bg-beige px-6 py-24 md:px-10 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-16 max-w-2xl">
+          <span className="eyebrow mb-4 block">The Bespoke Method</span>
+          <h2 className="font-serif text-4xl leading-tight md:text-5xl">
+            From raw silk to <span className="italic">perfection</span>.
+          </h2>
+          <p className="mt-4 text-muted-foreground md:text-lg">
+            A bespoke garment is never rushed. Each piece takes between 80 to 140 hours of focused
+            artisan craftsmanship from Mau.
+          </p>
         </div>
 
-        <div className="relative py-12">
-          <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-border" />
-          <div
-            className="absolute left-0 top-1/2 h-px -translate-y-1/2 bg-accent"
-            style={{ width: "45%" }}
-          />
-          <div className="relative flex justify-between gap-2">
-            {trackerStages.map((s) => (
-              <div key={s.label} className="flex flex-col items-center gap-4 bg-background px-2">
-                {s.state === "active" ? (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-accent bg-background ring-8 ring-background">
-                    <div className="h-2.5 w-2.5 animate-shimmer rounded-full bg-accent" />
-                  </div>
-                ) : (
-                  <div
-                    className={`h-4 w-4 rounded-full ${
-                      s.state === "done" ? "bg-foreground" : "bg-border"
-                    }`}
-                  />
-                )}
-                <span
-                  className={`text-center text-[9px] font-semibold uppercase tracking-[0.15em] sm:text-[10px] ${
-                    s.state === "active"
-                      ? "text-accent"
-                      : s.state === "upcoming"
-                        ? "text-muted-foreground"
-                        : ""
-                  }`}
-                >
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
+          {steps.map((s) => (
+            <div key={s.num} className="border-t border-foreground/20 pt-6">
+              <span className="font-serif text-2xl italic text-accent">{s.num}</span>
+              <h3 className="mt-4 font-serif text-xl">{s.title}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{s.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-/* ---------- AI Concierge (dark) ---------- */
-function AIConcierge() {
+/* ---------- Private Fitting Booking ---------- */
+function PrivateFittingBooking() {
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    type: "In-Atelier Fitting (Kasoa)",
+    interest: "Bridal & Evening Gown",
+    preferredDate: "",
+    note: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const whatsappBookingUrl = `https://wa.me/233550501177?text=${encodeURIComponent(
+    `Hello Mau, I would like to book a private fitting consultation.\n\nName: ${formData.name || "Client"}\nPhone: ${formData.phone || "Not specified"}\nType: ${formData.type}\nGarment: ${formData.interest}\nPreferred Date: ${formData.preferredDate || "Earliest available"}\nNotes: ${formData.note || "None"}`,
+  )}`;
+
   return (
-    <section className="bg-primary px-6 py-24 text-primary-foreground md:px-10 md:py-32">
-      <div className="container mx-auto grid items-center gap-16 md:grid-cols-2 md:gap-24">
-        <div className="space-y-10">
-          <span className="eyebrow block">AI Fashion Assistant</span>
-          <h2 className="font-serif text-4xl leading-tight md:text-6xl">
-            The AI Design <span className="italic">Concierge</span>.
+    <section id="booking" className="bg-primary px-6 py-24 text-primary-foreground md:px-10 md:py-32">
+      <div className="mx-auto max-w-7xl grid gap-16 lg:grid-cols-12 items-center">
+        <div className="lg:col-span-5 space-y-6">
+          <span className="eyebrow block text-accent">Private Consultation</span>
+          <h2 className="font-serif text-4xl leading-tight md:text-5xl lg:text-6xl">
+            Book your <span className="italic">fitting</span>.
           </h2>
-          <div className="space-y-4">
-            <div className="rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-6">
-              <h3 className="eyebrow mb-2">Fabric Suggestion</h3>
-              <p className="text-sm text-primary-foreground/70">
-                Based on your uploaded sketch, we recommend 4-ply Crepe de Chine for optimal drape
-                and quiet sheen.
-              </p>
+          <p className="text-primary-foreground/75 text-base md:text-lg leading-relaxed">
+            Every garment begins with a conversation. Meet with designer Mau at our private
+            Kasoa atelier or schedule a worldwide virtual consultation.
+          </p>
+          <div className="space-y-4 pt-4 border-t border-primary-foreground/15 text-sm">
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              <span>Direct, unhurried 1-on-1 time with the designer</span>
             </div>
-            <div className="rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-6">
-              <h3 className="eyebrow mb-2">Timeline Estimate</h3>
-              <p className="text-sm text-primary-foreground/70">
-                Intricate beadwork detected. Estimated completion: 14 business days from
-                measurement.
-              </p>
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              <span>Full fabric sample examination & moodboard review</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              <span>Digital measurement archiving for all future pieces</span>
             </div>
           </div>
-          <button className="group inline-flex items-center gap-4">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-primary-foreground/20 font-serif text-xl transition-colors group-hover:border-accent group-hover:text-accent">
-              →
-            </span>
-            <span className="text-[11px] uppercase tracking-[0.25em]">Consult the concierge</span>
-          </button>
+          <div className="pt-4 flex flex-wrap gap-4">
+            <a
+              href="https://wa.me/233550501177?text=Hello%20Mau,%20I%20would%20like%20to%20inquire%20about%20booking%20a%20private%20fitting."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#25D366] px-6 py-3.5 text-[10px] font-medium uppercase tracking-[0.25em] text-white hover:bg-[#128C7E] transition-colors"
+            >
+              <MessageCircle className="h-4 w-4" /> Book Directly via WhatsApp
+            </a>
+            <Link
+              to="/custom-order"
+              className="inline-flex items-center gap-2 border border-primary-foreground/30 px-6 py-3.5 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:border-accent hover:text-accent transition-colors"
+            >
+              Design Outfit Online →
+            </Link>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <img
-            src={fabricSamples}
-            alt="Silk fabric samples"
-            loading="lazy"
-            width={800}
-            height={800}
-            className="aspect-square w-full object-cover"
-          />
-          <img
-            src={designSketch}
-            alt="Fashion sketch"
-            loading="lazy"
-            width={800}
-            height={800}
-            className="mt-12 aspect-square w-full object-cover"
-          />
+        <div className="lg:col-span-7 bg-background text-foreground p-8 md:p-12 border border-border shadow-2xl">
+          {submitted ? (
+            <div className="text-center py-10 space-y-5 animate-fade-in">
+              <span className="eyebrow block text-accent">Appointment Request Received</span>
+              <h3 className="font-serif text-3xl">Thank you, {formData.name || "Client"}.</h3>
+              <p className="max-w-md mx-auto text-sm text-muted-foreground leading-relaxed">
+                Mau will review your request and confirm your appointment time within 24 hours.
+              </p>
+              <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+                <a
+                  href={whatsappBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-[#25D366] px-6 py-3.5 text-[10px] font-medium uppercase tracking-[0.25em] text-white hover:bg-[#128C7E]"
+                >
+                  <MessageCircle className="h-4 w-4" /> Confirm on WhatsApp Now
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSubmitted(false)}
+                  className="border border-border px-6 py-3.5 text-[10px] font-medium uppercase tracking-[0.25em] hover:border-accent hover:text-accent"
+                >
+                  New Request
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="border-b border-border/80 pb-4">
+                <span className="eyebrow text-muted-foreground block mb-1">Appointment Schedule</span>
+                <h3 className="font-serif text-2xl">Request Private Consultation</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                    Your Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g. Nana Ama Agyeman"
+                    className="w-full border border-border bg-transparent px-4 py-3 text-sm outline-none focus:border-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                    Phone / WhatsApp Number *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="+233 55 000 0000"
+                    className="w-full border border-border bg-transparent px-4 py-3 text-sm outline-none focus:border-accent"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                    Consultation Type
+                  </label>
+                  <select
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    className="w-full border border-border bg-background px-4 py-3 text-sm outline-none focus:border-accent"
+                  >
+                    <option value="In-Atelier Fitting (Kasoa)">In-Atelier Fitting (Kasoa, Ghana)</option>
+                    <option value="Virtual Consultation (Worldwide)">Virtual Consultation (Worldwide)</option>
+                    <option value="In-Home Private VIP Fitting">In-Home Private VIP Fitting</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                    Garment Interest
+                  </label>
+                  <select
+                    value={formData.interest}
+                    onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
+                    className="w-full border border-border bg-background px-4 py-3 text-sm outline-none focus:border-accent"
+                  >
+                    <option value="Bridal & Evening Gown">Bridal & Evening Gown</option>
+                    <option value="Bespoke Tailoring & Suit">Bespoke Tailoring & Suit</option>
+                    <option value="Traditional & Ceremonial (Kente)">Traditional & Ceremonial (Kente)</option>
+                    <option value="Corporate Wardrobe">Corporate Wardrobe</option>
+                    <option value="Ready-to-Wear Custom Fit">Ready-to-Wear Custom Fit</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                    Preferred Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.preferredDate}
+                    onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
+                    className="w-full border border-border bg-transparent px-4 py-3 text-sm outline-none focus:border-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                    Email Address (Optional)
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="client@domain.com"
+                    className="w-full border border-border bg-transparent px-4 py-3 text-sm outline-none focus:border-accent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
+                  Notes / Inspiration (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.note}
+                  onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                  placeholder="Share details regarding your event, date, or specific silhouette inspirations..."
+                  className="w-full border border-border bg-transparent px-4 py-3 text-sm outline-none focus:border-accent"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <button
+                  type="submit"
+                  className="w-full sm:w-auto bg-primary px-8 py-4 text-[10px] font-medium uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent transition-colors"
+                >
+                  Send Appointment Request
+                </button>
+                <a
+                  href={whatsappBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto border border-[#25D366] text-[#25D366] px-6 py-4 text-[10px] font-medium uppercase tracking-[0.25em] flex items-center justify-center gap-2 hover:bg-[#25D366] hover:text-white transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4" /> Send directly via WhatsApp
+                </a>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </section>
@@ -481,8 +674,9 @@ function About() {
           </p>
           <p className="mb-8 text-muted-foreground md:text-lg">
             Follow the studio day to day, fittings, fabric runs, and behind the scenes cuts, on
-            Instagram <span className="text-foreground">mau_real91</span> and Snapchat{" "}
-            <span className="text-foreground">mau.real91</span>.
+            Instagram <span className="text-foreground">mau_real91</span>, Snapchat{" "}
+            <span className="text-foreground">mau.real91</span>, and TikTok{" "}
+            <span className="text-foreground">@{TIKTOK_HANDLE}</span>.
           </p>
           <SocialLinks variant="circle" includeWhatsApp />
           <div className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-8">
@@ -526,13 +720,13 @@ function WhyUs() {
     },
     {
       n: "03",
-      title: "Live progress transparency",
-      desc: "Ten production stages, notifications at every handover, photos on demand.",
+      title: "Direct designer dialogue",
+      desc: "Direct communication with Mau throughout each fitting stage, with updates and photos.",
     },
     {
       n: "04",
       title: "Lifetime alteration promise",
-      desc: "Bodies change. Your garments should too, free alterations, always.",
+      desc: "Bodies change. Your garments should too: free alterations on custom pieces.",
     },
   ];
   return (
@@ -610,19 +804,39 @@ function Gallery() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
           <div>
-            <span className="eyebrow mb-3 block">@novanancy on Instagram</span>
-            <h2 className="font-serif text-4xl md:text-5xl">From the atelier floor.</h2>
+            <span className="eyebrow mb-3 block">@{TIKTOK_HANDLE} on TikTok · @mau_real91 on Instagram</span>
+            <h2 className="font-serif text-4xl md:text-5xl">
+              Pieces from the <span className="italic">atelier</span>.
+            </h2>
           </div>
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:text-accent"
-          >
-            <Instagram className="h-4 w-4" /> Follow us
-          </a>
+          <div className="flex flex-wrap items-center gap-4">
+            <a
+              href={TIKTOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:text-accent"
+            >
+              <TikTokIcon className="h-4 w-4" /> Watch on TikTok
+            </a>
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.25em] transition-colors hover:text-accent"
+            >
+              <Instagram className="h-4 w-4" /> Follow Mau
+            </a>
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:gap-3">
           {galleryImages.map((img, i) => (
-            <a key={i} href="#" className="group relative block overflow-hidden">
+            <a
+              key={i}
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative block overflow-hidden"
+            >
               <img
                 src={img}
                 alt="Nova Nancy atelier moment"
@@ -644,136 +858,182 @@ function Gallery() {
 
 /* ---------- Contact ---------- */
 function Contact() {
+  const contactChannels = [
+    {
+      title: "Phone Call",
+      handle: PHONE_DISPLAY,
+      desc: "Speak directly with the atelier during studio hours",
+      href: `tel:${PHONE_RAW}`,
+      label: "Call Now",
+      icon: Phone,
+      color: "text-foreground",
+    },
+    {
+      title: "WhatsApp",
+      handle: "+233 55 050 1177",
+      desc: "Instant fittings, sketches, fabrics & quotation inquiries",
+      href: WHATSAPP_URL,
+      label: "Message Mau",
+      icon: MessageCircle,
+      color: "text-[#25D366]",
+    },
+    {
+      title: "Instagram",
+      handle: `@${INSTAGRAM_HANDLE}`,
+      desc: "Daily atelier fittings, lookbooks, and behind the scenes",
+      href: INSTAGRAM_URL,
+      label: "Follow & DM",
+      icon: Instagram,
+      color: "text-accent",
+    },
+    {
+      title: "Snapchat",
+      handle: `@${SNAPCHAT_HANDLE}`,
+      desc: "Live atelier stories, fabric hauls, and client fittings",
+      href: SNAPCHAT_URL,
+      label: "Add on Snapchat",
+      icon: SnapchatIcon,
+      color: "text-accent",
+    },
+    {
+      title: "TikTok",
+      handle: `@${TIKTOK_HANDLE}`,
+      desc: "Couture draping, runway reveals, and tailoring process videos",
+      href: TIKTOK_URL,
+      label: "Watch on TikTok",
+      icon: TikTokIcon,
+      color: "text-foreground",
+    },
+  ];
+
   return (
     <section id="contact" className="px-6 py-24 md:px-10 md:py-32">
-      <div className="mx-auto grid max-w-7xl gap-16 md:grid-cols-2">
-        <div>
-          <span className="eyebrow mb-4 block">Visit the Atelier</span>
-          <h2 className="mb-8 font-serif text-4xl md:text-5xl">
-            Come for a <span className="italic">fitting</span>.
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-16 max-w-2xl">
+          <span className="eyebrow mb-4 block">Connect with Mau</span>
+          <h2 className="font-serif text-4xl leading-tight md:text-5xl">
+            Get in touch <span className="italic">directly</span>.
           </h2>
-          <p className="mb-10 max-w-md text-muted-foreground">
-            Private appointments, weekdays 10:00 to 19:00. Virtual consultations available for
-            clients outside the city.
+          <p className="mt-4 text-muted-foreground md:text-lg">
+            Nova Nancy is an intimate, private studio. Reach Mau personally across any of her direct
+            channels for appointments, bespoke commissions, and ready-to-wear inquiries.
           </p>
-          <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <MapPin className="mt-1 h-5 w-5 text-accent" />
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                  Atelier
-                </div>
-                <div className="mt-1">Kasoa, Walantu Street, Ghana</div>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <Mail className="mt-1 h-5 w-5 text-accent" />
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                  Concierge
-                </div>
-                <div className="mt-1">studio@novanancy.com</div>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <Phone className="mt-1 h-5 w-5 text-accent" />
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                  Private line
-                </div>
-                <div className="mt-1">+233 (0) 55 050 1177</div>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <MessageCircle className="mt-1 h-5 w-5 text-[#25D366]" />
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                  WhatsApp
-                </div>
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 inline-block text-foreground underline decoration-[#25D366] underline-offset-4 transition-colors hover:text-[#25D366]"
-                >
-                  Message the designer
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <Instagram className="mt-1 h-5 w-5 text-accent" />
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                  Instagram
-                </div>
-                <a
-                  href={INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
-                >
-                  mau_real91
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <SnapchatIcon className="mt-1 h-5 w-5 text-accent" />
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                  Snapchat
-                </div>
-                <a
-                  href={SNAPCHAT_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 inline-block underline decoration-accent underline-offset-4 transition-colors hover:text-accent"
-                >
-                  mau.real91
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <WhatsAppButton variant="inline" label="Chat on WhatsApp" />
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
-            >
-              Instagram
-            </a>
-            <a
-              href={SNAPCHAT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
-            >
-              Snapchat
-            </a>
-            <a
-              href="tel:+233550501177"
-              className="border border-border px-5 py-3 text-[10px] font-medium uppercase tracking-[0.25em] transition-colors hover:border-accent hover:text-accent"
-            >
-              Call now
-            </a>
-          </div>
         </div>
 
-        <div className="overflow-hidden border border-border bg-beige">
-          <iframe
-            title="Nova Nancy Atelier location"
-            src="https://www.google.com/maps?q=Kasoa,Walantu+Street,Ghana&output=embed"
-            className="h-full min-h-[400px] w-full grayscale"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+        {/* 5 Prominent Contact Cards */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 mb-16">
+          {contactChannels.map((c) => {
+            const Icon = c.icon;
+            return (
+              <a
+                key={c.title}
+                href={c.href}
+                target={c.href.startsWith("tel:") ? undefined : "_blank"}
+                rel={c.href.startsWith("tel:") ? undefined : "noopener noreferrer"}
+                className="group flex flex-col justify-between border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-xl"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <Icon className={`h-6 w-6 ${c.color}`} />
+                    <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent" />
+                  </div>
+                  <div className="mt-6 text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                    {c.title}
+                  </div>
+                  <div className="mt-1 font-serif text-lg font-medium text-foreground">
+                    {c.handle}
+                  </div>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                    {c.desc}
+                  </p>
+                </div>
+                <div className="mt-6 border-t border-border/60 pt-4 text-[10px] uppercase tracking-[0.2em] font-medium text-accent">
+                  {c.label} →
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Atelier Location & Studio Details */}
+        <div className="grid gap-12 lg:grid-cols-12 items-center border border-border bg-beige p-8 md:p-12">
+          <div className="lg:col-span-6 space-y-6">
+            <span className="eyebrow block">Private Atelier</span>
+            <h3 className="font-serif text-3xl md:text-4xl">Visit the Studio</h3>
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+              Appointments are held by appointment at our Walantu Street studio in Kasoa, Ghana.
+              In-home VIP fittings and global virtual sessions are available upon request.
+            </p>
+            <div className="space-y-4 pt-2">
+              <div className="flex items-start gap-4">
+                <MapPin className="mt-1 h-5 w-5 text-accent shrink-0" />
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                    Address
+                  </div>
+                  <div className="text-sm font-medium mt-0.5">Kasoa, Walantu Street, Ghana</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <Mail className="mt-1 h-5 w-5 text-accent shrink-0" />
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                    Email Concierge
+                  </div>
+                  <div className="text-sm font-medium mt-0.5">studio@novanancy.com</div>
+                </div>
+              </div>
+            </div>
+            <div className="pt-4 flex flex-wrap gap-3">
+              <WhatsAppButton variant="inline" label="Chat on WhatsApp" />
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-border bg-background px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-colors hover:border-accent hover:text-accent"
+              >
+                Instagram @{INSTAGRAM_HANDLE}
+              </a>
+              <a
+                href={SNAPCHAT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-border bg-background px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-colors hover:border-accent hover:text-accent"
+              >
+                Snapchat @{SNAPCHAT_HANDLE}
+              </a>
+              <a
+                href={TIKTOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-border bg-background px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-colors hover:border-accent hover:text-accent"
+              >
+                TikTok @{TIKTOK_HANDLE}
+              </a>
+              <a
+                href={`tel:${PHONE_RAW}`}
+                className="border border-border bg-background px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-colors hover:border-accent hover:text-accent"
+              >
+                Call {PHONE_DISPLAY}
+              </a>
+            </div>
+          </div>
+
+          <div className="lg:col-span-6 overflow-hidden border border-border h-[320px] md:h-[380px]">
+            <iframe
+              title="Nova Nancy Atelier location"
+              src="https://www.google.com/maps?q=Kasoa,Walantu+Street,Ghana&output=embed"
+              className="h-full w-full grayscale"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 /* ---------- Newsletter ---------- */
 function Newsletter() {
@@ -825,14 +1085,14 @@ function Footer() {
             Nova <span className="italic font-normal">Nancy</span>
           </div>
           <p className="max-w-sm text-sm leading-relaxed">
-            The private atelier of Mau, one designer, one client at a time. Every garment cut,
+            The private atelier of Mau: one designer, one client at a time. Every garment cut,
             fitted, and finished by hand.
           </p>
           <div className="mt-8">
             <SocialLinks variant="dark" includeWhatsApp />
           </div>
           <div className="mt-4 text-[10px] uppercase tracking-[0.25em]">
-            IG mau_real91 · Snap mau.real91
+            IG mau_real91 · Snap mau.real91 · TikTok @mau.real91 · Tel +233 (0) 55 050 1177
           </div>
         </div>
         <div>
@@ -841,57 +1101,62 @@ function Footer() {
           </h4>
           <ul className="space-y-3 text-sm">
             <li>
-              <a href="#collections" className="hover:text-accent">
-                Collections
-              </a>
+              <Link to="/shop" className="hover:text-accent">
+                Collections & Boutique
+              </Link>
             </li>
             <li>
-              <a href="#services" className="hover:text-accent">
-                Custom Tailoring
-              </a>
+              <Link to="/custom-order" className="hover:text-accent">
+                Bespoke Tailoring
+              </Link>
             </li>
             <li>
-              <a href="#about" className="hover:text-accent">
-                Our Story
-              </a>
+              <Link to="/designers" className="hover:text-accent">
+                Meet Mau
+              </Link>
             </li>
             <li>
               <a href="#contact" className="hover:text-accent">
-                Contact
+                Visit Atelier
               </a>
             </li>
           </ul>
         </div>
         <div>
           <h4 className="mb-6 text-[10px] uppercase tracking-[0.25em] text-primary-foreground">
-            Client
+            Client Concierge
           </h4>
           <ul className="space-y-3 text-sm">
             <li>
-              <a href="/custom-order" className="hover:text-accent">
-                Bespoke Couture
+              <a href="#booking" className="hover:text-accent">
+                Book Private Fitting
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-accent">
-                Book appointment
+              <Link to="/custom-order" className="hover:text-accent">
+                Design Your Garment
+              </Link>
+            </li>
+            <li>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#25D366]"
+              >
+                WhatsApp Atelier
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-accent">
-                Track order
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-accent">
-                FAQs
-              </a>
+              <Link to="/admin/requests" className="text-primary-foreground/30 hover:text-accent text-xs">
+                Atelier Staff Portal
+              </Link>
             </li>
           </ul>
         </div>
       </div>
       <div className="mx-auto mt-20 flex max-w-7xl flex-col justify-between gap-3 border-t border-primary-foreground/10 pt-8 text-[10px] uppercase tracking-[0.25em] sm:flex-row">
-        <span>© 2026 Nova Nancy Atelier</span>
+        <span>© 2026 Nova Nancy Atelier · Kasoa, Ghana</span>
         <span>Designed for the exceptional</span>
       </div>
     </footer>

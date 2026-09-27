@@ -18,6 +18,7 @@ import { Route as OrderConfirmedRouteImport } from './routes/order-confirmed'
 import { Route as NnStudio7f3a91RouteImport } from './routes/nn-studio-7f3a91'
 import { Route as DesignersRouteImport } from './routes/designers'
 import { Route as CustomOrderRouteImport } from './routes/custom-order'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -85,6 +86,11 @@ const DesignersRoute = DesignersRouteImport.update({
 const CustomOrderRoute = CustomOrderRouteImport.update({
   id: '/custom-order',
   path: '/custom-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -211,6 +217,7 @@ const AuthenticatedAdminRequestsIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
@@ -244,6 +251,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
@@ -279,6 +287,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/custom-order': typeof CustomOrderRoute
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/contact'
     | '/custom-order'
     | '/designers'
     | '/nn-studio-7f3a91'
@@ -347,6 +357,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/contact'
     | '/custom-order'
     | '/designers'
     | '/nn-studio-7f3a91'
@@ -381,6 +392,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/contact'
     | '/custom-order'
     | '/designers'
     | '/nn-studio-7f3a91'
@@ -416,6 +428,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ContactRoute: typeof ContactRoute
   CustomOrderRoute: typeof CustomOrderRoute
   DesignersRoute: typeof DesignersRouteWithChildren
   NnStudio7f3a91Route: typeof NnStudio7f3a91Route
@@ -495,6 +508,13 @@ declare module '@tanstack/react-router' {
       path: '/custom-order'
       fullPath: '/custom-order'
       preLoaderRoute: typeof CustomOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -735,6 +755,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ContactRoute: ContactRoute,
   CustomOrderRoute: CustomOrderRoute,
   DesignersRoute: DesignersRouteWithChildren,
   NnStudio7f3a91Route: NnStudio7f3a91Route,

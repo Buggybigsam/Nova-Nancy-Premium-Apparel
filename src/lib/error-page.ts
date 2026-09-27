@@ -1,7 +1,4 @@
-export function renderErrorPage(error?: unknown): string {
-  const errorDetails = error instanceof Error ? `${error.name}: ${error.message}\n${error.stack}` : String(error ?? "");
-  const safeComment = errorDetails ? `<!-- SSR Error:\n${errorDetails.replace(/-->/g, "-- >")}\n-->` : "";
-
+export function renderErrorPage(): string {
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -20,7 +17,6 @@ export function renderErrorPage(error?: unknown): string {
     </style>
   </head>
   <body>
-    ${safeComment}
     <div class="card">
       <h1>This page didn't load</h1>
       <p>Something went wrong on our end. You can try refreshing or head back home.</p>

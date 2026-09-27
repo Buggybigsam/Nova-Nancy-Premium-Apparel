@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Instagram, Star } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
-import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL } from "@/components/social-links";
+import { SocialLinks, SnapchatIcon, INSTAGRAM_URL, SNAPCHAT_URL, PHONE_DISPLAY, PHONE_RAW } from "@/components/social-links";
 import founder from "@/assets/founder.jpg";
 import { portfolioPieces } from "@/data/portfolio";
 import { Reveal, Float } from "@/components/reveal";
@@ -127,28 +127,31 @@ function DesignerPage() {
           </div>
           <SocialLinks variant="circle" includeWhatsApp />
         </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {portfolioPieces.map((piece, i) => (
-            <Reveal key={piece.slug} delay={i * 0.05}>
-              <Link to="/portfolio/$slug" params={{ slug: piece.slug }} className="group block">
-                <div className="aspect-[4/5] overflow-hidden bg-beige">
-                  <img
-                    src={piece.image}
-                    loading="lazy"
-                    width={1024}
-                    height={1280}
-                    alt={`${piece.title}: ${piece.summary}`}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {portfolioPieces.map((piece) => (
+            <Link
+              key={piece.slug}
+              to="/portfolio/$slug"
+              params={{ slug: piece.slug }}
+              className="group block"
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-beige border border-border/40">
+                <img
+                  src={piece.image}
+                  loading="lazy"
+                  width={1024}
+                  height={1280}
+                  alt={`${piece.title}: ${piece.summary}`}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div className="mt-3">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-accent">
+                  {piece.category}
                 </div>
-                <div className="mt-3">
-                  <div className="text-[10px] uppercase tracking-[0.25em] text-accent">
-                    {piece.category}
-                  </div>
-                  <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
-                </div>
-              </Link>
-            </Reveal>
+                <h3 className="mt-1 font-serif text-lg">{piece.title}</h3>
+              </div>
+            </Link>
           ))}
         </div>
         <div className="mt-10 text-center">
@@ -166,11 +169,13 @@ function DesignerPage() {
           Start a conversation with <span className="italic">Mau</span>.
         </h2>
         <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
-          Send a reference, a sketch, or just an idea, DMs on Instagram and Snapchat are answered
-          personally.
+          Send a reference, a sketch, or just an idea. Reach Mau directly on WhatsApp, Instagram, Snapchat, TikTok, or phone.
         </p>
         <div className="mt-8 flex justify-center">
           <SocialLinks variant="circle" includeWhatsApp />
+        </div>
+        <div className="mt-4 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+          Call or WhatsApp: <a href={`tel:${PHONE_RAW}`} className="text-foreground hover:text-accent underline underline-offset-4">{PHONE_DISPLAY}</a>
         </div>
       </section>
 
