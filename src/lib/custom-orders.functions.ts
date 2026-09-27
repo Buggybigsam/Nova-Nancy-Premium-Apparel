@@ -200,6 +200,7 @@ export const getBespokeOrderForWhatsApp = createServerFn({ method: "POST" })
     const order = getLocalOrderByNumber(data.orderNumber);
     if (!order) return null;
     return {
+      order,
       orderNumber: order.order_number,
       fullName: order.full_name,
       clothingType: order.clothing_type,

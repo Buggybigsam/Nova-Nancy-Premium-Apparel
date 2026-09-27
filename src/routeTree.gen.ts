@@ -14,6 +14,7 @@ import { Route as StudioAccessRouteImport } from './routes/studio-access'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as OrderStatusRouteImport } from './routes/order-status'
+import { Route as OrderDossierRouteImport } from './routes/order-dossier'
 import { Route as OrderConfirmedRouteImport } from './routes/order-confirmed'
 import { Route as NnStudio7f3a91RouteImport } from './routes/nn-studio-7f3a91'
 import { Route as DesignersRouteImport } from './routes/designers'
@@ -66,6 +67,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const OrderStatusRoute = OrderStatusRouteImport.update({
   id: '/order-status',
   path: '/order-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderDossierRoute = OrderDossierRouteImport.update({
+  id: '/order-dossier',
+  path: '/order-dossier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrderConfirmedRoute = OrderConfirmedRouteImport.update({
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
   '/order-confirmed': typeof OrderConfirmedRoute
+  '/order-dossier': typeof OrderDossierRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
   '/order-confirmed': typeof OrderConfirmedRoute
+  '/order-dossier': typeof OrderDossierRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/designers': typeof DesignersRouteWithChildren
   '/nn-studio-7f3a91': typeof NnStudio7f3a91Route
   '/order-confirmed': typeof OrderConfirmedRoute
+  '/order-dossier': typeof OrderDossierRoute
   '/order-status': typeof OrderStatusRoute
   '/services': typeof ServicesRoute
   '/shop': typeof ShopRoute
@@ -328,6 +337,7 @@ export interface FileRouteTypes {
     | '/designers'
     | '/nn-studio-7f3a91'
     | '/order-confirmed'
+    | '/order-dossier'
     | '/order-status'
     | '/services'
     | '/shop'
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/designers'
     | '/nn-studio-7f3a91'
     | '/order-confirmed'
+    | '/order-dossier'
     | '/order-status'
     | '/services'
     | '/shop'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/designers'
     | '/nn-studio-7f3a91'
     | '/order-confirmed'
+    | '/order-dossier'
     | '/order-status'
     | '/services'
     | '/shop'
@@ -433,6 +445,7 @@ export interface RootRouteChildren {
   DesignersRoute: typeof DesignersRouteWithChildren
   NnStudio7f3a91Route: typeof NnStudio7f3a91Route
   OrderConfirmedRoute: typeof OrderConfirmedRoute
+  OrderDossierRoute: typeof OrderDossierRoute
   OrderStatusRoute: typeof OrderStatusRoute
   ServicesRoute: typeof ServicesRoute
   ShopRoute: typeof ShopRoute
@@ -480,6 +493,13 @@ declare module '@tanstack/react-router' {
       path: '/order-status'
       fullPath: '/order-status'
       preLoaderRoute: typeof OrderStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order-dossier': {
+      id: '/order-dossier'
+      path: '/order-dossier'
+      fullPath: '/order-dossier'
+      preLoaderRoute: typeof OrderDossierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/order-confirmed': {
@@ -760,6 +780,7 @@ const rootRouteChildren: RootRouteChildren = {
   DesignersRoute: DesignersRouteWithChildren,
   NnStudio7f3a91Route: NnStudio7f3a91Route,
   OrderConfirmedRoute: OrderConfirmedRoute,
+  OrderDossierRoute: OrderDossierRoute,
   OrderStatusRoute: OrderStatusRoute,
   ServicesRoute: ServicesRoute,
   ShopRoute: ShopRoute,
