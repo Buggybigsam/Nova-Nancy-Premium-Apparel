@@ -380,7 +380,67 @@ export async function dispatchBespokeOrderEmail(
     console.warn("[bespoke-email] Could not write archive file:", err);
   }
 
-  // 2. Try sending via Resend API if RESEND_API_KEY is configured (Primary)
+  // 2. Try sending via SendGrid API if SENDGRID_API_KEY is configured (Sends directly to any recipient)
+  const sendgridKey = process.env.SENDGRID_API_KEY?.trim();
+  if (sendgridKey) {
+    try {
+      const fromEmail = process.env.SENDGRID_FROM_EMAIL?.trim() || "sameben0123@gmail.com";
+      const fromName = process.env.SENDGRID_FROM_NAME?.trim() || "Nova Nancy Atelier";
+
+      const payload = {
+        personalizations: [
+          {
+            to: [{ email: recipient, name: "Mau - Nova Nancy Atelier" }],
+            subject,
+          },
+        ],
+        from: {
+          email: fromEmail,
+          name: fromName,
+        },
+        reply_to: {
+          email: order.email,
+          name: order.full_name,
+        },
+        content: [
+          {
+            type: "text/plain",
+            value: text,
+          },
+          {
+            type: "text/html",
+            value: html,
+          },
+        ],
+      };
+
+      const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${sendgridKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status === 202 || res.ok) {
+        console.log(`[bespoke-email] Successfully dispatched order email via SendGrid directly to ${recipient}`);
+        return {
+          success: true,
+          recipient,
+          provider: "sendgrid",
+          archivePath,
+        };
+      } else {
+        const errorText = await res.text();
+        console.warn(`[bespoke-email] SendGrid API error response (${res.status}):`, errorText);
+      }
+    } catch (sendgridErr) {
+      console.warn("[bespoke-email] SendGrid dispatch failed:", sendgridErr);
+    }
+  }
+
+  // 3. Try sending via Resend API if RESEND_API_KEY is configured
   const resendKey = process.env.RESEND_API_KEY?.trim();
   if (resendKey) {
     try {
@@ -460,66 +520,6 @@ export async function dispatchBespokeOrderEmail(
       }
     } catch (e) {
       console.warn("[bespoke-email] Resend dispatch failed:", e);
-    }
-  }
-
-  // 3. Try sending via SendGrid API if SENDGRID_API_KEY is configured
-  const sendgridKey = process.env.SENDGRID_API_KEY?.trim();
-  if (sendgridKey) {
-    try {
-      const fromEmail = process.env.SENDGRID_FROM_EMAIL?.trim() || "orders@novanancy.com";
-      const fromName = process.env.SENDGRID_FROM_NAME?.trim() || "Nova Nancy Atelier";
-
-      const payload = {
-        personalizations: [
-          {
-            to: [{ email: recipient, name: "Mau - Nova Nancy Atelier" }],
-            subject,
-          },
-        ],
-        from: {
-          email: fromEmail,
-          name: fromName,
-        },
-        reply_to: {
-          email: order.email,
-          name: order.full_name,
-        },
-        content: [
-          {
-            type: "text/plain",
-            value: text,
-          },
-          {
-            type: "text/html",
-            value: html,
-          },
-        ],
-      };
-
-      const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${sendgridKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (res.status === 202 || res.ok) {
-        console.log(`[bespoke-email] Successfully dispatched order email via SendGrid to ${recipient}`);
-        return {
-          success: true,
-          recipient,
-          provider: "sendgrid",
-          archivePath,
-        };
-      } else {
-        const errorText = await res.text();
-        console.warn(`[bespoke-email] SendGrid API error response (${res.status}):`, errorText);
-      }
-    } catch (sendgridErr) {
-      console.warn("[bespoke-email] SendGrid dispatch failed:", sendgridErr);
     }
   }
 
