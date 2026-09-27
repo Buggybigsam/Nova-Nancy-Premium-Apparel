@@ -173,7 +173,7 @@ export const submitCustomOrder = createServerFn({ method: "POST" })
       console.warn("[custom-orders] Supabase insert skipped/failed:", e);
     }
 
-    // Always back up / persist to local store
+    // Always back up / persist to local store & memory
     saveLocalOrder(localRecord);
 
     // Generate rich WhatsApp order dispatch message & URL (WhatsApp ONLY, no email)
@@ -182,23 +182,97 @@ export const submitCustomOrder = createServerFn({ method: "POST" })
 
     return {
       ...result,
+      order: localRecord,
       whatsappUrl,
     };
   });
 
-/** Retrieves bespoke order details with generated WhatsApp link for the confirmation page. */
+/** Retrieves bespoke order details with generated WhatsApp link for the confirmation page and dossier. */
 export const getBespokeOrderForWhatsApp = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => {
     if (typeof d === "object" && d && "orderNumber" in d && typeof (d as any).orderNumber === "string") {
-      return d as { orderNumber: string };
+      return d as { orderNumber: string; dataPayload?: string };
     }
     throw new Error("Invalid orderNumber");
   })
   .handler(async ({ data }) => {
-    const { getLocalOrderByNumber } = await import("@/lib/custom-orders.storage");
+    const { getLocalOrderByNumber, getLocalOrderById, saveLocalOrder } = await import("@/lib/custom-orders.storage");
     const { getBespokeWhatsAppUrl, generateBespokeWhatsAppMessage } = await import("@/lib/bespoke-whatsapp");
-    const order = getLocalOrderByNumber(data.orderNumber);
+    const { decodeOrderData } = await import("@/lib/bespoke-order-codec");
+
+    let order: StoredCustomOrder | null = null;
+
+    // 1. If payload was provided in URL / call, decode it
+    if (data.dataPayload) {
+      order = decodeOrderData(data.dataPayload);
+      if (order) {
+        saveLocalOrder(order);
+      }
+    }
+
+    // 2. Query Supabase if order not resolved yet
+    if (!order) {
+      try {
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const cleanRef = data.orderNumber.trim();
+        const { data: dbOrder, error } = await supabaseAdmin
+          .from("custom_orders")
+          .select("*")
+          .ilike("order_number", cleanRef)
+          .maybeSingle();
+
+        if (dbOrder && !error) {
+          order = {
+            id: dbOrder.id,
+            order_number: dbOrder.order_number,
+            customer_id: dbOrder.customer_id,
+            full_name: dbOrder.full_name,
+            email: dbOrder.email,
+            phone: dbOrder.phone,
+            whatsapp: dbOrder.whatsapp,
+            preferred_contact: dbOrder.preferred_contact,
+            delivery_address: dbOrder.delivery_address,
+            order_type: dbOrder.order_type,
+            selected_design: dbOrder.selected_design,
+            clothing_type: dbOrder.clothing_type,
+            fabric_preference: dbOrder.fabric_preference,
+            color: dbOrder.color,
+            color_notes: dbOrder.color_notes,
+            customizations: dbOrder.customizations || [],
+            description: dbOrder.description,
+            special_instructions: dbOrder.special_instructions,
+            event_type: dbOrder.event_type,
+            event_date: dbOrder.event_date,
+            required_date: dbOrder.required_date,
+            urgency: dbOrder.urgency,
+            measurement_unit: dbOrder.measurement_unit,
+            measurements: (dbOrder.measurements as Record<string, string>) || {},
+            needs_measurement_help: dbOrder.needs_measurement_help,
+            status: dbOrder.status,
+            payment_status: dbOrder.payment_status,
+            price: dbOrder.price ? Number(dbOrder.price) : null,
+            currency: dbOrder.currency,
+            internal_notes: dbOrder.internal_notes,
+            expected_completion: dbOrder.expected_completion,
+            created_at: dbOrder.created_at,
+            updated_at: dbOrder.updated_at,
+            files: [],
+            messages: [],
+          };
+          saveLocalOrder(order);
+        }
+      } catch (_) {
+        // Supabase offline / RLS fallback
+      }
+    }
+
+    // 3. Check memory & local/tmp store
+    if (!order) {
+      order = getLocalOrderByNumber(data.orderNumber) || getLocalOrderById(data.orderNumber);
+    }
+
     if (!order) return null;
+
     return {
       order,
       orderNumber: order.order_number,

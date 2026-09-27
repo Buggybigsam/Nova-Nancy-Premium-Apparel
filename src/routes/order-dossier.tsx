@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { getBespokeOrderForWhatsApp } from "@/lib/custom-orders.functions";
 import { BespokeOrderDossier } from "@/components/bespoke-order-dossier";
 import { downloadOrderPdf } from "@/lib/bespoke-pdf";
-import { MAU_WHATSAPP_NUMBER } from "@/lib/bespoke-whatsapp";
+import { MAU_WHATSAPP_NUMBER, generateBespokeWhatsAppMessage } from "@/lib/bespoke-whatsapp";
+import { decodeOrderData, encodeOrderData } from "@/lib/bespoke-order-codec";
 import { MessageCircle, Download, Printer, ArrowLeft, Loader2 } from "lucide-react";
 import type { StoredCustomOrder } from "@/lib/custom-orders.storage";
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/order-dossier")({
   validateSearch: (s: Record<string, unknown>) => ({
     ref: typeof s["ref"] === "string" ? s["ref"] : "",
+    d: typeof s["d"] === "string" ? s["d"] : undefined,
   }),
   head: () => ({
     meta: [
@@ -23,7 +25,7 @@ export const Route = createFileRoute("/order-dossier")({
 });
 
 function OrderDossierPage() {
-  const { ref } = useSearch({ from: "/order-dossier" });
+  const { ref, d } = useSearch({ from: "/order-dossier" });
   const fetchOrder = useServerFn(getBespokeOrderForWhatsApp);
   const dossierRef = useRef<HTMLDivElement>(null);
 
@@ -32,46 +34,70 @@ function OrderDossierPage() {
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
   useEffect(() => {
-    if (!ref) {
-      setLoading(false);
-      return;
-    }
-    fetchOrder({ data: { orderNumber: ref } })
-      .then((res) => {
-        if (res && res.order) {
-          setOrder(res.order as StoredCustomOrder);
-        }
-      })
-      .catch((err) => {
-        console.warn("[order-dossier] Fetch error:", err);
-      })
-      .finally(() => setLoading(false));
-  }, [ref, fetchOrder]);
+    let resolved: StoredCustomOrder | null = null;
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://novanancy.com";
-  const dossierUrl = typeof window !== "undefined" ? window.location.href : `${origin}/order-dossier?ref=${ref}`;
+    // 1. Immediately decode from URL payload if present
+    if (d) {
+      resolved = decodeOrderData(d);
+      if (resolved) {
+        setOrder(resolved);
+        setLoading(false);
+        try {
+          const jsonStr = JSON.stringify(resolved);
+          sessionStorage.setItem(`bespoke_order_${resolved.order_number}`, jsonStr);
+          localStorage.setItem(`bespoke_order_${resolved.order_number}`, jsonStr);
+        } catch (_) {}
+      }
+    }
+
+    // 2. Check local/session browser storage
+    if (!resolved && ref && typeof window !== "undefined") {
+      try {
+        const stored =
+          sessionStorage.getItem(`bespoke_order_${ref}`) ||
+          localStorage.getItem(`bespoke_order_${ref}`) ||
+          sessionStorage.getItem("bespoke_order_latest");
+        if (stored) {
+          resolved = JSON.parse(stored) as StoredCustomOrder;
+          setOrder(resolved);
+          setLoading(false);
+        }
+      } catch (_) {}
+    }
+
+    // 3. Query server in parallel to fetch from DB / memory
+    if (ref) {
+      fetchOrder({ data: { orderNumber: ref, dataPayload: d } })
+        .then((res) => {
+          if (res && res.order && (res.order as any).full_name) {
+            setOrder(res.order as StoredCustomOrder);
+          }
+        })
+        .catch((err) => {
+          console.warn("[order-dossier] Server fetch error:", err);
+        })
+        .finally(() => setLoading(false));
+    } else if (!resolved) {
+      setLoading(false);
+    }
+  }, [ref, d, fetchOrder]);
+
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://nova-stitch-studio.vercel.app";
+  const activeOrder = order || { order_number: ref || "NN-PENDING" };
+  const encodedPayload = d || (order ? encodeOrderData(order) : "");
+  const dossierUrl = `${origin}/order-dossier?ref=${encodeURIComponent(activeOrder.order_number || ref)}${encodedPayload ? `&d=${encodedPayload}` : ""}`;
 
   const defaultWaText = encodeURIComponent(
-    `✨ *NEW BESPOKE COMMISSION - NOVA NANCY ATELIER* ✨\n` +
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `*Order Ref:* ${ref}\n` +
-    (order?.full_name ? `*Client:* ${order.full_name}\n` : "") +
-    (order?.clothing_type ? `*Garment:* ${order.clothing_type}\n` : "") +
-    (order?.selected_design ? `*Design:* ${order.selected_design}\n` : "") +
-    `\n` +
-    `📄 *Official Order PDF Dossier:* ${dossierUrl}\n` +
-    `*(I have downloaded my official order PDF to share with you in this chat)*\n` +
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `_Hello Mau, please review my bespoke commission PDF and advise on fitting!_`
+    generateBespokeWhatsAppMessage(activeOrder, origin)
   );
 
   const waLink = `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${defaultWaText}`;
 
   async function handleDownloadPdf() {
-    if (!dossierRef.current || !ref) return;
+    if (!dossierRef.current || !activeOrder) return;
     setGeneratingPdf(true);
     try {
-      await downloadOrderPdf(dossierRef.current, ref, order || undefined);
+      await downloadOrderPdf(dossierRef.current, activeOrder.order_number || ref, activeOrder);
       toast.success("Order PDF downloaded successfully!");
     } finally {
       setGeneratingPdf(false);
@@ -79,8 +105,8 @@ function OrderDossierPage() {
   }
 
   function handleShareWhatsApp() {
-    if (dossierRef.current && ref) {
-      downloadOrderPdf(dossierRef.current, ref, order || undefined);
+    if (dossierRef.current && activeOrder) {
+      downloadOrderPdf(dossierRef.current, activeOrder.order_number || ref, activeOrder);
       toast.success("Order PDF downloaded! You can now attach it in your chat with Mau.", {
         duration: 6000,
       });
@@ -121,7 +147,7 @@ function OrderDossierPage() {
       <div className="max-w-[680px] mx-auto mb-6 flex flex-wrap items-center justify-between gap-3 bg-[#121212] text-white p-3.5 shadow-md print:hidden">
         <Link
           to="/order-confirmed"
-          search={{ ref }}
+          search={{ ref, d: encodedPayload || undefined }}
           className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-[#cbb479] hover:text-white transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back

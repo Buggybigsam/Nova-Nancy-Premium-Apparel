@@ -1,4 +1,5 @@
 import type { StoredCustomOrder } from "@/lib/custom-orders.storage";
+import { encodeOrderData } from "@/lib/bespoke-order-codec";
 
 export const MAU_WHATSAPP_NUMBER = "233550501177";
 
@@ -6,7 +7,23 @@ export const MAU_WHATSAPP_NUMBER = "233550501177";
  * Generates an executive, luxury WhatsApp message containing all
  * specifications of the bespoke commission for Artisan Mau.
  */
-export function generateBespokeWhatsAppMessage(order: Partial<StoredCustomOrder>): string {
+export function generateBespokeWhatsAppMessage(
+  order: Partial<StoredCustomOrder>,
+  origin?: string,
+): string {
+  const base =
+    origin ||
+    (typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "https://nova-stitch-studio.vercel.app");
+
+  const encodedData = encodeOrderData(order);
+  const dossierUrl = order.order_number
+    ? `${base}/order-dossier?ref=${encodeURIComponent(order.order_number)}${encodedData ? `&d=${encodedData}` : ""}`
+    : "";
+
   const parts: string[] = [
     `✨ *NEW BESPOKE COMMISSION - NOVA NANCY ATELIER* ✨`,
     `━━━━━━━━━━━━━━━━━━━━`,
@@ -44,9 +61,7 @@ export function generateBespokeWhatsAppMessage(order: Partial<StoredCustomOrder>
     order.urgency ? `• *Urgency:* ${order.urgency}` : "",
     order.files && order.files.length > 0 ? `📎 *Reference Images:* ${order.files.length} attached` : "",
     ``,
-    order.order_number
-      ? `📄 *Official Order PDF Dossier:* https://novanancy.com/order-dossier?ref=${order.order_number}`
-      : "",
+    dossierUrl ? `📄 *Official Order PDF Dossier:* ${dossierUrl}` : "",
     `*(I have downloaded my official order PDF to share with you in this chat)*`,
     `━━━━━━━━━━━━━━━━━━━━`,
     `_Hello Mau, please review my bespoke commission PDF and advise on fitting!_`,
@@ -58,7 +73,10 @@ export function generateBespokeWhatsAppMessage(order: Partial<StoredCustomOrder>
 /**
  * Creates the direct wa.me link with encoded order specifications.
  */
-export function getBespokeWhatsAppUrl(order: Partial<StoredCustomOrder>): string {
-  const msg = generateBespokeWhatsAppMessage(order);
+export function getBespokeWhatsAppUrl(
+  order: Partial<StoredCustomOrder>,
+  origin?: string,
+): string {
+  const msg = generateBespokeWhatsAppMessage(order, origin);
   return `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 }

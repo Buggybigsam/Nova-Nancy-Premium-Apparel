@@ -305,12 +305,60 @@ function CustomOrderPage() {
             })),
         },
       });
-      if (result && "whatsappUrl" in result && (result as any).whatsappUrl) {
-        try {
+
+      // Prepare full client order object for immediate lossless rendering
+      const fullOrder = (result as any)?.order || {
+        id: `ord-${result.orderNumber}`,
+        order_number: result.orderNumber,
+        full_name: client.fullName,
+        email: client.email,
+        phone: client.phone,
+        whatsapp: client.whatsapp || client.phone,
+        preferred_contact: client.preferredContact,
+        delivery_address: client.deliveryAddress || null,
+        order_type: orderType,
+        selected_design: selectedDesign || null,
+        clothing_type: design.clothingType || null,
+        fabric_preference: design.fabricPreference || null,
+        color: design.color || null,
+        color_notes: design.colorNotes || null,
+        customizations,
+        description: design.description || null,
+        special_instructions: design.specialInstructions || null,
+        event_type: event.eventType || null,
+        event_date: event.eventDate || null,
+        required_date: event.requiredDate || null,
+        urgency: event.urgency || null,
+        measurement_unit: unit,
+        measurements: needsHelp ? {} : measures,
+        needs_measurement_help: needsHelp,
+        status: "pending_review",
+        payment_status: "unpaid",
+        created_at: result.createdAt || new Date().toISOString(),
+        updated_at: result.createdAt || new Date().toISOString(),
+      };
+
+      const { encodeOrderData } = await import("@/lib/bespoke-order-codec");
+      const encodedPayload = encodeOrderData(fullOrder);
+
+      try {
+        const jsonStr = JSON.stringify(fullOrder);
+        sessionStorage.setItem(`bespoke_order_${result.orderNumber}`, jsonStr);
+        localStorage.setItem(`bespoke_order_${result.orderNumber}`, jsonStr);
+        sessionStorage.setItem("bespoke_order_latest", jsonStr);
+        localStorage.setItem("bespoke_order_latest", jsonStr);
+        if ((result as any)?.whatsappUrl) {
           sessionStorage.setItem(`order_wa_${result.orderNumber}`, (result as any).whatsappUrl);
-        } catch (_) {}
-      }
-      nav({ to: "/order-confirmed", search: { ref: result.orderNumber } });
+        }
+      } catch (_) {}
+
+      nav({
+        to: "/order-confirmed",
+        search: {
+          ref: result.orderNumber,
+          d: encodedPayload || undefined,
+        },
+      });
     } catch (err) {
       toast.error((err as Error).message);
     } finally {

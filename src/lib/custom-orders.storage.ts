@@ -53,33 +53,73 @@ export interface StoredCustomOrder {
   }>;
 }
 
+import os from "node:os";
+
 const STORE_PATH = path.join(process.cwd(), "src", "data", "custom-orders.store.json");
+const TMP_STORE_PATH = path.join(os.tmpdir(), "nova-custom-orders.store.json");
+
+// In-memory cache that persists across warm serverless requests
+const memoryOrders = new Map<string, StoredCustomOrder>();
 
 function readStore(): StoredCustomOrder[] {
+  const merged = new Map<string, StoredCustomOrder>();
+
+  // 1. Read bundled default JSON if available
   try {
     if (fs.existsSync(STORE_PATH)) {
       const raw = fs.readFileSync(STORE_PATH, "utf8");
-      return JSON.parse(raw) as StoredCustomOrder[];
+      const list = JSON.parse(raw) as StoredCustomOrder[];
+      for (const item of list) {
+        if (item.order_number) merged.set(item.order_number.toUpperCase(), item);
+      }
     }
-  } catch (err) {
-    console.error("[custom-orders.storage] Failed to read store:", err);
+  } catch (_) {}
+
+  // 2. Read writable /tmp directory if available
+  try {
+    if (fs.existsSync(TMP_STORE_PATH)) {
+      const raw = fs.readFileSync(TMP_STORE_PATH, "utf8");
+      const list = JSON.parse(raw) as StoredCustomOrder[];
+      for (const item of list) {
+        if (item.order_number) merged.set(item.order_number.toUpperCase(), item);
+      }
+    }
+  } catch (_) {}
+
+  // 3. Merge in-memory orders (most up-to-date)
+  for (const [key, item] of memoryOrders.entries()) {
+    merged.set(key, item);
   }
-  return [];
+
+  return Array.from(merged.values());
 }
 
 function writeStore(orders: StoredCustomOrder[]): void {
+  // Always update in-memory cache
+  for (const o of orders) {
+    if (o.order_number) memoryOrders.set(o.order_number.toUpperCase(), o);
+    if (o.id) memoryOrders.set(o.id.toUpperCase(), o);
+  }
+
+  // Attempt writing to /tmp (always writable in AWS/Vercel serverless)
+  try {
+    fs.writeFileSync(TMP_STORE_PATH, JSON.stringify(orders, null, 2), "utf8");
+  } catch (_) {}
+
+  // Attempt writing to process.cwd() (works locally)
   try {
     const dir = path.dirname(STORE_PATH);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(STORE_PATH, JSON.stringify(orders, null, 2), "utf8");
-  } catch (err) {
-    console.error("[custom-orders.storage] Failed to write store:", err);
-  }
+  } catch (_) {}
 }
 
 export function saveLocalOrder(order: StoredCustomOrder): StoredCustomOrder {
+  if (order.order_number) memoryOrders.set(order.order_number.toUpperCase(), order);
+  if (order.id) memoryOrders.set(order.id.toUpperCase(), order);
+
   const orders = readStore();
-  const index = orders.findIndex((o) => o.id === order.id || o.order_number === order.order_number);
+  const index = orders.findIndex((o) => o.id === order.id || o.order_number.toUpperCase() === order.order_number.toUpperCase());
   if (index >= 0) {
     orders[index] = { ...orders[index], ...order, updated_at: new Date().toISOString() };
   } else {
@@ -90,14 +130,17 @@ export function saveLocalOrder(order: StoredCustomOrder): StoredCustomOrder {
 }
 
 export function getLocalOrderById(id: string): StoredCustomOrder | null {
+  const norm = id.trim().toUpperCase();
+  if (memoryOrders.has(norm)) return memoryOrders.get(norm)!;
   const orders = readStore();
-  return orders.find((o) => o.id === id) ?? null;
+  return orders.find((o) => o.id.toUpperCase() === norm) ?? null;
 }
 
 export function getLocalOrderByNumber(orderNumber: string): StoredCustomOrder | null {
+  const norm = orderNumber.trim().toUpperCase();
+  if (memoryOrders.has(norm)) return memoryOrders.get(norm)!;
   const orders = readStore();
-  const normalized = orderNumber.trim().toUpperCase();
-  return orders.find((o) => o.order_number.toUpperCase() === normalized) ?? null;
+  return orders.find((o) => o.order_number.toUpperCase() === norm) ?? null;
 }
 
 export function listLocalOrders(): StoredCustomOrder[] {

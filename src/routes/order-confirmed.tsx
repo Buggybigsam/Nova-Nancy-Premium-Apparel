@@ -18,15 +18,21 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { getBespokeOrderForWhatsApp } from "@/lib/custom-orders.functions";
-import { MAU_WHATSAPP_NUMBER } from "@/lib/bespoke-whatsapp";
+import {
+  MAU_WHATSAPP_NUMBER,
+  getBespokeWhatsAppUrl,
+  generateBespokeWhatsAppMessage,
+} from "@/lib/bespoke-whatsapp";
 import { BespokeOrderDossier } from "@/components/bespoke-order-dossier";
 import { downloadOrderPdf, shareOrderPdfToWhatsApp } from "@/lib/bespoke-pdf";
 import type { StoredCustomOrder } from "@/lib/custom-orders.storage";
+import { decodeOrderData, encodeOrderData } from "@/lib/bespoke-order-codec";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/order-confirmed")({
   validateSearch: (s: Record<string, unknown>) => ({
     ref: typeof s["ref"] === "string" ? s["ref"] : "",
+    d: typeof s["d"] === "string" ? s["d"] : undefined,
   }),
   head: () => ({
     meta: [
@@ -46,7 +52,7 @@ export const Route = createFileRoute("/order-confirmed")({
 });
 
 function Confirmed() {
-  const { ref } = useSearch({ from: "/order-confirmed" });
+  const { ref, d } = useSearch({ from: "/order-confirmed" });
   const fetchOrder = useServerFn(getBespokeOrderForWhatsApp);
   const dossierRef = useRef<HTMLDivElement>(null);
 
@@ -66,23 +72,67 @@ function Confirmed() {
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [sharingPdf, setSharingPdf] = useState(false);
 
+  // 1. Immediately hydrate from URL payload or browser storage
   useEffect(() => {
-    if (typeof window !== "undefined" && ref) {
-      const cached = sessionStorage.getItem(`order_wa_${ref}`);
-      if (cached) setSavedWaUrl(cached);
-    }
-  }, [ref]);
+    if (typeof window === "undefined") return;
 
+    let hydratedOrder: StoredCustomOrder | null = null;
+
+    if (d) {
+      hydratedOrder = decodeOrderData(d);
+    }
+
+    if (!hydratedOrder && ref) {
+      try {
+        const stored =
+          sessionStorage.getItem(`bespoke_order_${ref}`) ||
+          localStorage.getItem(`bespoke_order_${ref}`) ||
+          sessionStorage.getItem("bespoke_order_latest");
+        if (stored) {
+          hydratedOrder = JSON.parse(stored) as StoredCustomOrder;
+        }
+      } catch (_) {}
+    }
+
+    if (hydratedOrder) {
+      const origin = window.location.origin;
+      setOrderData({
+        orderNumber: hydratedOrder.order_number || ref,
+        fullName: hydratedOrder.full_name || "",
+        clothingType: hydratedOrder.clothing_type || null,
+        selectedDesign: hydratedOrder.selected_design || null,
+        whatsappUrl: getBespokeWhatsAppUrl(hydratedOrder, origin),
+        whatsappMessage: generateBespokeWhatsAppMessage(hydratedOrder, origin),
+        createdAt: hydratedOrder.created_at,
+        order: hydratedOrder,
+      });
+    }
+
+    if (ref) {
+      const cachedWa = sessionStorage.getItem(`order_wa_${ref}`);
+      if (cachedWa) setSavedWaUrl(cachedWa);
+    }
+  }, [ref, d]);
+
+  // 2. Fetch server order in parallel for verification
   useEffect(() => {
     if (!ref) return;
-    fetchOrder({ data: { orderNumber: ref } })
+    fetchOrder({ data: { orderNumber: ref, dataPayload: d } })
       .then((data) => {
-        if (data) setOrderData(data as any);
+        if (data) {
+          setOrderData((prev) => {
+            // If server returned valid order, use it; otherwise preserve hydrated
+            if (data.order && (data.order as any).full_name) {
+              return data as any;
+            }
+            return prev || (data as any);
+          });
+        }
       })
       .catch((err) => {
-        console.warn("[order-confirmed] Could not load order details:", err);
+        console.warn("[order-confirmed] Server order lookup error:", err);
       });
-  }, [ref, fetchOrder]);
+  }, [ref, d, fetchOrder]);
 
   const submitted = orderData?.createdAt
     ? new Date(orderData.createdAt).toLocaleDateString(undefined, {
@@ -96,35 +146,34 @@ function Confirmed() {
         day: "numeric",
       });
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://novanancy.com";
-  const dossierUrl = `${origin}/order-dossier?ref=${ref}`;
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://nova-stitch-studio.vercel.app";
+  const currentOrder = orderData?.order || { order_number: ref };
+  const encodedPayload = d || encodeOrderData(currentOrder);
+  const dossierUrl = `${origin}/order-dossier?ref=${encodeURIComponent(ref)}${encodedPayload ? `&d=${encodedPayload}` : ""}`;
 
   const defaultWaText = encodeURIComponent(
-    `✨ *NEW BESPOKE COMMISSION - NOVA NANCY ATELIER* ✨\n` +
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `*Order Ref:* ${ref}\n` +
-    (orderData?.fullName ? `*Client:* ${orderData.fullName}\n` : "") +
-    (orderData?.clothingType ? `*Garment:* ${orderData.clothingType}\n` : "") +
-    (orderData?.selectedDesign ? `*Design:* ${orderData.selectedDesign}\n` : "") +
-    (orderData?.order?.delivery_address ? `*Fitting Location:* ${orderData.order.delivery_address}\n` : "") +
-    (orderData?.order?.event_type ? `*Occasion:* ${orderData.order.event_type}\n` : "") +
-    (orderData?.order?.required_date ? `*Needed By:* ${orderData.order.required_date}\n` : "") +
-    `\n` +
-    `📄 *Official Order PDF Dossier:* ${dossierUrl}\n` +
-    `*(I have downloaded my official order PDF to share with you in this chat)*\n` +
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `_Hello Mau, please review my bespoke commission PDF and advise on fitting!_`
+    orderData?.whatsappMessage ||
+      `✨ *NEW BESPOKE COMMISSION - NOVA NANCY ATELIER* ✨\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*Order Ref:* ${ref}\n` +
+      (orderData?.fullName ? `*Client:* ${orderData.fullName}\n` : "") +
+      (orderData?.clothingType ? `*Garment:* ${orderData.clothingType}\n` : "") +
+      (orderData?.selectedDesign ? `*Design:* ${orderData.selectedDesign}\n` : "") +
+      `\n` +
+      `📄 *Official Order PDF Dossier:* ${dossierUrl}\n` +
+      `*(I have downloaded my official order PDF to share with you in this chat)*\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `_Hello Mau, please review my bespoke commission PDF and advise on fitting!_`
   );
 
-  const waLink = `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${defaultWaText}`;
+  const waLink = savedWaUrl || `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${defaultWaText}`;
 
   function handleCopyMessage() {
-    if (orderData?.whatsappMessage) {
-      navigator.clipboard.writeText(orderData.whatsappMessage);
-      setCopied(true);
-      toast.success("Order message copied to clipboard!");
-      setTimeout(() => setCopied(false), 2500);
-    }
+    const textToCopy = orderData?.whatsappMessage || decodeURIComponent(defaultWaText);
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    toast.success("Order message copied to clipboard!");
+    setTimeout(() => setCopied(false), 2500);
   }
 
   function handlePrimaryButtonClick() {
@@ -236,7 +285,7 @@ function Confirmed() {
 
                 <Link
                   to="/order-dossier"
-                  search={{ ref }}
+                  search={{ ref, d: encodedPayload || undefined }}
                   target="_blank"
                   className="flex items-center justify-center gap-2 border border-border bg-secondary/60 hover:bg-secondary py-3 px-4 text-xs uppercase tracking-[0.15em] font-medium transition-colors"
                 >
@@ -291,7 +340,7 @@ function Confirmed() {
               <span className="text-muted-foreground">·</span>
               <Link
                 to="/order-dossier"
-                search={{ ref }}
+                search={{ ref, d: encodedPayload || undefined }}
                 target="_blank"
                 className="inline-flex items-center gap-1.5 text-accent hover:underline font-medium"
               >
