@@ -34,3 +34,4 @@ dist-ssr
 
 # clerk configuration (can include secrets)
 /.clerk/
+scratch/

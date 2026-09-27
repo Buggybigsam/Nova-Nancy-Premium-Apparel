@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { SiteHeader } from "@/components/site-header";
-import { CheckCircle2, MessageCircle, Mail, Download, ArrowRight, Sparkles, Clock, Check, Send } from "lucide-react";
+import { CheckCircle2, MessageCircle, Download, ArrowRight, Sparkles, Clock, Copy, Check, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getBespokeOrderForWhatsApp } from "@/lib/custom-orders.functions";
 import { MAU_WHATSAPP_NUMBER } from "@/lib/bespoke-whatsapp";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/order-confirmed")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -16,10 +17,10 @@ export const Route = createFileRoute("/order-confirmed")({
       {
         name: "description",
         content:
-          "Your bespoke custom order has been received by Nova Nancy Atelier and transmitted to the designer.",
+          "Your bespoke custom order is ready to send to artisan Mau on WhatsApp.",
       },
       { property: "og:title", content: "Bespoke Request Confirmed | Nova Nancy" },
-      { property: "og:description", content: "Your bespoke order has reached Nova Nancy Atelier." },
+      { property: "og:description", content: "Connect with artisan Mau on WhatsApp for your custom fashion commission." },
       { property: "og:type", content: "website" },
       { name: "robots", content: "noindex" },
     ],
@@ -42,6 +43,7 @@ function Confirmed() {
   } | null>(null);
 
   const [savedWaUrl, setSavedWaUrl] = useState<string>("");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && ref) {
@@ -78,6 +80,15 @@ function Confirmed() {
   );
   const waLink = orderData?.whatsappUrl || savedWaUrl || `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${defaultWaText}`;
 
+  function handleCopyMessage() {
+    if (orderData?.whatsappMessage) {
+      navigator.clipboard.writeText(orderData.whatsappMessage);
+      setCopied(true);
+      toast.success("Order message copied to clipboard!");
+      setTimeout(() => setCopied(false), 2500);
+    }
+  }
+
   function downloadSummary() {
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>Nova Nancy - ${ref}</title></head>
 <body style="font-family:Georgia,serif;padding:40px;color:#111;max-width:700px;margin:0 auto;line-height:1.6;">
@@ -90,11 +101,9 @@ function Confirmed() {
   ${orderData?.clothingType ? `<p><strong>Garment:</strong> ${orderData.clothingType}</p>` : ""}
   ${orderData?.selectedDesign ? `<p><strong>Design:</strong> ${orderData.selectedDesign}</p>` : ""}
   <p><strong>Submitted:</strong> ${submitted}</p>
-  <p><strong>Status:</strong> Transmitted to Designer via Email & WhatsApp</p>
-  <p><strong>Designer Email:</strong> vikponunancy1234@gmail.com</p>
   <p><strong>Artisan WhatsApp:</strong> +233 55 050 1177</p>
   <hr style="border:none;border-top:1px solid #ddd;margin:24px 0;" />
-  <p style="font-size:12px;color:#666;">Mau will review your measurements and reach out within 24-48 hours. Track your status anytime at /track.</p>
+  <p style="font-size:12px;color:#666;">Mau will review your measurements and guide you through production. Track your status anytime at /track.</p>
 </body></html>`;
     const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
     const a = document.createElement("a");
@@ -109,69 +118,83 @@ function Confirmed() {
       <SiteHeader />
       <main className="mx-auto max-w-3xl px-5 py-12 md:px-8 md:py-20 text-center">
         {/* Success Icon */}
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 border border-accent/30 text-accent">
-          <CheckCircle2 className="h-9 w-9 text-accent" />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366]/15 border border-[#25D366]/30 text-[#25D366]">
+          <CheckCircle2 className="h-9 w-9 text-[#25D366]" />
         </div>
 
-        <span className="mt-6 inline-flex items-center gap-1.5 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-accent font-semibold bg-accent/10 border border-accent/20">
-          <Sparkles className="h-3 w-3" /> Commission Transmitted
+        <span className="mt-6 inline-flex items-center gap-1.5 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-[#25D366] font-semibold bg-[#25D366]/10 border border-[#25D366]/20">
+          <Sparkles className="h-3 w-3" /> Bespoke Order Ready
         </span>
 
         <h1 className="mt-3 font-serif text-3xl md:text-5xl">
-          Order Successfully Dispatched
+          Connect with Mau on WhatsApp
         </h1>
         <p className="mt-3 max-w-xl mx-auto text-sm text-muted-foreground leading-relaxed">
-          Your bespoke commission has been recorded and routed through both official channels.
+          Your bespoke commission details, body measurements, and styling requests have been compiled and are ready to send directly to Artisan Mau's personal WhatsApp.
         </p>
 
-        {/* Dual Delivery Highlights */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 text-left">
-          {/* Email Confirmation Card */}
-          <div className="border border-border bg-background p-6 flex flex-col justify-between shadow-sm">
+        {/* Hero WhatsApp Action Card */}
+        <div className="mt-8 border-2 border-[#25D366] bg-background p-6 md:p-8 text-left shadow-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#9c7b2c]">
-                <Mail className="h-4 w-4" />
-                <span>1. Delivered to Designer Email</span>
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#25D366]">
+                <MessageCircle className="h-4 w-4 fill-current" />
+                <span>Designer's Personal WhatsApp</span>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                All measurements, fabric preferences, uploaded reference sketches, and event timelines have been sent directly to:
-              </p>
-              <div className="mt-3 font-mono text-xs bg-secondary/60 p-2.5 border border-border text-foreground font-semibold">
-                vikponunancy1234@gmail.com
+              <div className="mt-1 font-serif text-2xl text-foreground font-bold">
+                Mau · Nova Nancy Atelier
+              </div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                Kasoa Studio · Ghana (+233 55 050 1177)
               </div>
             </div>
-            <div className="mt-4 flex items-center gap-1.5 text-[11px] text-[#25D366] font-medium">
-              <Check className="h-3.5 w-3.5" /> Sent via SendGrid
+
+            <div className="sm:text-right">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Order Ref</span>
+              <div className="font-mono text-lg font-bold text-accent">{ref}</div>
             </div>
           </div>
 
-          {/* WhatsApp Direct Dispatch Card */}
-          <div className="border border-[#25D366]/40 bg-[#25D366]/5 p-6 flex flex-col justify-between shadow-sm">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#25D366]">
-                <MessageCircle className="h-4 w-4" />
-                <span>2. Direct WhatsApp to Mau</span>
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                Your order is pre-formatted for Artisan Mau's personal WhatsApp (<span className="text-foreground font-medium">+233 55 050 1177</span>) so you can discuss your fitting in real time.
-              </p>
-              <div className="mt-3">
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full bg-[#25D366] text-white py-3 px-4 text-[11px] uppercase tracking-[0.2em] font-bold hover:bg-[#20ba59] transition-all shadow-md hover:shadow-lg"
-                >
-                  <MessageCircle className="h-4 w-4 fill-current" />
-                  <span>Send to Mau on WhatsApp</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            </div>
-            <div className="mt-3 text-[10px] text-muted-foreground text-center">
-              1-tap direct chat with Mau in Kasoa
+          <div className="py-6">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Tap the button below to open WhatsApp with your full commission dossier pre-loaded. Mau will review your measurements and give you an immediate personal response.
+            </p>
+
+            <div className="mt-5">
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white py-4 px-6 text-sm uppercase tracking-[0.2em] font-bold hover:bg-[#20ba59] transition-all shadow-md hover:shadow-xl group"
+              >
+                <MessageCircle className="h-5 w-5 fill-current" />
+                <span>Send Order to Mau on WhatsApp</span>
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </a>
             </div>
           </div>
+
+          {/* Message Preview Box */}
+          {orderData?.whatsappMessage && (
+            <div className="mt-2 border-t border-border pt-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Pre-Loaded WhatsApp Message Preview
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopyMessage}
+                  className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-accent hover:underline"
+                >
+                  {copied ? <Check className="h-3 w-3 text-[#25D366]" /> : <Copy className="h-3 w-3" />}
+                  <span>{copied ? "Copied" : "Copy text"}</span>
+                </button>
+              </div>
+              <div className="max-h-40 overflow-y-auto bg-secondary/50 p-3 font-mono text-xs text-muted-foreground whitespace-pre-wrap border border-border">
+                {orderData.whatsappMessage}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Order Details Dossier */}
@@ -179,7 +202,7 @@ function Confirmed() {
           <div className="flex flex-wrap items-center justify-between border-b border-border pb-4 gap-3">
             <div>
               <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Order Reference</span>
-              <div className="font-serif text-2xl md:text-3xl text-foreground font-bold">{ref}</div>
+              <div className="font-serif text-2xl text-foreground font-bold">{ref}</div>
             </div>
             <div className="text-right">
               <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Submission Date</span>
@@ -207,12 +230,11 @@ function Confirmed() {
               </div>
             )}
             <div>
-              <dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Studio Status</dt>
-              <dd className="mt-1 font-medium text-accent">Pending Atelier Review & Quotation</dd>
-            </div>
-            <div>
-              <dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Expected Response</dt>
-              <dd className="mt-1 text-muted-foreground">Within 24 hours via WhatsApp or Email</dd>
+              <dt className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Studio Channel</dt>
+              <dd className="mt-1 font-medium text-[#25D366] flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#25D366]" />
+                WhatsApp Direct (+233 55 050 1177)
+              </dd>
             </div>
           </dl>
 
@@ -236,10 +258,10 @@ function Confirmed() {
             </div>
 
             <a
-              href={`mailto:vikponunancy1234@gmail.com?subject=${encodeURIComponent(`Nova Nancy Bespoke Commission [${ref}]`)}`}
+              href="tel:+233550501177"
               className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-accent transition-colors"
             >
-              <Mail className="h-3.5 w-3.5" /> Email Nancy directly
+              <Phone className="h-3.5 w-3.5" /> Call Mau directly
             </a>
           </div>
         </div>
@@ -247,7 +269,7 @@ function Confirmed() {
         {/* Support Note */}
         <div className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
           <Clock className="h-4 w-4" />
-          <span>Need immediate assistance? Call or WhatsApp Mau at <strong>+233 55 050 1177</strong>.</span>
+          <span>Mau is typically available on WhatsApp between 8:00 AM and 8:00 PM GMT.</span>
         </div>
       </main>
     </div>

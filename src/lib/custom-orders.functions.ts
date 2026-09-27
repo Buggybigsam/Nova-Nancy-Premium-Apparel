@@ -176,15 +176,7 @@ export const submitCustomOrder = createServerFn({ method: "POST" })
     // Always back up / persist to local store
     saveLocalOrder(localRecord);
 
-    // Send complete intake details directly to the designer's email
-    try {
-      const { dispatchBespokeOrderEmail } = await import("@/lib/bespoke-email.server");
-      await dispatchBespokeOrderEmail(localRecord);
-    } catch (emailErr) {
-      console.warn("[custom-orders] Designer email notification error:", emailErr);
-    }
-
-    // Generate rich WhatsApp order dispatch message & URL
+    // Generate rich WhatsApp order dispatch message & URL (WhatsApp ONLY, no email)
     const { getBespokeWhatsAppUrl } = await import("@/lib/bespoke-whatsapp");
     const whatsappUrl = getBespokeWhatsAppUrl(localRecord);
 

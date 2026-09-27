@@ -14,6 +14,7 @@ export function generateBespokeWhatsAppMessage(order: Partial<StoredCustomOrder>
     order.full_name ? `*Client:* ${order.full_name}` : "",
     order.phone ? `*Phone:* ${order.phone}` : "",
     order.whatsapp && order.whatsapp !== order.phone ? `*WhatsApp:* ${order.whatsapp}` : "",
+    order.email ? `*Email:* ${order.email}` : "",
     order.delivery_address ? `*Location:* ${order.delivery_address}` : "",
     ``,
     `👗 *GARMENT SPECIFICATIONS:*`,
@@ -25,6 +26,7 @@ export function generateBespokeWhatsAppMessage(order: Partial<StoredCustomOrder>
       ? `• *Customizations:* ${order.customizations.join(", ")}`
       : "",
     order.description ? `• *Vision:* ${order.description}` : "",
+    order.special_instructions ? `• *Special Instructions:* ${order.special_instructions}` : "",
     ``,
     `📐 *MEASUREMENTS:*`,
     order.needs_measurement_help
@@ -40,6 +42,7 @@ export function generateBespokeWhatsAppMessage(order: Partial<StoredCustomOrder>
     order.event_type ? `• *Occasion:* ${order.event_type}` : "",
     order.required_date ? `• *Needed By:* ${order.required_date}` : "",
     order.urgency ? `• *Urgency:* ${order.urgency}` : "",
+    order.files && order.files.length > 0 ? `📎 *Reference Images:* ${order.files.length} attached` : "",
     `━━━━━━━━━━━━━━━━━━━━`,
     `_Hello Mau, I have submitted this bespoke commission to the studio and would love to confirm fitting and quotation with you!_`,
   ].filter((p) => p !== "");
