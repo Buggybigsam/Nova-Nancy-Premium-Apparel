@@ -3,9 +3,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState, useEffect, useRef } from "react";
 import { getBespokeOrderForWhatsApp } from "@/lib/custom-orders.functions";
 import { BespokeOrderDossier } from "@/components/bespoke-order-dossier";
-import { downloadOrderPdf, shareOrderPdfToWhatsApp } from "@/lib/bespoke-pdf";
-import { MessageCircle, Download, Printer, ArrowLeft, Loader2, Sparkles } from "lucide-react";
+import { downloadOrderPdf } from "@/lib/bespoke-pdf";
+import { MAU_WHATSAPP_NUMBER } from "@/lib/bespoke-whatsapp";
+import { MessageCircle, Download, Printer, ArrowLeft, Loader2 } from "lucide-react";
 import type { StoredCustomOrder } from "@/lib/custom-orders.storage";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/order-dossier")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -46,21 +48,43 @@ function OrderDossierPage() {
       .finally(() => setLoading(false));
   }, [ref, fetchOrder]);
 
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://novanancy.com";
+  const dossierUrl = typeof window !== "undefined" ? window.location.href : `${origin}/order-dossier?ref=${ref}`;
+
+  const defaultWaText = encodeURIComponent(
+    `✨ *NEW BESPOKE COMMISSION - NOVA NANCY ATELIER* ✨\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `*Order Ref:* ${ref}\n` +
+    (order?.full_name ? `*Client:* ${order.full_name}\n` : "") +
+    (order?.clothing_type ? `*Garment:* ${order.clothing_type}\n` : "") +
+    (order?.selected_design ? `*Design:* ${order.selected_design}\n` : "") +
+    `\n` +
+    `📄 *Official Order PDF Dossier:* ${dossierUrl}\n` +
+    `*(I have downloaded my official order PDF to share with you in this chat)*\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `_Hello Mau, please review my bespoke commission PDF and advise on fitting!_`
+  );
+
+  const waLink = `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${defaultWaText}`;
+
   async function handleDownloadPdf() {
     if (!dossierRef.current || !ref) return;
     setGeneratingPdf(true);
     try {
       await downloadOrderPdf(dossierRef.current, ref, order || undefined);
+      toast.success("Order PDF downloaded successfully!");
     } finally {
       setGeneratingPdf(false);
     }
   }
 
-  async function handleShareWhatsApp() {
-    if (!dossierRef.current || !ref) return;
-    const clientName = order?.full_name || "Valued Client";
-    const dossierUrl = typeof window !== "undefined" ? window.location.href : `https://novanancy.com/order-dossier?ref=${ref}`;
-    await shareOrderPdfToWhatsApp(dossierRef.current, ref, clientName, dossierUrl, order || undefined);
+  function handleShareWhatsApp() {
+    if (dossierRef.current && ref) {
+      downloadOrderPdf(dossierRef.current, ref, order || undefined);
+      toast.success("Order PDF downloaded! You can now attach it in your chat with Mau.", {
+        duration: 6000,
+      });
+    }
   }
 
   if (loading) {
@@ -104,14 +128,16 @@ function OrderDossierPage() {
         </Link>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={handleShareWhatsApp}
-            className="inline-flex items-center gap-1.5 bg-[#25D366] text-white px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#20ba59] transition-all shadow-sm"
+            className="inline-flex items-center gap-1.5 bg-[#25D366] text-white px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#20ba59] transition-all shadow-sm cursor-pointer"
           >
             <MessageCircle className="h-3.5 w-3.5 fill-current" />
             <span>Send PDF on WhatsApp</span>
-          </button>
+          </a>
 
           <button
             type="button"

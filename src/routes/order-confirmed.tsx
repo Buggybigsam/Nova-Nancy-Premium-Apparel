@@ -96,10 +96,27 @@ function Confirmed() {
         day: "numeric",
       });
 
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://novanancy.com";
+  const dossierUrl = `${origin}/order-dossier?ref=${ref}`;
+
   const defaultWaText = encodeURIComponent(
-    `Hello Mau, I have just submitted bespoke commission ${ref} on the Nova Nancy website. I would like to finalize my fitting and consultation details with you.`
+    `✨ *NEW BESPOKE COMMISSION - NOVA NANCY ATELIER* ✨\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `*Order Ref:* ${ref}\n` +
+    (orderData?.fullName ? `*Client:* ${orderData.fullName}\n` : "") +
+    (orderData?.clothingType ? `*Garment:* ${orderData.clothingType}\n` : "") +
+    (orderData?.selectedDesign ? `*Design:* ${orderData.selectedDesign}\n` : "") +
+    (orderData?.order?.delivery_address ? `*Fitting Location:* ${orderData.order.delivery_address}\n` : "") +
+    (orderData?.order?.event_type ? `*Occasion:* ${orderData.order.event_type}\n` : "") +
+    (orderData?.order?.required_date ? `*Needed By:* ${orderData.order.required_date}\n` : "") +
+    `\n` +
+    `📄 *Official Order PDF Dossier:* ${dossierUrl}\n` +
+    `*(I have downloaded my official order PDF to share with you in this chat)*\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `_Hello Mau, please review my bespoke commission PDF and advise on fitting!_`
   );
-  const waLink = orderData?.whatsappUrl || savedWaUrl || `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${defaultWaText}`;
+
+  const waLink = `https://wa.me/${MAU_WHATSAPP_NUMBER}?text=${defaultWaText}`;
 
   function handleCopyMessage() {
     if (orderData?.whatsappMessage) {
@@ -110,23 +127,12 @@ function Confirmed() {
     }
   }
 
-  async function handleSendPdfWhatsApp() {
-    if (!dossierRef.current || !ref) {
-      window.open(waLink, "_blank");
-      return;
-    }
-    setSharingPdf(true);
-    try {
-      const clientName = orderData?.fullName || "Valued Client";
-      const dossierUrl = typeof window !== "undefined"
-        ? `${window.location.origin}/order-dossier?ref=${ref}`
-        : `https://novanancy.com/order-dossier?ref=${ref}`;
-      await shareOrderPdfToWhatsApp(dossierRef.current, ref, clientName, dossierUrl, orderData?.order);
-    } catch (e) {
-      console.error(e);
-      window.open(waLink, "_blank");
-    } finally {
-      setSharingPdf(false);
+  function handlePrimaryButtonClick() {
+    if (dossierRef.current && ref) {
+      downloadOrderPdf(dossierRef.current, ref, orderData?.order);
+      toast.success("Order PDF downloaded! You can now attach it in your WhatsApp chat with Mau.", {
+        duration: 6000,
+      });
     }
   }
 
@@ -188,24 +194,30 @@ function Confirmed() {
 
           <div className="py-6">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Your bespoke commission PDF dossier has been generated. Tap below to send it directly to artisan Mau on WhatsApp for immediate review and consultation.
+              Click below to download your official order PDF dossier and open WhatsApp directly with designer Mau to share your commission:
             </p>
 
             <div className="mt-5 space-y-3">
-              <button
-                type="button"
-                disabled={sharingPdf}
-                onClick={handleSendPdfWhatsApp}
-                className="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white py-4 px-6 text-sm uppercase tracking-[0.2em] font-bold hover:bg-[#20ba59] transition-all shadow-md hover:shadow-xl group disabled:opacity-75 cursor-pointer"
+              {/* Direct Unblockable Link to WhatsApp with Synchronous PDF Download */}
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handlePrimaryButtonClick}
+                className="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white py-4 px-6 text-sm uppercase tracking-[0.2em] font-bold hover:bg-[#20ba59] transition-all shadow-md hover:shadow-xl group cursor-pointer"
               >
-                {sharingPdf ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <MessageCircle className="h-5 w-5 fill-current" />
-                )}
-                <span>Send Order PDF to Mau on WhatsApp</span>
+                <MessageCircle className="h-5 w-5 fill-current" />
+                <span>Send PDF Order to Designer on WhatsApp</span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </a>
+
+              {/* Informative Guidance Banner */}
+              <div className="flex items-start gap-2.5 rounded bg-[#25D366]/10 border border-[#25D366]/20 p-3 text-xs text-foreground/80">
+                <span className="text-base leading-none">💡</span>
+                <p className="leading-relaxed">
+                  <strong>Easy sharing:</strong> Clicking above downloads your <strong>Order PDF Dossier</strong> and opens WhatsApp directly to Mau's chat (<strong>+233 55 050 1177</strong>). Simply tap the attachment icon (📎 or +) in WhatsApp to attach the downloaded PDF file!
+                </p>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <button

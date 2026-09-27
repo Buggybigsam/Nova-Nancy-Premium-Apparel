@@ -43,8 +43,13 @@ export function generateBespokeWhatsAppMessage(order: Partial<StoredCustomOrder>
     order.required_date ? `• *Needed By:* ${order.required_date}` : "",
     order.urgency ? `• *Urgency:* ${order.urgency}` : "",
     order.files && order.files.length > 0 ? `📎 *Reference Images:* ${order.files.length} attached` : "",
+    ``,
+    order.order_number
+      ? `📄 *Official Order PDF Dossier:* https://novanancy.com/order-dossier?ref=${order.order_number}`
+      : "",
+    `*(I have downloaded my official order PDF to share with you in this chat)*`,
     `━━━━━━━━━━━━━━━━━━━━`,
-    `_Hello Mau, I have submitted this bespoke commission to the studio and would love to confirm fitting and quotation with you!_`,
+    `_Hello Mau, please review my bespoke commission PDF and advise on fitting!_`,
   ].filter((p) => p !== "");
 
   return parts.join("\n");
