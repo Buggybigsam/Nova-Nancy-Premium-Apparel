@@ -50,7 +50,7 @@ function OrderDossierPage() {
     if (!dossierRef.current || !ref) return;
     setGeneratingPdf(true);
     try {
-      await downloadOrderPdf(dossierRef.current, ref);
+      await downloadOrderPdf(dossierRef.current, ref, order || undefined);
     } finally {
       setGeneratingPdf(false);
     }
@@ -60,7 +60,7 @@ function OrderDossierPage() {
     if (!dossierRef.current || !ref) return;
     const clientName = order?.full_name || "Valued Client";
     const dossierUrl = typeof window !== "undefined" ? window.location.href : `https://novanancy.com/order-dossier?ref=${ref}`;
-    await shareOrderPdfToWhatsApp(dossierRef.current, ref, clientName, dossierUrl);
+    await shareOrderPdfToWhatsApp(dossierRef.current, ref, clientName, dossierUrl, order || undefined);
   }
 
   if (loading) {
