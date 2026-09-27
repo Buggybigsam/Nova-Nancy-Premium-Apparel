@@ -226,13 +226,47 @@ function CustomOrderPage() {
       );
     if (i === 1) return orderType !== "existing_design" || !!selectedDesign;
     if (i === 3) return needsHelp || Object.values(measures).some((v) => v.trim() !== "");
-    if (i === 4) return design.description.trim().length > 10;
+    if (i === 4) return true; // Design brief is optional and never blocks progression
     if (i === 6) return Object.values(agree).every(Boolean);
     return true;
   };
 
+  const handleNextStep = () => {
+    if (step === 0) {
+      if (client.fullName.trim().length <= 1) {
+        toast.error("Please enter your full name to continue.");
+        return;
+      }
+      if (!/\S+@\S+\.\S+/.test(client.email)) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
+      if (client.phone.trim().length < 6) {
+        toast.error("Please enter a valid phone number.");
+        return;
+      }
+    }
+    if (step === 1 && orderType === "existing_design" && !selectedDesign) {
+      toast.error("Please select a design from the collection to continue.");
+      return;
+    }
+    if (step === 2 && uploading) {
+      toast.info("Please wait for your images to finish uploading.");
+      return;
+    }
+    if (step === 3 && !needsHelp && !Object.values(measures).some((v) => v.trim() !== "")) {
+      toast.error("Please enter your measurements or tick 'Book me a measurement appointment'.");
+      return;
+    }
+    // Step 4 (Design brief) and Step 5 (Event) are fully unblocked
+    setStep((s) => s + 1);
+  };
+
   async function handleSubmit() {
-    if (!stepValid(6)) return;
+    if (!stepValid(6)) {
+      toast.error("Please tick the confirmation boxes below to agree to bespoke terms.");
+      return;
+    }
     setSubmitting(true);
     try {
       const result = await submit({
@@ -689,15 +723,18 @@ function CustomOrderPage() {
               </div>
               <div>
                 <label className={label}>
-                  Describe exactly how you want your outfit designed *
+                  Design notes & vision (optional)
                 </label>
                 <textarea
-                  rows={6}
+                  rows={5}
                   className={input}
                   value={design.description}
                   onChange={(e) => setDesign({ ...design, description: e.target.value })}
-                  placeholder="Silhouette, neckline, sleeves, hem, lining, fit, finishing, anything Mau should know."
+                  placeholder="Silhouette, neckline, sleeves, hem, lining, fit, finishing, or any details Mau should know. You can also leave this blank to discuss during consultation."
                 />
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  Optional: Describe any preferences you have, or leave empty to discuss directly with Mau.
+                </p>
               </div>
               <div>
                 <label className={label}>Special instructions</label>
@@ -833,7 +870,7 @@ function CustomOrderPage() {
                   ],
                   ["Colour", design.color || "Not set"],
                   ["Customisations", customizations.join(", ") || "None"],
-                  ["Description", design.description],
+                  ["Description", design.description.trim() || "Discuss directly with Mau during consultation"],
                   ["Special instructions", design.specialInstructions || "None"],
                 ]}
               />
@@ -893,8 +930,8 @@ function CustomOrderPage() {
             {step < 6 ? (
               <button
                 type="button"
-                disabled={!stepValid(step) || (step === 2 && uploading)}
-                onClick={() => setStep((s) => s + 1)}
+                disabled={step === 2 && uploading}
+                onClick={handleNextStep}
                 className="inline-flex items-center gap-2 bg-primary px-7 py-3 text-[11px] uppercase tracking-[0.25em] text-primary-foreground hover:bg-accent disabled:opacity-50"
               >
                 Continue <ChevronRight className="h-4 w-4" />
