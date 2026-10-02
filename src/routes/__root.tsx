@@ -87,27 +87,51 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nova Nancy | Bespoke Couture & Custom Tailoring Atelier" },
+      { title: "Nova Nancy Premium Apparel | Bespoke Couture & Custom Tailoring Atelier" },
       {
         name: "description",
         content:
-          "Nova Nancy is a couture atelier for bespoke tailoring, bridal, and ceremonial wear, handcrafted in Kasoa, Ghana by designer Mau.",
+          "Nova Nancy Premium Apparel is a luxury couture atelier for bespoke tailoring, bridal, and ceremonial wear, handcrafted in Kasoa, Ghana by designer Mau.",
       },
-      { name: "author", content: "Nova Nancy Atelier" },
-      { property: "og:title", content: "Nova Nancy | Bespoke Couture Atelier" },
+      { name: "author", content: "Nova Nancy Premium Apparel" },
+      { name: "theme-color", content: "#0a0a0a" },
+      { name: "msapplication-navbutton-color", content: "#0a0a0a" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+
+      // Open Graph Tags (WhatsApp, LinkedIn, Facebook)
+      { property: "og:site_name", content: "Nova Nancy Premium Apparel" },
+      { property: "og:title", content: "Nova Nancy Premium Apparel | Bespoke Couture & Custom Tailoring Atelier" },
       {
         property: "og:description",
         content:
-          "Bespoke tailoring that marries ancestral craftsmanship with modern silhouettes. Book your style at Nova Nancy.",
+          "Bespoke tailoring that marries ancestral craftsmanship with modern silhouettes. Handcrafted couture, bridal, and ceremonial wear in Kasoa, Ghana.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://nova-stitch-studio.vercel.app" },
+      { property: "og:image", content: "https://nova-stitch-studio.vercel.app/og-banner.png" },
+      { property: "og:image:secure_url", content: "https://nova-stitch-studio.vercel.app/og-banner.png" },
+      { property: "og:image:type", content: "image/png" },
+      { property: "og:image:width", content: "1024" },
+      { property: "og:image:height", content: "575" },
+      { property: "og:image:alt", content: "Nova Nancy Premium Apparel — Luxury Bespoke Couture Atelier" },
+
+      // Twitter / X Card
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Nova Nancy Premium Apparel | Bespoke Couture Atelier" },
+      {
+        name: "twitter:description",
+        content:
+          "Bespoke tailoring that marries ancestral craftsmanship with modern silhouettes. Handcrafted couture in Kasoa, Ghana.",
+      },
+      { name: "twitter:image", content: "https://nova-stitch-studio.vercel.app/og-banner.png" },
+      { name: "twitter:image:alt", content: "Nova Nancy Premium Apparel Social Banner" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/sticker.webp", type: "image/webp" },
       { rel: "shortcut icon", href: "/sticker.webp" },
       { rel: "apple-touch-icon", href: "/sticker.webp" },
+      { rel: "canonical", href: "https://nova-stitch-studio.vercel.app" },
     ],
   }),
   shellComponent: RootShell,

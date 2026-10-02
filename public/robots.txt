@@ -1,0 +1,14 @@
+# robots.txt for Nova Nancy Premium Apparel
+User-agent: *
+Allow: /
+Disallow: /_authenticated/
+Disallow: /admin*
+Disallow: /api/
+Disallow: /nn-studio-7f3a91
+Disallow: /studio-access
+Disallow: /sign-in
+Disallow: /sign-up
+
+# Sitemaps
+Sitemap: https://nova-nancy-premium-apparel.vercel.app/sitemap.xml
+Sitemap: https://nova-stitch-studio.vercel.app/sitemap.xml
